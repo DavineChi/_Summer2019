@@ -1,4 +1,4 @@
-package __Test;
+package edu.ICS440;
 
 public class Main {
 	
