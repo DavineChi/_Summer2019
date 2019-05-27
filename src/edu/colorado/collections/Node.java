@@ -79,7 +79,7 @@ public class Node<E> {
      **/
     public void addNodeAfter(E element) {
     	
-        link = new Node<E> (element, link);
+        link = new Node<E>(element, link);
     }
 
 
