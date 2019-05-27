@@ -1,8 +1,8 @@
 package edu.ICS440;
 
-public class Main {
+public class Amdahl {
 	
-	public static double calculateAmdahl(double value) {
+	public static double calculate(double value) {
 		
 		return (1 / (1 - value + (value / 100)));
 	}
@@ -14,7 +14,7 @@ public class Main {
 		
 		for (double value : values) {
 			
-			System.out.println(Math.floor(calculateAmdahl(value)));
+			System.out.println(Math.floor(calculate(value)));
 		}
 	}
 }

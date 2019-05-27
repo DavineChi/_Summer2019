@@ -1,73 +1,102 @@
+/**********************************************************************************
+* Class: ICS 462 SUMMER 2019
+* Assignment: Programming Assignment 2
+* Author: Shannon Fisher
+* 
+* Website Citations...
+* 
+* Help with creating threads:
+* https://dzone.com/articles/the-evolution-of-producer-consumer-problem-in-java
+* 
+* Program that <...>
+**********************************************************************************/
+
 package edu.ICS462;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ProducerConsumer {
 	
-	private static class Buffer {
+	private static final int MIN_WAIT = 1000;
+	private static final int MAX_WAIT = 3000;
+	
+	private int shared;
+	private int sum;
+	
+	public ProducerConsumer() {
 		
-		Queue<Integer> list;
-		int size;
+		shared = 100;
+		sum = 0;
+	}
+	
+	public int getSum() {
 		
-		public Buffer(int size) {
+		return sum;
+	}
+	
+	public void produce() throws InterruptedException {
+		
+		int value = 0;
+		
+		for (int i = 0; i < 4; i++) {
 			
-			this.list = new LinkedList<Integer>();
-			this.size = size;
+			Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT, MAX_WAIT + 1));
+			
+			shared = i;
 		}
+	} 
+	
+	public void consume() throws InterruptedException {
 		
-		public void produce() throws InterruptedException {
+		for (int i = 0; i < 4; i++) {
 			
-			int value = 0;
+			Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT, MAX_WAIT + 1));
 			
-			while (true) {
-				
-				synchronized (this) {
-					
-					while (list.size() >= size) {
-						
-						this.wait();
-					}
-					
-					list.add(value);
-					
-					//System.out.println("Produced value: " + value);
-					
-					value++;
-					
-					this.notify();
-					
-					Thread.sleep(1000);
-				}
-			}
-		}
-		
-		public void consume() throws InterruptedException {
-			
-			while (true) {
-				
-				synchronized (this) {
-					
-					while (list.size() == 0) {
-						
-						this.wait();
-					}
-					
-					int value = list.poll();
-					
-					//System.out.println("Consumed value: " + value);
-					
-					this.notify();
-					
-					Thread.sleep(1000);
-				}
-			}
+			sum = sum + shared;
 		}
 	}
 	
-	public static void main(String[] args) throws InterruptedException {
+	public void writeToFile() throws IOException {
 		
-		Buffer buffer = new Buffer(2);
+		StringBuilder sb = new StringBuilder();
+		File file = new File("Fisher_Shannon_ProgAssign2.txt");
+		FileWriter fileWriter = new FileWriter(file, true);
+		PrintWriter printWriter = null;
+		
+		try {
+			
+			if (!file.exists()) {
+				
+				file.createNewFile();
+			}
+			
+			printWriter = new PrintWriter(fileWriter);
+			
+			sb.append("Shannon Fisher" + "\n");
+			sb.append("ICS 462 Programming Assignment 2" + "\n");
+			sb.append("The sum is " + this.getSum() + "\n\n");
+			
+			printWriter.println(sb.toString());
+		}
+		
+		catch (IOException ex) {
+			
+			ex.printStackTrace();
+		}
+		
+		finally {
+			
+			printWriter.close();
+		}
+	}
+	
+	public static void main(String[] args) throws InterruptedException, IOException {
+		
+		ProducerConsumer pc = new ProducerConsumer();
 		
 		Thread producerThread = new Thread(new Runnable() {
 
@@ -76,7 +105,7 @@ public class ProducerConsumer {
 				
 				try {
 					
-					buffer.produce();
+					pc.produce();
 				}
 				
 				catch (Exception ex) {
@@ -93,7 +122,7 @@ public class ProducerConsumer {
 				
 				try {
 					
-					buffer.consume();
+					pc.consume();
 				}
 				
 				catch (Exception ex) {
@@ -108,5 +137,7 @@ public class ProducerConsumer {
 		
 		producerThread.join();
 		consumerThread.join();
+		
+		pc.writeToFile();
 	}
 }
