@@ -1,3 +1,4 @@
+package edu.metrostate.ICS440;
 //package edu.ICS440;
 //
 //public class Amdahl {

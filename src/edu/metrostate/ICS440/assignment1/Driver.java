@@ -1,6 +1,6 @@
-package edu.ICS440.assignment1;
+package edu.metrostate.ICS440.assignment1;
 
-public class MainDriver {
+public class Driver {
 	
 	public static void main(String[] args) {
 		

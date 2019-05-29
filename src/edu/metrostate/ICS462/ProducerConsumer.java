@@ -11,7 +11,7 @@
 * Program that <...>
 **********************************************************************************/
 
-package edu.ICS462;
+package edu.metrostate.ICS462;
 
 import java.io.File;
 import java.io.FileWriter;

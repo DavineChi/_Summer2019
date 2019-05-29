@@ -1,4 +1,4 @@
-package edu.ICS440.assignment1;
+package edu.metrostate.ICS440.assignment1;
 
 public enum Color {
 
