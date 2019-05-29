@@ -5,6 +5,6 @@ public enum Color {
 	Red,
 	Brown,
 	Yellow,
-	Greed,
+	Green,
 	Blue
 }

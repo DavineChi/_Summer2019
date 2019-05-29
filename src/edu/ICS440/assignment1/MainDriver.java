@@ -1,7 +1,7 @@
 package edu.ICS440.assignment1;
 
-public class Main {
-
+public class MainDriver {
+	
 	public static void main(String[] args) {
 		
 		Queue<Integer> collection = new Queue<Integer>();
@@ -25,20 +25,20 @@ public class Main {
 			threads[index] = new Thread(processor);
 			threads[index].start();
 		}
-
+		
 		try {
-
+			
 			for (int index = 0; index < threads.length; index++) {
-
+				
 				threads[index].join();
 			}
 		}
-
+		
 		catch (InterruptedException ie) {
-
+			
 			ie.printStackTrace();
 		}
-
+		
 		ThreadStatisticsSetup.print();
 	}
 }

@@ -16,4 +16,15 @@ public class Item<T> {
 	
 	public void setData(T data) { this.data = data; }
 	public void setLink(Item<T> link) { this.link = link; }
+
+    public void addAfter(T item) {
+    	
+        link = new Item<T>(item, link);
+    }
+	
+	@Override
+	public String toString() {
+		
+		return "Item [data=" + data + ", link=" + link + "]";
+	}
 }
