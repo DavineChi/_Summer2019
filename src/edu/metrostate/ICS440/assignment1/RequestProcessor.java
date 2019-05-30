@@ -1,99 +1,96 @@
 package edu.metrostate.ICS440.assignment1;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class RequestProcessor<T> extends Thread implements Lock {
+public class RequestProcessor<T> extends Thread {
 	
-	private static final AtomicInteger nextId = new AtomicInteger(0);
-	private static final ThreadLocal<Integer> threadId = new ThreadLocal<Integer>() {
+	private static final AtomicInteger NEXT_ID = new AtomicInteger(0);
+	private static final ThreadLocal<Integer> THREAD_ID = new ThreadLocal<Integer>() {
 		
 		@Override
 		protected Integer initialValue() {
 			
-			return nextId.getAndIncrement();
+			return NEXT_ID.getAndIncrement();
 		}
 	};
 	
-	private static ThreadLocal<Integer> localCount;
+	private static final ThreadLocal<List<Integer>> LOCAL_COUNT = new ThreadLocal<List<Integer>>() {
+		
+		@Override
+		protected List<Integer> initialValue() {
+			
+			List<Integer> list = new ArrayList<Integer>();
+			
+			// Fill the list with initial values (also sets the list's dimensions).
+			for (int i = 0; i < Color.values().length; i++) {
+				
+				list.add(0);
+			}
+			
+			return list;
+		}
+	};
 	
 	private Queue<T> collection;
-	private Queue<T> output;
+//	private Queue<T> output;
 	private ReentrantLock collectionLock;
-	private ReentrantLock outputLock;
+//	private ReentrantLock outputLock;
 	
 	public RequestProcessor(Queue<T> collection) {
 		
 		this.collection = collection;
-		this.output = new Queue<T>();
+//		this.output = new Queue<T>();
 		this.collectionLock = new ReentrantLock();
-		this.outputLock = new ReentrantLock();
-		this.localCount = new ThreadLocal<Integer>();
+//		this.outputLock = new ReentrantLock();
 	}
 	
 	private void process() throws InterruptedException {
 		
-		T item;
+		T item = null;
 		
-//		System.out.println("Thread ID: " + String.valueOf(threadId.get()) + " :: before lock                      :: PROCESSOR :: " + LocalDateTime.now());
-//		collectionLock.lock();
-//		System.out.println("Thread ID: " + String.valueOf(threadId.get()) + " :: after lock                       :: PROCESSOR :: " + LocalDateTime.now());
-//		
-//		try {
-//			
-//			// TODO: work implementation (this is the critical section)
-//			
-//			while (!collection.isEmpty()) {
-//				
-//				System.out.println("Thread ID: " + String.valueOf(threadId.get()) + " :: I have the collection.           :: PROCESSOR :: " + LocalDateTime.now());
-//				item = collection.dequeue();
-//				
-//				System.out.println();
-//				System.out.println("  > Color: " + Color.values()[Integer.parseInt(item.toString())]);
-//				System.out.println();
-//				//Thread.sleep(10);
-//				
-//				if (localCount == null) {
-//					
-//					
-//				}
-//			}
-//		}
-//		
-//		catch (Exception ex) {
-//			
-//			Thread.currentThread().interrupt();
-//			ex.printStackTrace();
-//		}
-//		
-//		finally {
-//			
-//			System.out.println("Thread ID: " + String.valueOf(threadId.get()) + " :: before unlock                    :: PROCESSOR :: " + LocalDateTime.now());
-//			collectionLock.unlock();
-//			System.out.println("Thread ID: " + String.valueOf(threadId.get()) + " :: I no longer have the collection. :: PROCESSOR :: " + LocalDateTime.now());
-//			System.out.println("Thread ID: " + String.valueOf(threadId.get()) + " :: after unlock                     :: PROCESSOR :: " + LocalDateTime.now());
-//		}
+		System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: before lock                      :: PROCESSOR :: " + LocalDateTime.now());
+		collectionLock.lock();
+		System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: after lock                       :: PROCESSOR :: " + LocalDateTime.now());
 		
-		// TODO: This will not work - concurrency is not enforced...
-		while (!collection.isEmpty()) {
+		try {
 			
-			System.out.println("Thread ID: " + String.valueOf(threadId.get()) + " :: I have the collection.           :: PROCESSOR :: " + LocalDateTime.now());
-			item = collection.dequeue();
-			
-			System.out.println();
-			System.out.println("  > Color: " + Color.values()[Integer.parseInt(item.toString())]);
-			System.out.println();
-			//Thread.sleep(10);
-			
-			if (localCount == null) {
+			// TODO: work implementation (this is a critical section)
+			while (!collection.isEmpty()) {
 				
+				System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: I have the collection.           :: PROCESSOR :: " + LocalDateTime.now());
 				
+				item = collection.dequeue();
+				
+				//Thread.sleep(10);
 			}
 		}
+		
+		catch (Exception ex) {
+			
+			Thread.currentThread().interrupt();
+			ex.printStackTrace();
+		}
+		
+		finally {
+			
+			System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: before unlock                    :: PROCESSOR :: " + LocalDateTime.now());
+			collectionLock.unlock();
+			System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: I no longer have the collection. :: PROCESSOR :: " + LocalDateTime.now());
+			System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: after unlock                     :: PROCESSOR :: " + LocalDateTime.now());
+		}
+		
+		
+		int index = Integer.parseInt(item.toString());
+		
+		System.out.println();
+		System.out.println("  > Color: " + Color.values()[index]);
+		System.out.println();
+		
+		LOCAL_COUNT.get().set(index, LOCAL_COUNT.get().get(index) + 1);
 	}
 	
 	@Override
@@ -108,44 +105,5 @@ public class RequestProcessor<T> extends Thread implements Lock {
 			
 			ex.printStackTrace();
 		}
-	}
-
-	@Override
-	public void lock() {
-		
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void lockInterruptibly() throws InterruptedException {
-		
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public Condition newCondition() {
-		
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean tryLock() {
-		
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean tryLock(long arg0, TimeUnit arg1) throws InterruptedException {
-		
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void unlock() {
-		
-		// TODO Auto-generated method stub
 	}
 }

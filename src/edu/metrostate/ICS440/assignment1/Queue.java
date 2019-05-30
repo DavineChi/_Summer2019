@@ -131,7 +131,7 @@ public class Queue<T> {
 	 * <p>
 	 * 
 	 * @return
-	 *   True if this Queue is empty, false otherwise;
+	 *   True if this Queue is empty, false otherwise.
 	 */
 	public boolean isEmpty() {
 		
