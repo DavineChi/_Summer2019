@@ -38,14 +38,14 @@ public class RequestProcessor<T> extends Thread {
 	private Queue<T> collection;
 //	private Queue<T> output;
 	private ReentrantLock collectionLock;
-//	private ReentrantLock outputLock;
+	private ReentrantLock outputLock;
 	
 	public RequestProcessor(Queue<T> collection) {
 		
 		this.collection = collection;
 //		this.output = new Queue<T>();
 		this.collectionLock = new ReentrantLock();
-//		this.outputLock = new ReentrantLock();
+		this.outputLock = new ReentrantLock();
 	}
 	
 	private void process() throws InterruptedException {
@@ -58,14 +58,22 @@ public class RequestProcessor<T> extends Thread {
 		
 		try {
 			
-			// TODO: work implementation (this is a critical section)
 			while (!collection.isEmpty()) {
 				
+				// TODO: work implementation (this is a critical section)
 				System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: I have the collection.           :: PROCESSOR :: " + LocalDateTime.now());
 				
 				item = collection.dequeue();
 				
 				//Thread.sleep(10);
+				
+				int index = Integer.parseInt(item.toString());
+				
+				System.out.println();
+				System.out.println("  > Color: " + Color.values()[index]);
+				System.out.println();
+				
+				LOCAL_COUNT.get().set(index, LOCAL_COUNT.get().get(index) + 1);
 			}
 		}
 		
@@ -82,15 +90,6 @@ public class RequestProcessor<T> extends Thread {
 			System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: I no longer have the collection. :: PROCESSOR :: " + LocalDateTime.now());
 			System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: after unlock                     :: PROCESSOR :: " + LocalDateTime.now());
 		}
-		
-		
-		int index = Integer.parseInt(item.toString());
-		
-		System.out.println();
-		System.out.println("  > Color: " + Color.values()[index]);
-		System.out.println();
-		
-		LOCAL_COUNT.get().set(index, LOCAL_COUNT.get().get(index) + 1);
 	}
 	
 	@Override
@@ -99,11 +98,34 @@ public class RequestProcessor<T> extends Thread {
 		try {
 			
 			process();
+			printSomething();
 		}
 		
 		catch (InterruptedException ex) {
 			
 			ex.printStackTrace();
+		}
+	}
+
+	private void printSomething() {
+		
+		outputLock.lock();
+		
+		try {
+			
+			List<Integer> list = LOCAL_COUNT.get();
+			
+			System.out.println("  >>> OUTPUT >>> Thread ID: " + String.valueOf(THREAD_ID.get()));
+			
+			for (Integer i : list) {
+				
+				System.out.println(i);
+			}
+		}
+		
+		finally {
+			
+			outputLock.unlock();
 		}
 	}
 }
