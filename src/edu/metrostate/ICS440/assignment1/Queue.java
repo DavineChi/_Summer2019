@@ -1,8 +1,5 @@
 package edu.metrostate.ICS440.assignment1;
 
-import java.time.LocalDateTime;
-import java.util.concurrent.locks.ReentrantLock;
-
 /****************************************************************************************************************
  * A class to maintain a queue data structure over a generic collection of objects.
  * <p>
@@ -22,7 +19,6 @@ public class Queue<T> {
 	private Item<T> front;
 	private Item<T> rear;
 	private int size;
-	private ReentrantLock lock;
 	
 	/************************************************************************************************************
 	 * Constructor used to create a new Queue object.
@@ -35,7 +31,6 @@ public class Queue<T> {
 		
 		this.front = null;
 		this.rear = null;
-		this.lock = new ReentrantLock();
 	}
 	
 	/************************************************************************************************************
@@ -83,11 +78,7 @@ public class Queue<T> {
 		
 		T result = null;
 		
-		System.out.println(Thread.currentThread().getName() + "     :: before lock                      :: QUEUE     :: " + LocalDateTime.now());
-		lock.lock();
-		System.out.println(Thread.currentThread().getName() + "     :: after lock                       :: QUEUE     :: " + LocalDateTime.now());
-		
-		try {
+		synchronized (this) {
 			
 			if (size > 0) {
 				
@@ -96,19 +87,6 @@ public class Queue<T> {
 				
 				size--;
 			}
-		}
-		
-		catch (Exception ex) {
-			
-			Thread.currentThread().interrupt();
-			ex.printStackTrace();
-		}
-		
-		finally {
-			
-			System.out.println(Thread.currentThread().getName() + "     :: before unlock                    :: QUEUE     :: " + LocalDateTime.now());
-			lock.unlock();
-			System.out.println(Thread.currentThread().getName() + "     :: after unlock                     :: QUEUE     :: " + LocalDateTime.now());
 		}
 		
 		return result;
