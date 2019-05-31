@@ -16,6 +16,15 @@ public interface Constants {
 		}
 	};
 	
+	public static final ThreadLocal<Integer> COLOR_INDEX = new ThreadLocal<Integer>() {
+		
+		@Override
+		protected Integer initialValue() {
+			
+			return null;
+		}
+	};
+	
 	public static final ThreadLocal<List<Integer>> LOCAL_COUNT = new ThreadLocal<List<Integer>>() {
 		
 		@Override

@@ -1,5 +1,7 @@
 package edu.metrostate.ICS440.assignment1;
 
+import java.util.Iterator;
+
 /****************************************************************************************************************
  * A class to maintain a queue data structure over a generic collection of objects.
  * <p>
@@ -31,6 +33,32 @@ public class Queue<T> {
 		
 		this.front = null;
 		this.rear = null;
+	}
+	
+	public class QueueIterator implements Iterator<T> {
+		
+		private Item<T> current = front;
+		
+		@Override
+		public boolean hasNext() {
+			
+			return current != null;
+		}
+
+		@Override
+		public T next() {
+			
+			T result = current.getData();
+			
+			current = current.getLink();
+			
+			return result;
+		}
+	}
+	
+	public QueueIterator iterator() {
+		
+		return new QueueIterator();
 	}
 	
 	/************************************************************************************************************
@@ -86,30 +114,6 @@ public class Queue<T> {
 				front = front.getLink();
 				
 				size--;
-			}
-		}
-		
-		return result;
-	}
-	
-	/************************************************************************************************************
-	 * An accessor method to retrieve a reference to the next element in this Queue. This method does not
-	 * remove the element from the Queue.
-	 * <p>
-	 * 
-	 * @return
-	 *   A reference to the next element in this Queue.
-	 */
-	public T peek() {
-		
-		T result = null;
-		
-		synchronized (this) {
-			
-			if (size > 0) {
-				
-				result = front.getData();
-				front = front.getLink();
 			}
 		}
 		

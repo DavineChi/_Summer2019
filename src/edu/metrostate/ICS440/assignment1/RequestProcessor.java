@@ -20,79 +20,38 @@ public class RequestProcessor<T> extends Thread {
 	
 	private void process() throws InterruptedException {
 		
-		System.out.println("Thread ID: " + String.valueOf(Constants.THREAD_ID.get()) + " :: before lock                      :: PROCESSOR :: " + LocalDateTime.now());
-		collectionLock.lock();
-		System.out.println("Thread ID: " + String.valueOf(Constants.THREAD_ID.get()) + " :: after lock                       :: PROCESSOR :: " + LocalDateTime.now());
+		Queue<T>.QueueIterator iterator = collection.iterator();
 		
-		try {
+		while (iterator.hasNext()) {
 			
-			T item = null;
+			T item;
 			
-			while (!collection.isEmpty()) {
+			System.out.println("Thread ID: " + String.valueOf(Constants.THREAD_ID.get()) + " :: before lock                      :: PROCESSOR :: " + LocalDateTime.now());
+			collectionLock.lock();
+			System.out.println("Thread ID: " + String.valueOf(Constants.THREAD_ID.get()) + " :: after lock                       :: PROCESSOR :: " + LocalDateTime.now());
+
+			try {
 				
-				processingLock.lock();
+				System.out.println("Thread ID: " + String.valueOf(Constants.THREAD_ID.get()) + " :: I have the collection.           :: PROCESSOR :: " + LocalDateTime.now());
 				
-				try {
-					
-					System.out.println("Thread ID: " + String.valueOf(Constants.THREAD_ID.get()) + " :: I have the collection.           :: PROCESSOR :: " + LocalDateTime.now());
-					
-					item = collection.dequeue();
-					
-					int index = Integer.parseInt(item.toString());
-					
-					System.out.println();
-					System.out.println("  > Color: " + Color.values()[index]);
-					System.out.println();
-					
-					Constants.LOCAL_COUNT.get().set(index, Constants.LOCAL_COUNT.get().get(index) + 1);
-				}
+				//item = collection.dequeue();
+				item = iterator.next();
 				
-				finally {
-					
-					processingLock.unlock();
-				}
+				// TODO: PROBLEM: NullPointerException thrown here for all threads.
+				int index = Integer.parseInt(item.toString());
+				
+				System.out.println();
+				System.out.println("  > Color: " + Color.values()[index]);
+				System.out.println();
+				
+				Constants.LOCAL_COUNT.get().set(index, Constants.LOCAL_COUNT.get().get(index) + 1);
+			}
+			
+			finally {
+				
+				collectionLock.unlock();
 			}
 		}
-		
-		finally {
-			
-			collectionLock.unlock();
-		}
-		
-//		for (int i = 0; i < 10000; i++) {
-//			
-//			try {
-//				
-//				// TODO: work implementation (this is a critical section)
-//				System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: I have the collection.           :: PROCESSOR :: " + LocalDateTime.now());
-//				
-//				item = collection.dequeue();
-//				
-//				//Thread.sleep(10);
-//				
-//				int index = Integer.parseInt(item.toString());
-//				
-//				System.out.println();
-//				System.out.println("  > Color: " + Color.values()[index]);
-//				System.out.println();
-//				
-//				LOCAL_COUNT.get().set(index, LOCAL_COUNT.get().get(index) + 1);
-//			}
-//			
-//			catch (Exception ex) {
-//				
-//				Thread.currentThread().interrupt();
-//				ex.printStackTrace();
-//			}
-//			
-//			finally {
-//				
-//				System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: before unlock                    :: PROCESSOR :: " + LocalDateTime.now());
-//				collectionLock.unlock();
-//				System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: I no longer have the collection. :: PROCESSOR :: " + LocalDateTime.now());
-//				System.out.println("Thread ID: " + String.valueOf(THREAD_ID.get()) + " :: after unlock                     :: PROCESSOR :: " + LocalDateTime.now());
-//			}
-//		}
 	}
 	
 	@Override
