@@ -1,7 +1,5 @@
 package edu.metrostate.ICS440.assignment1;
 
-import java.util.Iterator;
-
 /****************************************************************************************************************
  * A class to maintain a queue data structure over a generic collection of objects.
  * <p>
@@ -35,31 +33,31 @@ public class Queue<T> {
 		this.rear = null;
 	}
 	
-	public class QueueIterator implements Iterator<T> {
-		
-		private Item<T> current = front;
-		
-		@Override
-		public boolean hasNext() {
-			
-			return current != null;
-		}
-
-		@Override
-		public T next() {
-			
-			T result = current.getData();
-			
-			current = current.getLink();
-			
-			return result;
-		}
-	}
-	
-	public QueueIterator iterator() {
-		
-		return new QueueIterator();
-	}
+//	public class QueueIterator implements Iterator<T> {
+//		
+//		private Item<T> current = front;
+//		
+//		@Override
+//		public boolean hasNext() {
+//			
+//			return current != null;
+//		}
+//
+//		@Override
+//		public T next() {
+//			
+//			T result = current.getData();
+//			
+//			current = current.getLink();
+//			
+//			return result;
+//		}
+//	}
+//	
+//	public QueueIterator iterator() {
+//		
+//		return new QueueIterator();
+//	}
 	
 	/************************************************************************************************************
 	 * A modifier method to add a new element to the back of this Queue.
@@ -106,15 +104,12 @@ public class Queue<T> {
 		
 		T result = null;
 		
-		synchronized (this) {
+		if (size > 0) {
 			
-			if (size > 0) {
-				
-				result = front.getData();
-				front = front.getLink();
-				
-				size--;
-			}
+			result = front.getData();
+			front = front.getLink();
+			
+			size--;
 		}
 		
 		return result;

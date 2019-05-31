@@ -6,9 +6,9 @@ public class Driver {
 		
 		Queue<Integer> collection = new Queue<Integer>();
 		
-		for (int index = 0; index < 500; index++) {
+		for (int index = 0; index < 10000; index++) {
 			
-			int candidate = ((int)(Math.random() * 500)) % 5;
+			int candidate = ((int)(Math.random() * 10000)) % 5;
 			Integer integ = new Integer(candidate);
 			
 			collection.enqueue(integ);
