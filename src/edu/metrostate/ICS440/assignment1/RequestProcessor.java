@@ -1,8 +1,6 @@
 package edu.metrostate.ICS440.assignment1;
 
 import java.time.LocalDateTime;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class RequestProcessor<T> extends Thread {
@@ -25,7 +23,6 @@ public class RequestProcessor<T> extends Thread {
 		System.out.println("Thread ID: " + String.valueOf(Constants.THREAD_ID.get()) + " :: before lock                      :: PROCESSOR :: " + LocalDateTime.now());
 		collectionLock.lock();
 		System.out.println("Thread ID: " + String.valueOf(Constants.THREAD_ID.get()) + " :: after lock                       :: PROCESSOR :: " + LocalDateTime.now());
-		
 		
 		try {
 			
@@ -53,7 +50,6 @@ public class RequestProcessor<T> extends Thread {
 				finally {
 					
 					processingLock.unlock();
-					
 				}
 			}
 		}

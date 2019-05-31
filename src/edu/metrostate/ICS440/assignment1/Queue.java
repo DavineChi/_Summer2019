@@ -93,6 +93,30 @@ public class Queue<T> {
 	}
 	
 	/************************************************************************************************************
+	 * An accessor method to retrieve a reference to the next element in this Queue. This method does not
+	 * remove the element from the Queue.
+	 * <p>
+	 * 
+	 * @return
+	 *   A reference to the next element in this Queue.
+	 */
+	public T peek() {
+		
+		T result = null;
+		
+		synchronized (this) {
+			
+			if (size > 0) {
+				
+				result = front.getData();
+				front = front.getLink();
+			}
+		}
+		
+		return result;
+	}
+	
+	/************************************************************************************************************
 	 * An accessor method to retrieve the size of this Queue.
 	 * <p>
 	 * 
