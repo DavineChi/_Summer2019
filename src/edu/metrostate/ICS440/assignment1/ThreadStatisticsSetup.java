@@ -7,6 +7,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadStatisticsSetup {
 	
+	private static int total = 0;
+	
 	public static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 	public static final ThreadLocal<Integer> THREAD_ID = new ThreadLocal<Integer>() {
 		
@@ -17,16 +19,16 @@ public class ThreadStatisticsSetup {
 		}
 	};
 	
-	public static final ThreadLocal<Integer> COLOR_INDEX = new ThreadLocal<Integer>() {
+	public static final ThreadLocal<Queue<Integer>> COLLECTION = new ThreadLocal<Queue<Integer>>() {
 		
 		@Override
-		protected Integer initialValue() {
+		protected Queue<Integer> initialValue() {
 			
-			return null;
+			return new Queue<Integer>();
 		}
 	};
 	
-	public static final ThreadLocal<List<Integer>> SUM = new ThreadLocal<List<Integer>>() {
+	public static final ThreadLocal<List<Integer>> SUMMARY_LIST = new ThreadLocal<List<Integer>>() {
 		
 		@Override
 		protected List<Integer> initialValue() {
@@ -43,47 +45,44 @@ public class ThreadStatisticsSetup {
 		}
 	};
 	
-	public static final ThreadLocal<Queue<Integer>> COLLECTION = new ThreadLocal<Queue<Integer>>() {
-		
-		@Override
-		protected Queue<Integer> initialValue() {
-			
-			return new Queue<Integer>();
-		}
-	};
-	
-	public static Queue<Integer> get() {
+	public static Queue<Integer> getLocalCollection() {
 		
 		return COLLECTION.get();
 	}
 	
+	public static void addToSummaryList(Integer indexItem) {
+		
+		int i = SUMMARY_LIST.get().get(indexItem);
+		
+		SUMMARY_LIST.get().set(indexItem, (i + 1));
+	}
+	
 	public static void print() {
 		
-		ReentrantLock outputLock = new ReentrantLock();
+		ReentrantLock printingLock = new ReentrantLock();
+		int sum = 0;
 		
-		outputLock.lock();
+		printingLock.lock();
 		
 		try {
 			
-			int sum = 0;
+			List<Integer> list = SUMMARY_LIST.get();
 			
-			List<Integer> list = SUM.get();
-			
-			System.out.println("  >>> OUTPUT >>> Thread ID: " + String.valueOf(THREAD_ID.get()));
+			System.out.println("==Totals==");
 			
 			for (int i = 0; i < Color.values().length; i++) {
 				
 				sum = sum + list.get(i);
 				
-				System.out.println(Color.values()[i] + ": " + list.get(i));
+				total = total + 0; // TODO: provide correct summation
+				
+				System.out.println("Color " + Color.values()[i] + " composes " + list.get(i) + " of the total.");
 			}
-			
-			System.out.println("  >>>    SUM >>> " + sum);
 		}
 		
 		finally {
 			
-			outputLock.unlock();
+			printingLock.unlock();
 		}
 	}
 }

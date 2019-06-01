@@ -6,9 +6,9 @@ public class Driver {
 		
 		Queue<Integer> collection = new Queue<Integer>();
 		
-		for (int index = 0; index < 10000; index++) {
+		for (int index = 0; index < 8000000; index++) {
 			
-			int candidate = ((int)(Math.random() * 10000)) % 5;
+			int candidate = ((int)(Math.random() * 8000000)) % 5;
 			Integer integ = new Integer(candidate);
 			
 			collection.enqueue(integ);
@@ -39,6 +39,7 @@ public class Driver {
 			ie.printStackTrace();
 		}
 		
+		// TODO: This will print the final set of totals.
 		ThreadStatisticsSetup.print();
 	}
 }
