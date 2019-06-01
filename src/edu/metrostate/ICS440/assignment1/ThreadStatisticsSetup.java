@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadStatisticsSetup {
 	
-	public static final AtomicInteger NEXT_ID = new AtomicInteger(0);
+	public static final AtomicInteger NEXT_ID = new AtomicInteger(1);
 	public static final ThreadLocal<Integer> THREAD_ID = new ThreadLocal<Integer>() {
 		
 		@Override
@@ -26,7 +26,7 @@ public class ThreadStatisticsSetup {
 		}
 	};
 	
-	public static final ThreadLocal<List<Integer>> LOCAL_COUNT = new ThreadLocal<List<Integer>>() {
+	public static final ThreadLocal<List<Integer>> SUM = new ThreadLocal<List<Integer>>() {
 		
 		@Override
 		protected List<Integer> initialValue() {
@@ -67,7 +67,7 @@ public class ThreadStatisticsSetup {
 			
 			int sum = 0;
 			
-			List<Integer> list = LOCAL_COUNT.get();
+			List<Integer> list = SUM.get();
 			
 			System.out.println("  >>> OUTPUT >>> Thread ID: " + String.valueOf(THREAD_ID.get()));
 			

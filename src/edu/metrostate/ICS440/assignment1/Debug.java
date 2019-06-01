@@ -2,40 +2,57 @@ package edu.metrostate.ICS440.assignment1;
 
 import java.time.LocalDateTime;
 
-public interface Debug {
+public class Debug {
+	
+	private static final boolean ENABLED = false;
 	
 	public static void beforeLock() {
 		
-		System.out.println("Thread ID: " +
-				String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
-				" :: before lock             :: " + LocalDateTime.now());
+		if (ENABLED) {
+			
+			System.out.println("Thread ID: " +
+					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					" :: before lock            :: " + LocalDateTime.now());
+		}
 	}
 	
 	public static void afterLock() {
 		
-		System.out.println("Thread ID: " +
-				String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
-				" :: after lock              :: " + LocalDateTime.now());
+		if (ENABLED) {
+			
+			System.out.println("Thread ID: " +
+					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					" :: after lock             :: " + LocalDateTime.now());
+		}
 	}
 	
 	public static void beforeUnlock() {
 		
-		System.out.println("Thread ID: " +
-				String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
-				" :: before unlock           :: " + LocalDateTime.now());
+		if (ENABLED) {
+			
+			System.out.println("Thread ID: " +
+					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					" :: BEFORE UNLOCK          :: " + LocalDateTime.now());
+		}
 	}
 	
 	public static void afterUnlock() {
 		
-		System.out.println("Thread ID: " +
-				String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
-				" :: after unlock            :: " + LocalDateTime.now());
+		if (ENABLED) {
+			
+			System.out.println("Thread ID: " +
+					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					" :: AFTER UNLOCK           :: " + LocalDateTime.now());
+		}
 	}
 	
 	public static void lockOwner() {
 		
-		System.out.println("Thread ID: " +
-				String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
-				" :: I have the collection.  :: " + LocalDateTime.now());
+		if (ENABLED) {
+			
+			System.out.println("Thread ID: " +
+					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					" :: I have the collection. :: " + LocalDateTime.now());
+		}
 	}
 }
