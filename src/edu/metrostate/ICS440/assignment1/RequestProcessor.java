@@ -16,6 +16,8 @@ public class RequestProcessor<T> extends Thread {
 		this.collectionLock = new ReentrantLock();
 		this.processingLock = new ReentrantLock();
 		this.tabulatorLock = new ReentrantLock();
+		
+		ThreadStatisticsSetup.setCollectionSize(collection.size());
 	}
 	
 	private void process() throws InterruptedException {
@@ -55,7 +57,7 @@ public class RequestProcessor<T> extends Thread {
 				
 				Debug.lockOwner();
 				
-				index = (Integer)ThreadStatisticsSetup.COLLECTION.get().dequeue();
+				index = (Integer)ThreadStatisticsSetup.collection.get().dequeue();
 				
 				ThreadStatisticsSetup.addToSummaryList((Integer)index);
 			}
@@ -75,8 +77,8 @@ public class RequestProcessor<T> extends Thread {
 		tabulatorLock.lock();
 		Debug.afterLock();
 		
-		List<Integer> list = ThreadStatisticsSetup.SUMMARY_LIST.get();
-		int id = ThreadStatisticsSetup.THREAD_ID.get();
+		List<Integer> list = ThreadStatisticsSetup.summaryList.get();
+		int id = ThreadStatisticsSetup.threadId.get();
 		double tabSum = 0;
 		
 		try {
@@ -92,8 +94,35 @@ public class RequestProcessor<T> extends Thread {
 			
 			for (int j = 0; j < list.size(); j++) {
 				
+				String color = Color.values()[j].toString();
 				int count = list.get(j);
-				System.out.println("Tabluator: " + id + " Count " + count + " for color " + Color.values()[j] + "=" + count/tabSum + "%");
+				
+				if (color.equals("Red")) {
+					
+					ThreadStatisticsSetup.enqueueRedTotal(count);
+				}
+				
+				if (color.equals("Brown")) {
+					
+					ThreadStatisticsSetup.enqueueBrownTotal(count);
+				}
+				
+				if (color.equals("Yellow")) {
+					
+					ThreadStatisticsSetup.enqueueYellowTotal(count);
+				}
+				
+				if (color.equals("Green")) {
+					
+					ThreadStatisticsSetup.enqueueGreenTotal(count);
+				}
+				
+				if (color.equals("Blue")) {
+					
+					ThreadStatisticsSetup.enqueueBlueTotal(count);
+				}
+				
+				System.out.println("Tabluator: " + id + " Count " + count + " for color " + Color.values()[j] + "=" + (count / tabSum) + "%");
 			}
 		}
 		

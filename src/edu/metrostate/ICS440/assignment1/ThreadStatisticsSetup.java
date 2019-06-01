@@ -3,23 +3,20 @@ package edu.metrostate.ICS440.assignment1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadStatisticsSetup {
 	
-	private static int total = 0;
-	
-	public static final AtomicInteger NEXT_ID = new AtomicInteger(1);
-	public static final ThreadLocal<Integer> THREAD_ID = new ThreadLocal<Integer>() {
+	public static final AtomicInteger nextId = new AtomicInteger(1);
+	public static final ThreadLocal<Integer> threadId = new ThreadLocal<Integer>() {
 		
 		@Override
 		protected Integer initialValue() {
 			
-			return NEXT_ID.getAndIncrement();
+			return nextId.getAndIncrement();
 		}
 	};
 	
-	public static final ThreadLocal<Queue<Integer>> COLLECTION = new ThreadLocal<Queue<Integer>>() {
+	public static final ThreadLocal<Queue<Integer>> collection = new ThreadLocal<Queue<Integer>>() {
 		
 		@Override
 		protected Queue<Integer> initialValue() {
@@ -28,7 +25,7 @@ public class ThreadStatisticsSetup {
 		}
 	};
 	
-	public static final ThreadLocal<List<Integer>> SUMMARY_LIST = new ThreadLocal<List<Integer>>() {
+	public static final ThreadLocal<List<Integer>> summaryList = new ThreadLocal<List<Integer>>() {
 		
 		@Override
 		protected List<Integer> initialValue() {
@@ -45,44 +42,89 @@ public class ThreadStatisticsSetup {
 		}
 	};
 	
+	private static Queue<Integer> totalsRed = new Queue<Integer>();
+	private static Queue<Integer> totalsBrown = new Queue<Integer>();
+	private static Queue<Integer> totalsYellow = new Queue<Integer>();
+	private static Queue<Integer> totalsGreen = new Queue<Integer>();
+	private static Queue<Integer> totalsBlue = new Queue<Integer>();
+	private static Queue<Queue<Integer>> totalsFinal = new Queue<Queue<Integer>>();
+	
+	private static int collectionSize;
+	
+	public static void setCollectionSize(int size) {
+		
+		collectionSize = size;
+	}
+	
+	public static void enqueueRedTotal(Integer item) {
+		
+		totalsRed.enqueue(item);
+	}
+	
+	public static void enqueueBrownTotal(Integer item) {
+		
+		totalsBrown.enqueue(item);
+	}
+	
+	public static void enqueueYellowTotal(Integer item) {
+		
+		totalsYellow.enqueue(item);
+	}
+	
+	public static void enqueueGreenTotal(Integer item) {
+		
+		totalsGreen.enqueue(item);
+	}
+	
+	public static void enqueueBlueTotal(Integer item) {
+		
+		totalsBlue.enqueue(item);
+	}
+	
+	public static void enqueueTotals(Queue<Integer> queue) {
+		
+		totalsFinal.enqueue(queue);
+	}
+	
 	public static Queue<Integer> getLocalCollection() {
 		
-		return COLLECTION.get();
+		return collection.get();
 	}
 	
 	public static void addToSummaryList(Integer indexItem) {
 		
-		int i = SUMMARY_LIST.get().get(indexItem);
+		int i = summaryList.get().get(indexItem);
 		
-		SUMMARY_LIST.get().set(indexItem, (i + 1));
+		summaryList.get().set(indexItem, (i + 1));
 	}
 	
 	public static void print() {
 		
-		ReentrantLock printingLock = new ReentrantLock();
-		int sum = 0;
+		int index = 0;
 		
-		printingLock.lock();
+		totalsFinal.enqueue(totalsRed);
+		totalsFinal.enqueue(totalsBrown);
+		totalsFinal.enqueue(totalsYellow);
+		totalsFinal.enqueue(totalsGreen);
+		totalsFinal.enqueue(totalsBlue);
 		
-		try {
+		System.out.println("==Totals==");
+		
+		while (!totalsFinal.isEmpty()) {
 			
-			List<Integer> list = SUMMARY_LIST.get();
+			Queue<Integer> colorQueue = totalsFinal.dequeue();
+			double sum = 0;
 			
-			System.out.println("==Totals==");
-			
-			for (int i = 0; i < Color.values().length; i++) {
+			while (!colorQueue.isEmpty()) {
 				
-				sum = sum + list.get(i);
-				
-				total = total + 0; // TODO: provide correct summation
-				
-				System.out.println("Color " + Color.values()[i] + " composes " + list.get(i) + " of the total.");
+				sum = sum + colorQueue.dequeue();
 			}
-		}
-		
-		finally {
 			
-			printingLock.unlock();
+			double percent = (sum / collectionSize) * 100;
+			
+			System.out.println("Color " + Color.values()[index] + " composes " + String.format("%.02f", percent) + "% of the total.");
+			
+			index++;
 		}
 	}
 }

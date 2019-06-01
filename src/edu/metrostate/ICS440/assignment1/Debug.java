@@ -11,7 +11,7 @@ public class Debug {
 		if (ENABLED) {
 			
 			System.out.println("Thread ID: " +
-					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					String.valueOf(ThreadStatisticsSetup.threadId.get()) +
 					" :: before lock            :: " + LocalDateTime.now());
 		}
 	}
@@ -21,7 +21,7 @@ public class Debug {
 		if (ENABLED) {
 			
 			System.out.println("Thread ID: " +
-					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					String.valueOf(ThreadStatisticsSetup.threadId.get()) +
 					" :: after lock             :: " + LocalDateTime.now());
 		}
 	}
@@ -31,7 +31,7 @@ public class Debug {
 		if (ENABLED) {
 			
 			System.out.println("Thread ID: " +
-					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					String.valueOf(ThreadStatisticsSetup.threadId.get()) +
 					" :: BEFORE UNLOCK          :: " + LocalDateTime.now());
 		}
 	}
@@ -41,7 +41,7 @@ public class Debug {
 		if (ENABLED) {
 			
 			System.out.println("Thread ID: " +
-					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					String.valueOf(ThreadStatisticsSetup.threadId.get()) +
 					" :: AFTER UNLOCK           :: " + LocalDateTime.now());
 		}
 	}
@@ -51,7 +51,7 @@ public class Debug {
 		if (ENABLED) {
 			
 			System.out.println("Thread ID: " +
-					String.valueOf(ThreadStatisticsSetup.THREAD_ID.get()) +
+					String.valueOf(ThreadStatisticsSetup.threadId.get()) +
 					" :: I have the collection. :: " + LocalDateTime.now());
 		}
 	}
