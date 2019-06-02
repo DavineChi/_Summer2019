@@ -1,10 +1,10 @@
 Shannon Fisher
 ICS 462 Programming Assignment 2
-The sum is 103
+The sum is 109
 
 
 Shannon Fisher
 ICS 462 Programming Assignment 2
-The sum is 3
+The sum is 9
 
 
