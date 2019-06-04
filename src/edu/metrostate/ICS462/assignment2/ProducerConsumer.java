@@ -11,7 +11,7 @@
 * This program illustrates the producer consumer problem in thread concurrency.
 ****************************************************************************************************************/
 
-package edu.metrostate.ICS462.assignment1;
+package edu.metrostate.ICS462.assignment2;
 
 import java.io.File;
 import java.io.FileWriter;

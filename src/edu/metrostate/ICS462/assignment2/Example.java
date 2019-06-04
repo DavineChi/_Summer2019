@@ -1,4 +1,4 @@
-package edu.metrostate.ICS462.assignment1;
+package edu.metrostate.ICS462.assignment2;
 
 import java.util.LinkedList;
 import java.util.Queue;
