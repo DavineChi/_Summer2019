@@ -7,7 +7,7 @@ public class Buffer {
 	
 	private int[] data;
 	private int capacity;  // How many can be stored.
-	private int size;     // How many are currently stored.
+	private int size;      // How many are currently stored.
 	private int cursor;
 	
 	/************************************************************************************************************
@@ -84,6 +84,20 @@ public class Buffer {
 		return result;
 	}
 	
+	public int[] remove(int index) {
+		
+		int[] result = new int[2];
+		
+		result[0] = data[index];
+		result[1] = index;
+		
+		data[index] = -1;
+		
+		size--;
+		
+		return result;
+	}
+	
 	public int peek(int index) {
 		
 		return data[index];
@@ -117,44 +131,44 @@ public class Buffer {
 	
 	public boolean isFull() {
 		
-		boolean result = true;
+		boolean full = true;
 		
 		for (int i = 0; i < data.length; i++) {
 			
 			if (i == -1) {
 				
-				result = false;
+				full = false;
 				
 				break;
 			}
 		}
 		
-		return size == capacity && result;
+		return size == capacity && full;
 	}
 	
-	public static void main(String[] args) {
-		
-		Buffer buffer = new Buffer(5);
-		
-		// TODO: Will need to think of how to invert the indexing for the poll()
-		//       method, so that the last item added isn't the next item retrieved.
-		
-		buffer.add(2);
-		buffer.add(3);
-		buffer.add(4);
-		buffer.add(5);
-		buffer.add(6);
-		buffer.add(10);
-		buffer.add(11);
-		buffer.add(12);
-		buffer.add(15);
-		buffer.add(99);
-		
-		for (int i = 0; !buffer.isEmpty(); i++) {
-			
-			int value;
-			
-			value = buffer.poll();
-		}
-	}
+//	public static void main(String[] args) {
+//		
+//		Buffer buffer = new Buffer(5);
+//		
+//		// TODO: Will need to think of how to invert the indexing for the poll()
+//		//       method, so that the last item added isn't the next item retrieved.
+//		
+//		buffer.add(2);
+//		buffer.add(3);
+//		buffer.add(4);
+//		buffer.add(5);
+//		buffer.add(6);
+//		buffer.add(10);
+//		buffer.add(11);
+//		buffer.add(12);
+//		buffer.add(15);
+//		buffer.add(99);
+//		
+//		for (int i = 0; !buffer.isEmpty(); i++) {
+//			
+//			int value;
+//			
+//			value = buffer.poll();
+//		}
+//	}
 }

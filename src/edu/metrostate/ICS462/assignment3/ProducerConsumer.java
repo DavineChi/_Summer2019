@@ -18,19 +18,21 @@ public class ProducerConsumer {
 	
 	private static final String OUTPUT_FILENAME = "Fisher_Shannon_ProgAssign3.txt";
 	
-	private static final int MIN_WAIT_PRODUCER = 1000;
-	private static final int MAX_WAIT_PRODUCER = 5000;
-	
-	private static final int MIN_WAIT_CONSUMER = 2000;
-	private static final int MAX_WAIT_CONSUMER = 4000;
+//	private static final int MIN_WAIT_PRODUCER = 1000;
+//	private static final int MAX_WAIT_PRODUCER = 5000;
+//	
+//	private static final int MIN_WAIT_CONSUMER = 2000;
+//	private static final int MAX_WAIT_CONSUMER = 4000;
+//	
+//	private static final int WAIT_OTHER_THREAD = 1000;
 	
 	//private int[] data;
 	private int sum;
 	
 	private Buffer buffer;
 	
-	private int producerIndex; // Points to the last item placed in the buffer by the producer.
-	private int consumerIndex; // Points to the last item removed from the buffer by the consumer.
+	private volatile int producerIndex; // Points to the last item placed in the buffer by the producer.
+	private volatile int consumerIndex; // Points to the last item removed from the buffer by the consumer.
 	private int complete;
 	
 	/************************************************************************************************************
@@ -66,12 +68,15 @@ public class ProducerConsumer {
 			//Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_PRODUCER, MAX_WAIT_PRODUCER + 1));
 			
 			// TODO: implementation
+			while (producerIndex != consumerIndex) {
+				
+				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				;
+			}
 			
-			if (buffer.peek(producerIndex) == -1 || !buffer.isFull()) {
+			if (!buffer.isFull() || buffer.peek(producerIndex) == -1) {
 				
 				producerIndex = buffer.add(i);
-				
-				String stop = "STOP";
 			}
 		}
 		
@@ -96,8 +101,21 @@ public class ProducerConsumer {
 			//Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_CONSUMER, MAX_WAIT_CONSUMER + 1));
 			
 			// TODO: implementation
+			while (producerIndex == consumerIndex) {
+				
+				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				;
+			}
 			
-//			int value = buffer.poll();
+			if (!buffer.isEmpty()) {
+				
+				int[] result = buffer.remove(consumerIndex);
+				int value = result[0];
+				
+				consumerIndex = result[1];
+				
+				System.out.println("Consumed: " + value);
+			}
 		}
 	}
 	
