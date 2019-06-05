@@ -4,16 +4,26 @@
 package edu.metrostate.ICS462.assignment3;
 
 public class Buffer {
-
+	
 	private int[] data;
-	public int capacity; // How many can be stored.
+	private int capacity;  // How many can be stored.
 	private int size;     // How many are currently stored.
 	private int cursor;
 	
-	public Buffer(int initialCapacity) {
+	/************************************************************************************************************
+	 * Constructor used to create a new circular Buffer object with a specified capacity.
+	 * <p>
+	 * 
+	 * @param capacity
+	 *   the specified holding capacity for this Buffer
+	 * 
+	 * @postcondition
+	 *   A new circular Buffer object has been created with a specified capacity.
+	 */
+	public Buffer(int capacity) {
 		
-		this.data = new int[initialCapacity];
-		this.capacity = initialCapacity;
+		this.data = new int[capacity];
+		this.capacity = capacity;
 		this.size = 0;
 		this.cursor = 0;
 		
@@ -27,12 +37,34 @@ public class Buffer {
 			data[i] = -1;
 		}
 	}
-
-	public void add(int item) {
+	
+	public int add(int item) {
+		
+		int result = cursor;
 		
 		data[cursor] = item;
 		
 		cursor = Math.floorMod((size + 1), data.length);
+		
+		size++;
+		
+		return result;
+	}
+	
+//	public void add(int item) {
+//		
+//		data[cursor] = item;
+//		
+//		cursor = Math.floorMod((size + 1), data.length);
+//		
+//		size++;
+//	}
+	
+	public void add(int item, int index) {
+		
+		data[index] = item;
+		
+		cursor = Math.floorMod((index + 1), data.length);
 		
 		size++;
 	}
@@ -52,6 +84,32 @@ public class Buffer {
 		return result;
 	}
 	
+	public int peek(int index) {
+		
+		return data[index];
+	}
+	
+	public int getElement(int index) {
+		
+		int result = data[index];
+		
+		data[index] = -1;
+		
+		size--;
+		
+		return result;
+	}
+	
+	public int getSize() {
+		
+		return size;
+	}
+	
+	public int getCapacity() {
+		
+		return capacity;
+	}
+	
 	public boolean isEmpty() {
 		
 		return capacity == 0;
@@ -59,7 +117,19 @@ public class Buffer {
 	
 	public boolean isFull() {
 		
-		return size == capacity;
+		boolean result = true;
+		
+		for (int i = 0; i < data.length; i++) {
+			
+			if (i == -1) {
+				
+				result = false;
+				
+				break;
+			}
+		}
+		
+		return size == capacity && result;
 	}
 	
 	public static void main(String[] args) {

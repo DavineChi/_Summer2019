@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ProducerConsumer {
 	
@@ -25,13 +24,13 @@ public class ProducerConsumer {
 	private static final int MIN_WAIT_CONSUMER = 2000;
 	private static final int MAX_WAIT_CONSUMER = 4000;
 	
-	private int shared;
+	//private int[] data;
 	private int sum;
 	
 	private Buffer buffer;
 	
-	private int producerIndex;
-	private int consumerIndex;
+	private int producerIndex; // Points to the last item placed in the buffer by the producer.
+	private int consumerIndex; // Points to the last item removed from the buffer by the consumer.
 	private int complete;
 	
 	/************************************************************************************************************
@@ -67,16 +66,12 @@ public class ProducerConsumer {
 			//Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_PRODUCER, MAX_WAIT_PRODUCER + 1));
 			
 			// TODO: implementation
-			if (!buffer.isEmpty() && !buffer.isFull()) {
-				
-				// Set the shared resource's value to the loop iteration number.
-				buffer.add(i);
-			}
 			
-			else {
+			if (buffer.peek(producerIndex) == -1 || !buffer.isFull()) {
 				
-				// Make this thread wait since the buffer is currently full and we're not done yet.
-				Thread.currentThread().wait();
+				producerIndex = buffer.add(i);
+				
+				String stop = "STOP";
 			}
 		}
 		
@@ -102,10 +97,7 @@ public class ProducerConsumer {
 			
 			// TODO: implementation
 			
-			int value = buffer.poll();
-			
-			// After consuming a value, then notify the producer thread.
-			Thread.currentThread().notify();
+//			int value = buffer.poll();
 		}
 	}
 	
