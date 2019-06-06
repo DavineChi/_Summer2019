@@ -4,7 +4,8 @@
 * Shannon Fisher
 * 06/04/2019
 * 
-* This program <...>.
+* This program expands on the producer consumer problem by adding a fixed-size buffer,
+* shared between the producer and consumer threads.
 ****************************************************************************************************************/
 
 package edu.metrostate.ICS462.assignment3;
@@ -13,18 +14,19 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ProducerConsumer {
 	
 	private static final String OUTPUT_FILENAME = "Fisher_Shannon_ProgAssign3.txt";
 	
-//	private static final int MIN_WAIT_PRODUCER = 1000;
-//	private static final int MAX_WAIT_PRODUCER = 5000;
-//	
-//	private static final int MIN_WAIT_CONSUMER = 2000;
-//	private static final int MAX_WAIT_CONSUMER = 4000;
-//	
-//	private static final int WAIT_OTHER_THREAD = 1000;
+	private static final int MIN_WAIT_PRODUCER = 1000;
+	private static final int MAX_WAIT_PRODUCER = 5000;
+	
+	private static final int MIN_WAIT_CONSUMER = 2000;
+	private static final int MAX_WAIT_CONSUMER = 4000;
+	
+	private static final int WAIT_OTHER_THREAD = 1000;
 	
 	//private int[] data;
 	private int sum;
@@ -70,7 +72,7 @@ public class ProducerConsumer {
 			// TODO: implementation
 			while (producerIndex != consumerIndex) {
 				
-				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
 				;
 			}
 			
@@ -103,7 +105,7 @@ public class ProducerConsumer {
 			// TODO: implementation
 			while (producerIndex == consumerIndex) {
 				
-				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
 				;
 			}
 			

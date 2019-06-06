@@ -3,6 +3,16 @@ package edu.metrostate.ICS440.assignment1;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+/****************************************************************************************************************
+ * This class is used to process a generic collection of data.
+ * <p>
+ * 
+ * @author Shannon L. Fisher
+ * <p>
+ * Begin Date:	2019.05.23
+ * <p>
+ * Due Date:	2019.06.06
+ */
 public class RequestProcessor<T> extends Thread {
 	
 	private Queue<T> collection;
@@ -10,6 +20,16 @@ public class RequestProcessor<T> extends Thread {
 	private ReentrantLock processingLock;
 	private ReentrantLock tabulatorLock;
 	
+	/************************************************************************************************************
+	 * Constructor used to create a new RequestProcessor object with a specified Queue&ltT&gt collection.
+	 * <p>
+	 * 
+	 * @param collection
+	 *   the collection for this RequestProcessor object to process
+	 * 
+	 * @postcondition
+	 *   A new RequestProcessor object has been created with a specified Queue&ltT&gt collection.
+	 */
 	public RequestProcessor(Queue<T> collection) {
 		
 		this.collection = collection;
@@ -20,6 +40,7 @@ public class RequestProcessor<T> extends Thread {
 		ThreadStatisticsSetup.setCollectionSize(collection.size());
 	}
 	
+	// This method will process the collection by ensuring only one thread can access it.
 	private void process() throws InterruptedException {
 		
 		while (!collection.isEmpty()) {
@@ -71,31 +92,33 @@ public class RequestProcessor<T> extends Thread {
 		}
 	}
 	
+	// This method will separate the data in each thread and print the tabulation.
 	private void tabulate() {
 		
 		Debug.beforeLock();
 		tabulatorLock.lock();
 		Debug.afterLock();
 		
-		List<Integer> list = ThreadStatisticsSetup.summaryList.get();
-		int id = ThreadStatisticsSetup.threadId.get();
+		List<Integer> tabulationList = ThreadStatisticsSetup.summaryList.get();
+		
+		int threadId = ThreadStatisticsSetup.threadId.get();
 		double tabSum = 0;
 		
 		try {
 			
 			Debug.lockOwner();
 			
-			for (int i = 0; i < list.size(); i++) {
+			for (int i = 0; i < tabulationList.size(); i++) {
 				
-				tabSum = tabSum + list.get(i);
+				tabSum = tabSum + tabulationList.get(i);
 			}
 			
 			tabSum = tabSum / 100;
 			
-			for (int j = 0; j < list.size(); j++) {
+			for (int j = 0; j < tabulationList.size(); j++) {
 				
 				String color = Color.values()[j].toString();
-				int count = list.get(j);
+				int count = tabulationList.get(j);
 				
 				if (color.equals("Red")) {
 					
@@ -122,7 +145,7 @@ public class RequestProcessor<T> extends Thread {
 					ThreadStatisticsSetup.enqueueBlueTotal(count);
 				}
 				
-				System.out.println("Tabluator: " + id + " Count " + count + " for color " + Color.values()[j] + "=" + (count / tabSum) + "%");
+				System.out.println("Tabluator: " + threadId + " Count " + count + " for color " + Color.values()[j] + "=" + (count / tabSum) + "%");
 			}
 		}
 		

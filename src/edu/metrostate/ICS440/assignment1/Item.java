@@ -10,9 +10,9 @@ package edu.metrostate.ICS440.assignment1;
  * 
  * @author Shannon L. Fisher
  * <p>
- * Begin Date:	2016.11.17
+ * Begin Date:	2019.05.23
  * <p>
- * Due Date:	2016.12.01
+ * Due Date:	2019.06.06
  */
 public class Item<T> {
 

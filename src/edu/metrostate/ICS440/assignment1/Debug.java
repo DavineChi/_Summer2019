@@ -2,10 +2,24 @@ package edu.metrostate.ICS440.assignment1;
 
 import java.time.LocalDateTime;
 
+/****************************************************************************************************************
+ * This class contains static methods used for debugging.
+ * <p>
+ * 
+ * @author Shannon L. Fisher
+ * <p>
+ * Begin Date:	2019.05.23
+ * <p>
+ * Due Date:	2019.06.06
+ */
 public class Debug {
 	
 	private static final boolean ENABLED = false;
 	
+	/**
+	 * A static method to write a message before a thread lock.
+	 * 
+	 */
 	public static void beforeLock() {
 		
 		if (ENABLED) {
@@ -16,6 +30,10 @@ public class Debug {
 		}
 	}
 	
+	/**
+	 * A static method to write a message after a thread lock.
+	 * 
+	 */
 	public static void afterLock() {
 		
 		if (ENABLED) {
@@ -26,6 +44,10 @@ public class Debug {
 		}
 	}
 	
+	/**
+	 * A static method to write a message before a thread unlock.
+	 * 
+	 */
 	public static void beforeUnlock() {
 		
 		if (ENABLED) {
@@ -36,6 +58,10 @@ public class Debug {
 		}
 	}
 	
+	/**
+	 * A static method to write a message after a thread unlock.
+	 * 
+	 */
 	public static void afterUnlock() {
 		
 		if (ENABLED) {
