@@ -1,54 +1,79 @@
 package edu.metrostate.ICS462.assignment3;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PC {
 
+	private static final int MIN_WAIT_PRODUCER = 1000;
+	private static final int MAX_WAIT_PRODUCER = 5000;
+	
+	private static final int MIN_WAIT_CONSUMER = 2000;
+	private static final int MAX_WAIT_CONSUMER = 4000;
+	
+	private static final int WAIT_OTHER_THREAD = 1000;
+	
 	private int[] data;
-	private int P;
-	private int C;
+	private int producerIndex;
+	private int consumerIndex;
 	private int complete;
 	
 	public PC() {
 		
 		this.data = new int[5];
-		this.P = 0;
-		this.C = 0;
+		this.producerIndex = 0;
+		this.consumerIndex = 0;
 		this.complete = 0;
 	}
 	
-	public void produce() {
+	public void produce() throws InterruptedException {
 		
 		for (int i = 0; i < 100; i++) {
 			
-			while (P != C) {
+			while (producerIndex != consumerIndex) {
 				
-				;
+				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
 			}
 			
-			data[P] = i;
-			//cursor = Math.floorMod((P + 1), data.length);
-			//P++;
-			P = Math.floorMod((P + 1), data.length);
+			Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_PRODUCER, MAX_WAIT_PRODUCER + 1));
+			
+			data[producerIndex] = i;
+			producerIndex = Math.floorMod((producerIndex + 1), data.length);
 		}
 		
 		complete = 1;
 	}
 	
-	public void consume() {
+	public void consume() throws InterruptedException {
 		
 		while (complete == 0) {
 			
-			while (P == C) {
+			while (producerIndex == consumerIndex) {
 				
-				;
+				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
 			}
 			
-			System.out.println("Consumed: " + data[C]);
-			//C++;
-			C = Math.floorMod((C + 1), data.length);
+			Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_CONSUMER, MAX_WAIT_CONSUMER + 1));
+			System.out.println("Consumed: " + data[consumerIndex]);
+			
+			consumerIndex = Math.floorMod((consumerIndex + 1), data.length);
 		}
 	}
+	
+//	private int getSize() {
+//		
+//		int result = 0;
+//		
+//		for (int i = 0; i < data.length; i++) {
+//			
+//			if (data[i]) {
+//				
+//				result++;
+//			}
+//		}
+//		
+//		return result;
+//	}
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
 		
