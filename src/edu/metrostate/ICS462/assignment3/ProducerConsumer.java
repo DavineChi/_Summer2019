@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ProducerConsumer {
 	
@@ -63,7 +62,7 @@ public class ProducerConsumer {
 	 * @throws InterruptedException
 	 *   InterruptedException is thrown if a thread is interrupted before or during its activity.
 	 */
-	public void produce() throws InterruptedException {
+	public void produce() {
 		
 		for (int i = 0; i < 100; i++) {
 			
@@ -72,7 +71,7 @@ public class ProducerConsumer {
 			// TODO: implementation
 			while (producerIndex != consumerIndex) {
 				
-				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
 				;
 			}
 			
@@ -96,7 +95,7 @@ public class ProducerConsumer {
 	 * @throws InterruptedException
 	 *   InterruptedException is thrown if a thread is interrupted before or during its activity.
 	 */
-	public void consume() throws InterruptedException {
+	public void consume() {
 		
 		while (complete == 0) {
 			
@@ -105,7 +104,7 @@ public class ProducerConsumer {
 			// TODO: implementation
 			while (producerIndex == consumerIndex) {
 				
-				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
 				;
 			}
 			
