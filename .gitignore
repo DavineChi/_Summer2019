@@ -62,3 +62,5 @@ nb-configuration.xml
 ##########################
 .DS_Store
 /org.eclipse.jdt.core.prefs
+/ghcnd-stations.txt
+/readme.txt
