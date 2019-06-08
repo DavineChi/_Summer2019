@@ -30,6 +30,16 @@ public class Main {
 		System.out.print(" > Mininum (A) or Maximum (B) temperatures? ");
 		temperatures = input.nextLine().toUpperCase();
 		
+		if (temperatures.equals("A")) {
+			
+			temperatures = "TMIN";
+		}
+		
+		else if (temperatures.equals("B")) {
+			
+			temperatures = "TMAX";
+		}
+		
 		System.out.println("  Start year: " + startYear);
 		System.out.println("    End year: " + endYear);
 		System.out.println(" Start month: " + startMonth);
