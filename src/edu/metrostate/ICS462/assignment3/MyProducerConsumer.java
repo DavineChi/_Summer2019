@@ -1,8 +1,3 @@
-package edu.metrostate.ICS462.assignment3;
-
-import java.io.File;
-import java.io.FileWriter;
-
 /****************************************************************************************************************
 * ICS 462 SUMMER 2019
 * Programming Assignment 3
@@ -13,12 +8,15 @@ import java.io.FileWriter;
 * shared between the producer and consumer threads.
 ****************************************************************************************************************/
 
+package edu.metrostate.ICS462.assignment3;
+
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class ProducerConsumer {
-
+public class MyProducerConsumer {
+	
 	private static final String OUTPUT_FILENAME = "Fisher_Shannon_ProgAssign3.txt";
 	
 	private static final int MIN_WAIT_PRODUCER = 1000;
@@ -29,12 +27,14 @@ public class ProducerConsumer {
 	
 	private static final int WAIT_OTHER_THREAD = 1000;
 	
-	private int[] data;
-	private int producerIndex;
-	private int consumerIndex;
-	private int complete;
+	//private int[] data;
+	private int sum;
 	
-	private StringBuilder stringBuilder;
+	private Buffer buffer;
+	
+	private volatile int producerIndex; // Points to the last item placed in the buffer by the producer.
+	private volatile int consumerIndex; // Points to the last item removed from the buffer by the consumer.
+	private int complete;
 	
 	/************************************************************************************************************
 	 * Constructor used to create a new ProducerConsumer object to illustrate the producer comsumer problem
@@ -44,23 +44,12 @@ public class ProducerConsumer {
 	 * @postcondition
 	 *   A new ProducerConsumer object has been created.
 	 */
-	public ProducerConsumer() {
+	public MyProducerConsumer() {
 		
-		this.data = new int[5];
-		this.producerIndex = 0;  // Points to the last item placed in the buffer by the producer.
-		this.consumerIndex = 0;  // Points to the last item removed from the buffer by the consumer.
+		this.buffer = new Buffer(5);
+		this.producerIndex = 0;
+		this.consumerIndex = 0;
 		this.complete = 0;
-		
-		this.stringBuilder = new StringBuilder();
-		
-		initStringBuilder();
-	}
-	
-	// Private helper method to populate the assignment output header.
-	private void initStringBuilder() {
-		
-		stringBuilder.append("Shannon Fisher" + "\n");
-		stringBuilder.append("ICS 462 Programming Assignment 3" + "\n\n");
 	}
 	
 	/************************************************************************************************************
@@ -73,51 +62,62 @@ public class ProducerConsumer {
 	 * @throws InterruptedException
 	 *   InterruptedException is thrown if a thread is interrupted before or during its activity.
 	 */
-	public void produce() throws InterruptedException {
+	public void produce() {
 		
 		for (int i = 0; i < 100; i++) {
 			
+			//Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_PRODUCER, MAX_WAIT_PRODUCER + 1));
+			
+			// TODO: implementation
 			while (producerIndex != consumerIndex) {
 				
-				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				;
 			}
 			
-			Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_PRODUCER, MAX_WAIT_PRODUCER + 1));
-			
-			data[producerIndex] = i;
-			producerIndex = Math.floorMod((producerIndex + 1), data.length);
+			if (!buffer.isFull() || buffer.peek(producerIndex) == -1) {
+				
+				producerIndex = buffer.add(i);
+			}
 		}
 		
 		complete = 1;
-	}
+	} 
 	
 	/************************************************************************************************************
-	 * Method to consume the data stored in the shared resource memory location.
+	 * Method to consume the data stored in the shared resource memory location. This method also computes a
+	 * rolling sum of the data values it reads from the shared resource.
 	 * <p>
 	 * 
 	 * @postcondition
-	 *   The data in the shared resource has been read.
+	 *   The data in the shared resource is read and is used to compute a sum.
 	 * 
 	 * @throws InterruptedException
 	 *   InterruptedException is thrown if a thread is interrupted before or during its activity.
 	 */
-	public void consume() throws InterruptedException {
+	public void consume() {
 		
 		while (complete == 0) {
 			
+			//Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_CONSUMER, MAX_WAIT_CONSUMER + 1));
+			
+			// TODO: implementation
 			while (producerIndex == consumerIndex) {
 				
-				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
-				stringBuilder.append("Consumer waiting...\n");
+				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
+				;
 			}
 			
-			Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_CONSUMER, MAX_WAIT_CONSUMER + 1));
-			stringBuilder.append(data[consumerIndex] + "\n");
-			
-			consumerIndex = Math.floorMod((consumerIndex + 1), data.length);
+			if (!buffer.isEmpty()) {
+				
+				int[] result = buffer.remove(consumerIndex);
+				int value = result[0];
+				
+				consumerIndex = result[1];
+				
+				System.out.println("Consumed: " + value);
+			}
 		}
-		
-		stringBuilder.append("Consumer done.");
 	}
 	
 	/************************************************************************************************************
@@ -125,7 +125,7 @@ public class ProducerConsumer {
 	 * <p>
 	 * 
 	 * @postcondition
-	 *   The results of the shared resource consumption are output to a file on local storage.
+	 *   The sum is output to a file on local storage.
 	 * 
 	 * @throws IOException
 	 *   IOException is thrown if there is an I/O problem with the results file output.
@@ -133,6 +133,7 @@ public class ProducerConsumer {
 	public void writeToFile() throws IOException {
 		
 		// File printing and output setup.
+		StringBuilder sb = new StringBuilder();
 		File file = new File(OUTPUT_FILENAME);
 		FileWriter fileWriter = new FileWriter(file, true);
 		PrintWriter printWriter = null;
@@ -146,7 +147,11 @@ public class ProducerConsumer {
 			
 			printWriter = new PrintWriter(fileWriter);
 			
-			printWriter.println(stringBuilder.toString());
+			sb.append("Shannon Fisher" + "\n");
+			sb.append("ICS 462 Programming Assignment 3" + "\n");
+			sb.append("The sum is " + sum + "\n\n");
+			
+			printWriter.println(sb.toString());
 		}
 		
 		catch (IOException ex) {
@@ -178,7 +183,7 @@ public class ProducerConsumer {
 	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
 		
-		ProducerConsumer pc = new ProducerConsumer();
+		MyProducerConsumer pc = new MyProducerConsumer();
 		
 		// Create a new thread for the producer.
 		Thread producerThread = new Thread(new Runnable() {
@@ -217,7 +222,6 @@ public class ProducerConsumer {
 				}
 			}
 		});
-		
 		
 		// Start both threads. The order in which the threads actually start is not guaranteed.
 		producerThread.start();
