@@ -1,10 +1,12 @@
 package edu.metrostate.ICS440.assignment2;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 public class WeatherData {
 
@@ -46,21 +48,54 @@ public class WeatherData {
 		return sb.toString();
     }
     
+
+	private void parseData2(List<File> files) {
+		
+		Scanner input;
+		String nextLine;
+		
+		try {
+			
+			for (File file : files) {
+				
+				input = new Scanner(file);
+				
+				while (input.hasNextLine()) {
+					
+					nextLine = input.nextLine();
+					
+					String id = nextLine.substring(0,11);
+					int year = Integer.valueOf(nextLine.substring(11,15).trim());
+					int month = Integer.valueOf(nextLine.substring(15,17).trim());
+					String element = nextLine.substring(17,21);
+					int days = (nextLine.length() - 21) / 8; // Calculate the number of days in the line
+				}
+			}
+		}
+		
+		catch (FileNotFoundException ex) {
+			
+			ex.printStackTrace();
+		}
+	}
+    
     public static void main(String[] args) {
     	
     	WeatherData weatherData = new WeatherData();
     	
-    	List<String> files = FileManager.getFiles("ghcnd_hcn");
+    	List<File> files = FileManager.getFiles("ghcnd_hcn");
     	
-    	try {
-    		
-			weatherData.parseData(files);
-		}
+    	weatherData.parseData2(files);
     	
-    	catch (IOException ex) {
-    		
-			ex.printStackTrace();
-		}
+//    	try {
+//    		
+//			weatherData.parseData(files);
+//		}
+//    	
+//    	catch (IOException ex) {
+//    		
+//			ex.printStackTrace();
+//		}
     	
 //		String id = thisLine.substring(0,11);
 //    	int year = Integer.valueOf(thisLine.substring(11,15).trim());

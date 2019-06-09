@@ -65,6 +65,12 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		getProgramInput();
+		startYear = 2001;
+		endYear = 2005;
+		startMonth = 8;
+		endMonth = 12;
+		temperatures = "TMAX";
+		
+		//getProgramInput();
 	}
 }

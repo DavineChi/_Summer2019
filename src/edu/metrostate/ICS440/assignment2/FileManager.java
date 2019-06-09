@@ -1,7 +1,6 @@
 package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,28 +16,17 @@ public class FileManager {
 	 * @return
 	 *   A list of weather data filenames.
 	 */
-	public static List<String> getFiles(String pathname) {
+	public static List<File> getFiles(String pathname) {
 		
-		List<String> result = new ArrayList<>();
-    	File path = new File(pathname);
-    	String[] files = path.list();
-    	String basePath = "";
-    	
-    	try {
-    		
-    		basePath = path.getCanonicalPath() + "\\";
+		List<File> result = new ArrayList<File>();
+		
+		File path = new File(pathname);
+		
+		for (File file : path.listFiles()) {
+			
+			result.add(file);
 		}
-    	
-    	catch (IOException ex) {
-    		
-			ex.printStackTrace();
-		}
-    	
-    	for (String file : files) {
-    		
-    		result.add(basePath + file);
-    	}
-    	
+		
 		return result;
 	}
 }
