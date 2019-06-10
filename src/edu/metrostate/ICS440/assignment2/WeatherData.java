@@ -25,8 +25,23 @@ public class WeatherData {
 	private int value;
 	private String qflag;
 	
-	public void parseData(List<File> files) {
-
+	public int getYear() {
+		
+		return year;
+	}
+	
+	public int getMonth() {
+		
+		return month;
+	}
+	
+	public String getElement() {
+		
+		return element;
+	}
+	
+	public Queue<WeatherData> search(List<File> files, Query query) {
+		
 		Scanner input;
 		String nextLine;
 		Queue<WeatherData> queue = new Queue<WeatherData>();
@@ -37,6 +52,8 @@ public class WeatherData {
 
 				input = new Scanner(file);
 
+				System.out.println("Analyzing file: " + file.getName());
+				
 				while (input.hasNextLine()) {
 
 					nextLine = input.nextLine();
@@ -67,42 +84,43 @@ public class WeatherData {
 						
 						if (qflag.equals(" ")) {
 							
-							queue.enqueue(weatherData);
+							if (query.matches(weatherData)) {
+								
+								queue.enqueue(weatherData);
+							}
 						}
 					}
 				}
 			}
 		}
-
+		
 		catch (FileNotFoundException ex) {
 
 			ex.printStackTrace();
 		}
-	}
-
-	@Override
-	public String toString() {
 		
-		return "WeatherData [id=" + id + ", year=" + year + ", month=" + month + ", day=" + day + ", element=" + element
-				+ ", value=" + value + ", qflag=" + qflag + "]";
+		return queue;
 	}
 	
-	/************************************************************************************************************
-	 * Main method from where program execution begins. Used here for testing and debugging.
-	 * <p>
-	 * 
-	 * @param args
-	 *   this parameter is not used
-	 * 
-	 * @postcondition
-	 *   Varies depending on testing.
-	 */
-	public static void main(String[] args) {
-
-		WeatherData weatherData = new WeatherData();
-
-		List<File> weatherFiles = FileManager.getWeatherFiles("ghcnd_hcn");
-
-		weatherData.parseData(weatherFiles);
+	@Override
+	public String toString() {
+		return "WeatherData [id=" + id + ", year=" + year + ", month=" + month +
+				", day=" + day + ", element=" + element + ", value=" + value +
+				", qflag=" + qflag + "]";
 	}
+
+//	/************************************************************************************************************
+//	 * Main method from where program execution begins. Used here for testing and debugging.
+//	 * <p>
+//	 * 
+//	 * @param args
+//	 *   this parameter is not used
+//	 * 
+//	 * @postcondition
+//	 *   Varies depending on testing.
+//	 */
+//	public static void main(String[] args) {
+//		
+//		
+//	}
 }

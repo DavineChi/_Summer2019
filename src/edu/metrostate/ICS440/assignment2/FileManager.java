@@ -1,6 +1,7 @@
 package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,16 @@ public class FileManager {
 		
 		File path = new File(pathname);
 		
-		for (File file : path.listFiles()) {
+		FileFilter filter = new FileFilter() {
+			
+			@Override
+			public boolean accept(File pathname) {
+				
+				return pathname.getName().endsWith(".dly");
+			}
+		};
+		
+		for (File file : path.listFiles(filter)) {
 			
 			result.add(file);
 		}

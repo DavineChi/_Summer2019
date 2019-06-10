@@ -1,5 +1,7 @@
 package edu.metrostate.ICS440.assignment2;
 
+import java.io.File;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -11,40 +13,49 @@ public class Main {
 	private static int startMonth;
 	private static int endMonth;
 	
-	private static String temperatures;
+	private static String element;
+	
+	private static Query query;
 	
 	private static void getProgramInput() {
 		
-		System.out.print(" > Enter a starting year: ");
+		System.out.println(" Enter a starting year...");
+		System.out.print(" > ");
 		startYear = Integer.parseInt(input.nextLine());
 		
-		System.out.print(" > Enter an ending year: ");
+		System.out.println(" Enter an ending year: ");
+		System.out.print(" > ");
 		endYear = Integer.parseInt(input.nextLine());
 		
-		System.out.print(" > Enter a starting month: ");
+		System.out.println(" Enter a starting month: ");
+		System.out.print(" > ");
 		startMonth = Integer.parseInt(input.nextLine());
 		
-		System.out.print(" > Enter an ending month: ");
+		System.out.println(" Enter an ending month: ");
+		System.out.print(" > ");
 		endMonth = Integer.parseInt(input.nextLine());
 		
-		System.out.print(" > Mininum (A) or Maximum (B) temperatures? ");
-		temperatures = input.nextLine().toUpperCase();
+		System.out.println(" Mininum (A) or Maximum (B) temperatures? ");
+		System.out.print(" > ");
+		element = input.nextLine().toUpperCase();
 		
-		if (temperatures.equals("A")) {
+		if (element.equals("A")) {
 			
-			temperatures = "TMIN";
+			element = "TMIN";
 		}
 		
-		else if (temperatures.equals("B")) {
+		else if (element.equals("B")) {
 			
-			temperatures = "TMAX";
+			element = "TMAX";
 		}
 		
 		System.out.println("  Start year: " + startYear);
 		System.out.println("    End year: " + endYear);
 		System.out.println(" Start month: " + startMonth);
 		System.out.println("   End month: " + endMonth);
-		System.out.println("Temperatures: " + temperatures);
+		System.out.println("Temperatures: " + element);
+		
+		query = new Query(startYear, endYear, startMonth, endMonth, element);
 	}
 	
 	private static void printResults() {
@@ -65,11 +76,13 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		startYear = 2001;
-		endYear = 2005;
-		startMonth = 8;
-		endMonth = 12;
-		temperatures = "TMAX";
+		Query query = new Query(2001, 2005, 8, 12, "TMAX");
+		
+		WeatherData weatherData = new WeatherData();
+		
+		List<File> weatherFiles = FileManager.getWeatherFiles("ghcnd_hcn");
+		
+		Queue<WeatherData> weatherDataResults = weatherData.search(weatherFiles, query);
 		
 		//getProgramInput();
 	}

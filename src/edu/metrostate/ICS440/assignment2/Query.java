@@ -6,71 +6,57 @@ public class Query {
 	private int endYear;
 	private int startMonth;
 	private int endMonth;
-	private String temperatures;
+	private String element;
 	
-	public Query(int startYear, int endYear, int startMonth, int endMonth, String temperatures) {
+	public Query(int startYear, int endYear, int startMonth, int endMonth, String element) {
 		
 		this.startYear = startYear;
 		this.endYear = endYear;
 		this.startMonth = startMonth;
 		this.endMonth = endMonth;
-		this.temperatures = temperatures;
+		this.element = element;
 	}
 
 	public int getStartYear() {
 		
 		return startYear;
 	}
-
-	public void setStartYear(int startYear) {
-		
-		this.startYear = startYear;
-	}
-
+	
 	public int getEndYear() {
 		
 		return endYear;
 	}
-
-	public void setEndYear(int endYear) {
-		
-		this.endYear = endYear;
-	}
-
+	
 	public int getStartMonth() {
 		
 		return startMonth;
 	}
-
-	public void setStartMonth(int startMonth) {
-		
-		this.startMonth = startMonth;
-	}
-
+	
 	public int getEndMonth() {
 		
 		return endMonth;
 	}
-
-	public void setEndMonth(int endMonth) {
+	
+	public String getElement() {
 		
-		this.endMonth = endMonth;
-	}
-
-	public String getTemperatures() {
-		
-		return temperatures;
-	}
-
-	public void setTemperatures(String temperatures) {
-		
-		this.temperatures = temperatures;
+		return element;
 	}
 	
-	public boolean match(int year, int month) {
+	public boolean matches(WeatherData weatherData) {
 		
-		// TODO: implementation
+		int wdYear = weatherData.getYear();
+		int wdMonth = weatherData.getMonth();
+		String wdElement = weatherData.getElement();
 		
-		return false;
+		boolean result = false;
+		
+		if (wdYear >= startYear && wdYear <= endYear &&
+			wdMonth >= startMonth && wdMonth <= endMonth &&
+			wdElement.equals(element)) {
+			
+			result = true;
+		}
+		
+		return result;
 	}
 }
