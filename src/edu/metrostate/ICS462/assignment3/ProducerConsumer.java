@@ -29,10 +29,10 @@ public class ProducerConsumer {
 	
 	private static final int WAIT_OTHER_THREAD = 1000;
 	
-	private int[] data;
-	private int producerIndex;
-	private int consumerIndex;
-	private int complete;
+	private int[] data;        // The shared circular buffer.
+	private int producerIndex; // Points to the last item placed in the buffer by the producer.
+	private int consumerIndex; // Points to the last item removed from the buffer by the consumer.
+	private int complete;      // Completion flag to indicate processing is complete.
 	
 	private StringBuilder stringBuilder;
 	
@@ -75,8 +75,12 @@ public class ProducerConsumer {
 	 */
 	public void produce() throws InterruptedException {
 		
+		// Iterate 100 times to produce a series of values
+		// for the shared buffer.
 		for (int i = 0; i < 100; i++) {
 			
+			// If the producer and consumer indices are NOT equivalent,
+			// then wait for the producer to produce some values.
 			while (producerIndex != consumerIndex) {
 				
 				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
@@ -84,7 +88,16 @@ public class ProducerConsumer {
 			
 			Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_PRODUCER, MAX_WAIT_PRODUCER + 1));
 			
+			// Either the consumer has consumed all available values in
+			// the shared buffer, or the producer has yet to start producing
+			// values. In either case, the buffer is not full and processing
+			// is not yet complete, so let's start producing (more) values
+			// and store them in the shared buffer at the specified index.
 			data[producerIndex] = i;
+			
+			// Advance the producer index using the modulus formula at
+			// https://en.wikipedia.org/wiki/Circular_buffer to ensure
+			// buffer wrap-around takes place.
 			producerIndex = Math.floorMod((producerIndex + 1), data.length);
 		}
 		
@@ -103,20 +116,31 @@ public class ProducerConsumer {
 	 */
 	public void consume() throws InterruptedException {
 		
+		// Continue looping until the completion flag is set.
 		while (complete == 0) {
 			
+			// If the producer and consumer indices are equivalent,
+			// then wait for the producer to produce some values.
 			while (producerIndex == consumerIndex) {
 				
 				Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
-				stringBuilder.append("Consumer waiting...\n");
+				System.out.println("Consumer waiting...");
+				stringBuilder.append("Consumer waiting...\r\n");
 			}
 			
+			// The producer must have produced values and stored
+			// them in the buffer, so let's consume some values.
 			Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_CONSUMER, MAX_WAIT_CONSUMER + 1));
-			stringBuilder.append(data[consumerIndex] + "\n");
+			System.out.println(data[consumerIndex]);
+			stringBuilder.append(data[consumerIndex] + "\r\n");
 			
+			// Advance the consumer index using the modulus formula at
+			// https://en.wikipedia.org/wiki/Circular_buffer to ensure
+			// buffer wrap-around takes place.
 			consumerIndex = Math.floorMod((consumerIndex + 1), data.length);
 		}
 		
+		System.out.println("Consumer done.");
 		stringBuilder.append("Consumer done.");
 	}
 	
@@ -146,6 +170,7 @@ public class ProducerConsumer {
 			
 			printWriter = new PrintWriter(fileWriter);
 			
+			// Print the contents of the results to the output file.
 			printWriter.println(stringBuilder.toString());
 		}
 		
@@ -217,7 +242,6 @@ public class ProducerConsumer {
 				}
 			}
 		});
-		
 		
 		// Start both threads. The order in which the threads actually start is not guaranteed.
 		producerThread.start();
