@@ -59,8 +59,8 @@ public class ProducerConsumer {
 	// Private helper method to populate the assignment output header.
 	private void initStringBuilder() {
 		
-		stringBuilder.append("Shannon Fisher" + "\n");
-		stringBuilder.append("ICS 462 Programming Assignment 3" + "\n\n");
+		stringBuilder.append("Shannon Fisher" + "\r\n");
+		stringBuilder.append("ICS 462 Programming Assignment 3" + "\r\n" + "\r\n");
 	}
 	
 	/************************************************************************************************************
