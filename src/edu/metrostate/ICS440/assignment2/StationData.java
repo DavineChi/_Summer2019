@@ -19,7 +19,7 @@ class StationData {
     private String id;
     private float latitude;
     private float longitude;
-    private float elevation;;
+    private float elevation;
     private String state;
     private String name;
     
