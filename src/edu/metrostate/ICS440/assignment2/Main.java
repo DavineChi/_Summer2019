@@ -35,16 +35,18 @@ public class Main {
 		System.out.print(" > ");
 		endMonth = Integer.parseInt(input.nextLine());
 		
-		System.out.println(" Mininum (A) or Maximum (B) temperatures? ");
+		System.out.println(" Select one of the following options...");
+		System.out.println("   [1] Mininum temperatures");
+		System.out.println("   [2] Maximum temperatures");
 		System.out.print(" > ");
 		element = input.nextLine().toUpperCase();
 		
-		if (element.equals("A")) {
+		if (element.equals("1")) {
 			
 			element = "TMIN";
 		}
 		
-		else if (element.equals("B")) {
+		else if (element.equals("2")) {
 			
 			element = "TMAX";
 		}
@@ -58,11 +60,11 @@ public class Main {
 		query = new Query(startYear, endYear, startMonth, endMonth, element);
 	}
 	
-	private static void printResults() {
-		
-		// TODO: print the maximum (or minimum) five temperatures
-		//       that occurred in the range of years and months
-	}
+//	private static void printResults() {
+//		
+//		// TODO: print the maximum (or minimum) five temperatures
+//		//       that occurred in the range of years and months
+//	}
 	
 	/************************************************************************************************************
 	 * Main method from where program execution begins.
@@ -76,7 +78,9 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		Query query = new Query(2001, 2005, 8, 12, "TMAX");
+		getProgramInput();
+		
+		//Query query = new Query(2004, 2005, 8, 9, "TMAX");
 		
 		WeatherData weatherData = new WeatherData();
 		
@@ -84,6 +88,9 @@ public class Main {
 		
 		Queue<WeatherData> weatherDataResults = weatherData.search(weatherFiles, query);
 		
-		//getProgramInput();
+		if (weatherDataResults != null) {
+			
+			weatherDataResults = null;
+		}
 	}
 }

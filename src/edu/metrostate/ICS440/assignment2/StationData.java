@@ -23,11 +23,14 @@ class StationData {
     private String state;
     private String name;
     
-	public void parseData(File file) {
+    private static Queue<StationData> stationQueue;
+    
+	public Queue<StationData> parseData(File file) {
 
 		Scanner input;
 		String nextLine;
-		Queue<StationData> queue = new Queue<StationData>();
+		
+		stationQueue = new Queue<StationData>();
 		
 		try {
 			
@@ -48,7 +51,7 @@ class StationData {
 				stationData.state = nextLine.substring(38, 40);
 				stationData.name = nextLine.substring(41, 71);
 				
-				queue.enqueue(stationData);
+				stationQueue.enqueue(stationData);
 			}
 		}
 		
@@ -56,6 +59,8 @@ class StationData {
 			
 			ex.printStackTrace();
 		}
+		
+		return stationQueue;
 	}
 
     
@@ -82,6 +87,10 @@ class StationData {
 
 		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
 		
-		stationData.parseData(stationFile);
+		//stationData.parseData(stationFile);
+		
+		Queue<StationData> queue = stationData.parseData(stationFile);
+		
+		String stop = "STOP";
 	}
 }
