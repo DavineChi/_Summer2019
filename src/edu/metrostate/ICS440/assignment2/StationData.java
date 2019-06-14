@@ -25,8 +25,8 @@ class StationData {
     
     private static Queue<StationData> stationQueue;
     
-	public Queue<StationData> parseData(File file) {
-
+	public static Queue<StationData> search(File file, Query query) {
+		
 		Scanner input;
 		String nextLine;
 		
@@ -62,8 +62,7 @@ class StationData {
 		
 		return stationQueue;
 	}
-
-    
+	
 	@Override
 	public String toString() {
 		
@@ -81,16 +80,16 @@ class StationData {
 	 * @postcondition
 	 *   Varies depending on testing.
 	 */
-	public static void main(String[] args) {
-
-		StationData stationData = new StationData();
-
-		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
-		
-		//stationData.parseData(stationFile);
-		
-		Queue<StationData> queue = stationData.parseData(stationFile);
-		
-		String stop = "STOP";
-	}
+//	public static void main(String[] args) {
+//
+//		StationData stationData = new StationData();
+//
+//		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
+//		
+//		//stationData.parseData(stationFile);
+//		
+//		Queue<StationData> queue = StationData.search(stationFile);
+//		
+//		String stop = "STOP";
+//	}
 }

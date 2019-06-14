@@ -51,20 +51,30 @@ public class Main {
 			element = "TMAX";
 		}
 		
+
+		
+		query = new Query(startYear, endYear, startMonth, endMonth, element);
+	}
+	
+	private static void printResults(Queue<WeatherData> queue) {
+		
+		// TODO: print the maximum (or minimum) five temperatures
+		//       that occurred in the range of years and months
+		
+		while (queue.size() != 0) {
+			
+			System.out.println(queue.dequeue().toString());
+		}
+	}
+	
+	public static void printInputs() {
+		
 		System.out.println("  Start year: " + startYear);
 		System.out.println("    End year: " + endYear);
 		System.out.println(" Start month: " + startMonth);
 		System.out.println("   End month: " + endMonth);
 		System.out.println("Temperatures: " + element);
-		
-		query = new Query(startYear, endYear, startMonth, endMonth, element);
 	}
-	
-//	private static void printResults() {
-//		
-//		// TODO: print the maximum (or minimum) five temperatures
-//		//       that occurred in the range of years and months
-//	}
 	
 	/************************************************************************************************************
 	 * Main method from where program execution begins.
@@ -78,19 +88,26 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		getProgramInput();
+		startYear = 1998;
+		endYear = 1998;
+		startMonth = 5;
+		endMonth = 6;
+		element = "TMIN";
 		
-		//Query query = new Query(2004, 2005, 8, 9, "TMAX");
+		query = new Query(startYear, endYear, startMonth, endMonth, element);
 		
-		WeatherData weatherData = new WeatherData();
+//		Main.getProgramInput();
+		Main.printInputs();
 		
+//		Query query = new Query(2004, 2005, 8, 9, "TMAX");
+		
+//		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
 		List<File> weatherFiles = FileManager.getWeatherFiles("ghcnd_hcn");
 		
-		Queue<WeatherData> weatherDataResults = weatherData.search(weatherFiles, query);
+//		Queue<StationData> stationsList;
 		
-		if (weatherDataResults != null) {
-			
-			weatherDataResults = null;
-		}
+		Queue<WeatherData> weatherDataResults = WeatherData.search(weatherFiles, query);
+		
+		Main.printResults(weatherDataResults);
 	}
 }

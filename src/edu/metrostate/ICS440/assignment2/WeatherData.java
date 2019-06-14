@@ -40,7 +40,7 @@ public class WeatherData {
 		return element;
 	}
 	
-	public Queue<WeatherData> search(List<File> files, Query query) {
+	public static Queue<WeatherData> search(List<File> files, Query query) {
 		
 		Scanner input;
 		String nextLine;
@@ -104,23 +104,9 @@ public class WeatherData {
 	
 	@Override
 	public String toString() {
+		
 		return "WeatherData [id=" + id + ", year=" + year + ", month=" + month +
 				", day=" + day + ", element=" + element + ", value=" + value +
 				", qflag=" + qflag + "]";
 	}
-
-//	/************************************************************************************************************
-//	 * Main method from where program execution begins. Used here for testing and debugging.
-//	 * <p>
-//	 * 
-//	 * @param args
-//	 *   this parameter is not used
-//	 * 
-//	 * @postcondition
-//	 *   Varies depending on testing.
-//	 */
-//	public static void main(String[] args) {
-//		
-//		
-//	}
 }
