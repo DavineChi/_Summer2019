@@ -9,7 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FinalFutures implements Callable<Queue<WeatherData>> {
+// TODO: Rename this? 'Finalist' or similar?
+public class Finalist implements Callable<Queue<WeatherData>> {
 	
 	private static final int THREAD_POOL_SIZE = 4;
 	private static final AtomicInteger nextId = new AtomicInteger(1);
@@ -113,12 +114,12 @@ public class FinalFutures implements Callable<Queue<WeatherData>> {
 	
 	public static Queue<WeatherData> process(Queue<WeatherData> queue) {
 		
-		Callable<Queue<WeatherData>> finalCallable = new FinalFutures();
+		Callable<Queue<WeatherData>> finalCallable = new Finalist();
 		
 		paredQueue = queue;
 		
-		FinalFutures.addFutures(finalCallable);
-		FinalFutures.getFutures();
+		Finalist.addFutures(finalCallable);
+		Finalist.getFutures();
 		
 		executor.shutdown();
 		

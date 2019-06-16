@@ -90,7 +90,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		System.out.println("   End month: " + endMonth);
 		System.out.println("Temperatures: " + element);
 		System.out.println();
-		System.out.println("Press [Enter] to execute the search...");
+		System.out.println("Press [Enter] to execute the search.");
 		
 		try {
 			
@@ -141,6 +141,9 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 
 	private static void addFutures(Callable<Queue<WeatherData>> callable) {
 		
+		System.out.println("Running now...");
+		System.out.println();
+		
 		for (int i = 0; i < 100; i++) {
 			
 			Future<Queue<WeatherData>> future = executor.submit(callable);
@@ -157,7 +160,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 			startYear = 1998;
 			endYear = 2000;
 			startMonth = 6;
-			endMonth = 9;
+			endMonth = 7;
 			element = "TMAX";
 			
 			query = new Query(startYear, endYear, startMonth, endMonth, element);
@@ -176,7 +179,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		
 		executor.shutdown();
 		
-		Queue<WeatherData> finalSet = FinalFutures.process(resultQueue);
+		Queue<WeatherData> finalSet = Finalist.process(resultQueue);
 		Queue<WeatherData> results = WeatherData.filter(finalSet, 5);
 		
 		WeatherApp.printResults(results);
