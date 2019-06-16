@@ -16,7 +16,7 @@ public class Debug {
 	
 	private static final boolean ENABLED = false;
 	
-	/**
+	/************************************************************************************************************
 	 * A static method to write a message before a thread lock.
 	 * 
 	 */
@@ -30,7 +30,7 @@ public class Debug {
 		}
 	}
 	
-	/**
+	/************************************************************************************************************
 	 * A static method to write a message after a thread lock.
 	 * 
 	 */
@@ -44,7 +44,7 @@ public class Debug {
 		}
 	}
 	
-	/**
+	/************************************************************************************************************
 	 * A static method to write a message before a thread unlock.
 	 * 
 	 */
@@ -58,7 +58,7 @@ public class Debug {
 		}
 	}
 	
-	/**
+	/************************************************************************************************************
 	 * A static method to write a message after a thread unlock.
 	 * 
 	 */
@@ -72,6 +72,10 @@ public class Debug {
 		}
 	}
 	
+	/************************************************************************************************************
+	 * A static method to write which thread owns the lock.
+	 * 
+	 */
 	public static void lockOwner() {
 		
 		if (ENABLED) {

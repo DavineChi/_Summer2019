@@ -118,10 +118,9 @@ public class WeatherData {
 			for (int i = 0; i < files.size(); i++) {
 				
 				File file = files.dequeue();
-				
 				input = new Scanner(file);
-
-				System.out.println("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
+				
+				Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
 				
 				while (input.hasNextLine()) {
 

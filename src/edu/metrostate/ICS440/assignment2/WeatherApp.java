@@ -104,14 +104,13 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 	}
 	
 	private static void printResults(Queue<WeatherData> queue) {
-
-		// TODO: print the maximum (or minimum) five temperatures
-		// that occurred in the range of years and months
-
+		
 		while (queue.size() != 0) {
 
 			System.out.println(queue.dequeue().toString());
 		}
+		
+		System.out.println();
 	}
 	
 	private static void getFutures() {
@@ -177,7 +176,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		
 		executor.shutdown();
 		
-		Queue<WeatherData> finalSet = FinalFutures.run(resultQueue);
+		Queue<WeatherData> finalSet = FinalFutures.process(resultQueue);
 		Queue<WeatherData> results = WeatherData.filter(finalSet, 5);
 		
 		WeatherApp.printResults(results);

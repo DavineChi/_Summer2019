@@ -28,11 +28,8 @@ public class FinalFutures implements Callable<Queue<WeatherData>> {
 	
 	private static ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 	private static List<Future<Queue<WeatherData>>> list = new ArrayList<Future<Queue<WeatherData>>>();
-	
 	private static Queue<WeatherData> result = new Queue<WeatherData>();
-	
 	private static Queue<WeatherData> paredQueue;
-	
 	
 	@Override
 	public Queue<WeatherData> call() throws Exception {
@@ -47,7 +44,7 @@ public class FinalFutures implements Callable<Queue<WeatherData>> {
 		
 		for (int i = 0; i < paredQueue.size(); i++) {
 			
-			if (counter <= threshold) {
+			if (counter < threshold) {
 				
 				dataItem = paredQueue.dequeue();
 				element = dataItem.getElement();
@@ -114,7 +111,7 @@ public class FinalFutures implements Callable<Queue<WeatherData>> {
 		}
 	}
 	
-	public static Queue<WeatherData> run(Queue<WeatherData> queue) {
+	public static Queue<WeatherData> process(Queue<WeatherData> queue) {
 		
 		Callable<Queue<WeatherData>> finalCallable = new FinalFutures();
 		
