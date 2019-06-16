@@ -27,7 +27,7 @@ public class FileManager {
 	 * @return
 	 *   A list of weather data files.
 	 */
-	public static List<File> getWeatherFiles(String pathname) {
+	public static List<File> getWeatherFilesList(String pathname) {
 		
 		List<File> result = new ArrayList<File>();
 		
@@ -45,6 +45,39 @@ public class FileManager {
 		for (File file : path.listFiles(filter)) {
 			
 			result.add(file);
+		}
+		
+		return result;
+	}
+	
+	/************************************************************************************************************
+	 * An accessor method to retrieve a list of files.
+	 * <p>
+	 * 
+	 * @param pathname
+	 *   the resource path from which the list of files are retrieved
+	 * 
+	 * @return
+	 *   A list of weather data files.
+	 */
+	public static Queue<File> getWeatherFilesQueue(String pathname) {
+		
+		Queue<File> result = new Queue<File>();
+		
+		File path = new File(pathname);
+		
+		FileFilter filter = new FileFilter() {
+			
+			@Override
+			public boolean accept(File pathname) {
+				
+				return pathname.getName().endsWith(".dly");
+			}
+		};
+		
+		for (File file : path.listFiles(filter)) {
+			
+			result.enqueue(file);
 		}
 		
 		return result;

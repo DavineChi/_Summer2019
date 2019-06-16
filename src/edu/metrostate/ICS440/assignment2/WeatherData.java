@@ -2,7 +2,6 @@ package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Scanner;
 
 /****************************************************************************************************************
@@ -22,7 +21,7 @@ public class WeatherData {
 	private int month;
 	private int day;
 	private String element;
-	private int value;
+	private float value;
 	private String qflag;
 	
 	public int getYear() {
@@ -40,19 +39,21 @@ public class WeatherData {
 		return element;
 	}
 	
-	public static Queue<WeatherData> search(List<File> files, Query query) {
+	public static Queue<WeatherData> search(Queue<File> files, Query query, Integer threadId) {
 		
 		Scanner input;
 		String nextLine;
 		Queue<WeatherData> queue = new Queue<WeatherData>();
 		
 		try {
-
-			for (File file : files) {
-
+			
+			for (int i = 0; i < files.size(); i++) {
+				
+				File file = files.dequeue();
+				
 				input = new Scanner(file);
 
-				System.out.println("Analyzing file: " + file.getName());
+				System.out.println("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
 				
 				while (input.hasNextLine()) {
 
@@ -62,18 +63,18 @@ public class WeatherData {
 					int year = Integer.valueOf(nextLine.substring(11,15).trim());
 					int month = Integer.valueOf(nextLine.substring(15,17).trim());
 					String element = nextLine.substring(17,21);
-					int days = (nextLine.length() - 21) / 8; // Number of days in the line
+					int days = (nextLine.length() - 21) / 8;     // Number of days in the line
 
 					WeatherData weatherData;
 
-					for (int i = 0; i < days; i++) { // Process each day in the line
+					for (int j = 0; j < days; j++) {             // Process each day in the line
 						
 						weatherData = new WeatherData();
 						
-						weatherData.day = i + 1;
+						weatherData.day = j + 1;
 						
-						int value = Integer.valueOf(nextLine.substring(21+8*i,26+8*i).trim());
-						String qflag = nextLine.substring((27 + 8 * i), (28 + 8 * i));
+						float value = Float.valueOf(nextLine.substring(21 + 8 * j, 26 + 8 * j).trim()) / 10.0f;
+						String qflag = nextLine.substring((27 + 8 * j), (28 + 8 * j));
 						
 						weatherData.id = id;
 						weatherData.year = year;
@@ -105,8 +106,7 @@ public class WeatherData {
 	@Override
 	public String toString() {
 		
-		return "WeatherData [id=" + id + ", year=" + year + ", month=" + month +
-				", day=" + day + ", element=" + element + ", value=" + value +
-				", qflag=" + qflag + "]";
+		return "id=" + id + " year=" + year + " month=" + month + " day=" + day +
+               " element=" + element + " value=" + value + "C" + " qflag=" + qflag;
 	}
 }
