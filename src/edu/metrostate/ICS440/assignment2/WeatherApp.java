@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class WeatherApp implements Callable<Queue<WeatherData>> {
 	
-	private static final int THREAD_POOL_SIZE = 200;
+	private static final int THREAD_POOL_SIZE = 12;
 	private static final AtomicInteger nextId = new AtomicInteger(1);
 	
 	/************************************************************************************************************
@@ -81,18 +81,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 
 		query = new Query(startYear, endYear, startMonth, endMonth, element);
 	}
-
-//	private static void printResults(Queue<WeatherData> queue) {
-//
-//		// TODO: print the maximum (or minimum) five temperatures
-//		// that occurred in the range of years and months
-//
-//		while (queue.size() != 0) {
-//
-//			System.out.println(queue.dequeue().toString());
-//		}
-//	}
-
+	
 	public static void printInputs() {
 
 		System.out.println("  Start year: " + startYear);
@@ -114,29 +103,14 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		}
 	}
 	
-	@Override
-	public Queue<WeatherData> call() throws Exception {
-		
-		return WeatherData.search(weatherFiles, query, threadId.get());
-	}
+	private static void printResults(Queue<WeatherData> queue) {
 
-	private static void addFutures(Callable<Queue<WeatherData>> callable) {
-		
-		for (int i = 0; i < 100; i++) {
-			
-			Future<Queue<WeatherData>> future = executor.submit(callable);
-			
-			list.add(future);
-		}
-	}
+		// TODO: print the maximum (or minimum) five temperatures
+		// that occurred in the range of years and months
 
-	private static void addFinalFutures(Callable<Queue<WeatherData>> callable) {
-		
-		for (int i = 0; i < 4; i++) {
-			
-			Future<Queue<WeatherData>> future = executor.submit(callable);
-			
-			list.add(future);
+		while (queue.size() != 0) {
+
+			System.out.println(queue.dequeue().toString());
 		}
 	}
 	
@@ -160,37 +134,54 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		}
 	}
 	
+	@Override
+	public Queue<WeatherData> call() throws Exception {
+		
+		return WeatherData.search(weatherFiles, query, threadId.get());
+	}
+
+	private static void addFutures(Callable<Queue<WeatherData>> callable) {
+		
+		for (int i = 0; i < 100; i++) {
+			
+			Future<Queue<WeatherData>> future = executor.submit(callable);
+			
+			list.add(future);
+		}
+	}
+	
 	public static void run() {
 		
 		Callable<Queue<WeatherData>> callable = new WeatherApp();
-		Callable<Queue<WeatherData>> finalCallable = new WeatherApp();
-
-//		{
-//			startYear = 1998;
-//			endYear = 1998;
-//			startMonth = 5;
-//			endMonth = 6;
-//			element = "TMIN";
-//			
-//			query = new Query(startYear, endYear, startMonth, endMonth, element);
-//		}
 		
-		WeatherApp.getProgramInput();
+		{
+			startYear = 1998;
+			endYear = 2000;
+			startMonth = 6;
+			endMonth = 9;
+			element = "TMAX";
+			
+			query = new Query(startYear, endYear, startMonth, endMonth, element);
+		}
+		
+//		WeatherApp.getProgramInput();
 		WeatherApp.printInputs();
 		
 //		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
 		weatherFiles = FileManager.getWeatherFilesQueue("ghcnd_hcn");
 
 //		Queue<StationData> stationsList;
-
-//		Queue<WeatherData> weatherDataResults = WeatherData.search(weatherFiles, query);
-
+		
 		WeatherApp.addFutures(callable);
 		WeatherApp.getFutures();
 		
-		//Main.addFinalFutures(finalCallable);
-		
 		executor.shutdown();
-		System.out.println("Done.");
+		
+		Queue<WeatherData> finalSet = FinalFutures.run(resultQueue);
+		Queue<WeatherData> results = WeatherData.filter(finalSet, 5);
+		
+		WeatherApp.printResults(results);
+		
+		System.out.println("Processing complete.");
 	}
 }

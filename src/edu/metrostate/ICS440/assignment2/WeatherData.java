@@ -24,19 +24,87 @@ public class WeatherData {
 	private float value;
 	private String qflag;
 	
+	public String getId() {
+		
+		return id;
+	}
+
 	public int getYear() {
 		
 		return year;
 	}
-	
+
 	public int getMonth() {
 		
 		return month;
 	}
-	
+
+	public int getDay() {
+		
+		return day;
+	}
+
 	public String getElement() {
 		
 		return element;
+	}
+
+	public float getValue() {
+		
+		return value;
+	}
+
+	public String getQflag() {
+		
+		return qflag;
+	}
+	
+	public static Queue<WeatherData> filter(Queue<WeatherData> queue, int threshold) {
+		
+		Queue<WeatherData> result = new Queue<WeatherData>();
+		WeatherData dataItem;
+		String element = "";
+		
+		int counter = 0;
+		float limit = 0;
+		
+		for (int i = 0; i < queue.size(); i++) {
+			
+			if (counter < threshold) {
+				
+				dataItem = queue.dequeue();
+				element = dataItem.getElement();
+				
+				// TMAX
+				if (element.equals("TMAX")) {
+					
+					if (dataItem.getValue() >= limit) {
+						
+						limit = dataItem.getValue();
+						
+						result.enqueue(dataItem);
+					}
+				}
+				
+				// TMIN
+				else if (element.equals("TMIN")) {
+					
+					if (limit == 0) {
+						
+						limit = dataItem.getValue();
+					}
+					
+					if (dataItem.getValue() <= limit) {
+						
+						result.enqueue(dataItem);
+					}
+				}
+				
+				counter++;
+			}
+		}
+		
+		return result;
 	}
 	
 	public static Queue<WeatherData> search(Queue<File> files, Query query, Integer threadId) {
