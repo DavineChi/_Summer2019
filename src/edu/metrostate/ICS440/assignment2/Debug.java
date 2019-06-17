@@ -12,14 +12,17 @@ package edu.metrostate.ICS440.assignment2;
  */
 public class Debug {
 	
-	private static final boolean ENABLED = false;
+	private static final boolean ENABLED = true;
 	
 	/************************************************************************************************************
-	 * A static method to write a message before a thread lock.
+	 * Writes a specified message to the console.
 	 * <p>
 	 * 
 	 * @param message
-	 *   the message to print
+	 *   the message to write to the console
+	 * 
+	 * @postcondition
+	 *   A message has been written to the console.
 	 */
 	public static void printMessage(String message) {
 		
