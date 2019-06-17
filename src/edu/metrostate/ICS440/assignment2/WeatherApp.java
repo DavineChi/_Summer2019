@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class WeatherApp implements Callable<Queue<WeatherData>> {
 	
-	private static final int THREAD_POOL_SIZE = 12;
+	private static final int THREAD_POOL_SIZE = 10;
 	private static final AtomicInteger nextId = new AtomicInteger(1);
 	
 	/************************************************************************************************************
@@ -157,10 +157,10 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		Callable<Queue<WeatherData>> callable = new WeatherApp();
 		
 		{
-			startYear = 1998;
-			endYear = 2000;
-			startMonth = 6;
-			endMonth = 7;
+			startYear = 1990;
+			endYear = 1998;
+			startMonth = 7;
+			endMonth = 12;
 			element = "TMAX";
 			
 			query = new Query(startYear, endYear, startMonth, endMonth, element);

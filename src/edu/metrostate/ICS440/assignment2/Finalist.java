@@ -98,10 +98,18 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 			
 			for (Future<Queue<WeatherData>> future : list) {
 				
-				for (int i = 0; i < future.get().size(); i++) {
+				if (future != null) {
 					
-					// Consolidate the query results from all the files into one list.
-					result.enqueue(future.get().dequeue());
+					for (int i = 0; i < future.get().size(); i++) {
+						
+						// Consolidate the query results from all the files into one list.
+						result.enqueue(future.get().dequeue());
+					}
+				}
+				
+				else {
+					
+					throw new NullPointerException("Whoa.");
 				}
 			}
 		}
