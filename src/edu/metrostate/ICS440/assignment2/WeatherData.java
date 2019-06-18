@@ -111,7 +111,7 @@ public class WeatherData {
 	
 	public static Queue<WeatherData> search(Queue<File> files, Query query, Integer threadId) {
 		
-		Scanner input;
+		Scanner input = null;
 		String nextLine;
 		Queue<WeatherData> queue = new Queue<WeatherData>();
 		
@@ -167,6 +167,11 @@ public class WeatherData {
 		catch (FileNotFoundException ex) {
 
 			ex.printStackTrace();
+		}
+		
+		finally {
+			
+			input.close();
 		}
 		
 		return queue;
