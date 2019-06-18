@@ -61,6 +61,8 @@ public class WeatherData {
 	
 	public static Queue<WeatherData> filter(Queue<WeatherData> queue, int threshold) {
 		
+		// TODO: determine sort mechanism for the top results
+		
 		Queue<WeatherData> result = new Queue<WeatherData>();
 		WeatherData dataItem;
 		String element = "";

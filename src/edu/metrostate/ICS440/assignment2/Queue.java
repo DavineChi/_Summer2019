@@ -82,6 +82,11 @@ public class Queue<T> {
 			size--;
 		}
 		
+		if (result == null) {
+			
+			throw new NullPointerException();
+		}
+		
 		return result;
 	}
 	

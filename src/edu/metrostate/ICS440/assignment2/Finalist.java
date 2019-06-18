@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-// TODO: Rename this? 'Finalist' or similar?
 public class Finalist implements Callable<Queue<WeatherData>> {
 	
 	private static final int THREAD_POOL_SIZE = 4;
@@ -45,7 +44,7 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 		
 		for (int i = 0; i < paredQueue.size(); i++) {
 			
-			if (counter < threshold) {
+			//if (counter < threshold) {
 				
 				dataItem = paredQueue.dequeue();
 				element = dataItem.getElement();
@@ -76,7 +75,7 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 				}
 				
 				counter++;
-			}
+			//}
 		}
 		
 		return result;
@@ -102,8 +101,16 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 					
 					for (int i = 0; i < future.get().size(); i++) {
 						
+						// TODO: handle dequeue null issue
+						WeatherData item = future.get().dequeue();
+						
+						if (item == null) {
+							
+							throw new NullPointerException();
+						}
+						
 						// Consolidate the query results from all the files into one list.
-						result.enqueue(future.get().dequeue());
+						result.enqueue(item);//future.get().dequeue());
 					}
 				}
 				

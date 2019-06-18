@@ -150,9 +150,6 @@ public class Buffer {
 //		
 //		Buffer buffer = new Buffer(5);
 //		
-//		// TODO: Will need to think of how to invert the indexing for the poll()
-//		//       method, so that the last item added isn't the next item retrieved.
-//		
 //		buffer.add(2);
 //		buffer.add(3);
 //		buffer.add(4);

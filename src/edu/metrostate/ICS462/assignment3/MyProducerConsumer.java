@@ -68,7 +68,6 @@ public class MyProducerConsumer {
 			
 			//Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_PRODUCER, MAX_WAIT_PRODUCER + 1));
 			
-			// TODO: implementation
 			while (producerIndex != consumerIndex) {
 				
 				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
@@ -101,7 +100,6 @@ public class MyProducerConsumer {
 			
 			//Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_WAIT_CONSUMER, MAX_WAIT_CONSUMER + 1));
 			
-			// TODO: implementation
 			while (producerIndex == consumerIndex) {
 				
 				//Thread.sleep(ThreadLocalRandom.current().nextInt(WAIT_OTHER_THREAD, WAIT_OTHER_THREAD + 1));
