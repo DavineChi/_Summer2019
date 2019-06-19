@@ -3,6 +3,7 @@ package edu.metrostate.ICS440.assignment2;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /****************************************************************************************************************
  * This class is used to hold and process weather data.
@@ -108,11 +109,11 @@ public class WeatherData {
 		return qflag;
 	}
 	
-	public static Queue<WeatherData> search(Queue<File> fileList, Query query, Integer threadId) {
+	public static ConcurrentLinkedQueue<WeatherData> search(Queue<File> fileList, Query query, Integer threadId) {
 		
 		Scanner input = null;
 		String nextLine;
-		Queue<WeatherData> queue = new Queue<WeatherData>();
+		ConcurrentLinkedQueue<WeatherData> queue = new ConcurrentLinkedQueue<WeatherData>();
 		
 		try {
 			
@@ -155,7 +156,7 @@ public class WeatherData {
 							
 							if (query.matches(weatherData)) {
 								
-								queue.enqueue(weatherData);
+								queue.add(weatherData);
 							}
 						}
 					}
