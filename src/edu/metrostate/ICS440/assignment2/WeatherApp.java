@@ -37,7 +37,6 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 	private static int endYear;
 	private static int startMonth;
 	private static int endMonth;
-	private static int futuresCount;
 	
 	private static String element;
 	
@@ -125,8 +124,11 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 	// 
 	private static void addFutures(Callable<Queue<WeatherData>> callable) {
 		
+		int futuresCount = FileManager.getFileCount();
+		
 		System.out.println("Running now...");
 		System.out.println();
+		
 		
 		for (int i = 0; i < futuresCount; i++) {
 			
@@ -188,7 +190,6 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		
 //		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
 		weatherFiles = FileManager.getWeatherFilesQueue("ghcnd_hcn");
-		futuresCount = FileManager.getFileCount();
 		
 //		Queue<StationData> stationsList;
 		

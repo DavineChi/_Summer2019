@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 /****************************************************************************************************************
- * This class is used to hold weather data.
+ * This class is used to hold and process weather data.
  * <p>
  * 
  * @author Shannon L. Fisher
@@ -24,36 +24,85 @@ public class WeatherData {
 	private float value;
 	private String qflag;
 	
+	/************************************************************************************************************
+	 * An accessor method to retrieve the weather station ID.
+	 * <p>
+	 * 
+	 * @return
+	 *   The weather station ID.
+	 */
 	public String getId() {
 		
 		return id;
 	}
-
+	
+	/************************************************************************************************************
+	 * An accessor method to retrieve the year.
+	 * <p>
+	 * 
+	 * @return
+	 *   The year of this WeatherData record.
+	 */
 	public int getYear() {
 		
 		return year;
 	}
-
+	
+	/************************************************************************************************************
+	 * An accessor method to retrieve the month.
+	 * <p>
+	 * 
+	 * @return
+	 *   The month of this WeatherData record.
+	 */
 	public int getMonth() {
 		
 		return month;
 	}
-
+	
+	/************************************************************************************************************
+	 * An accessor method to retrieve the day.
+	 * <p>
+	 * 
+	 * @return
+	 *   The day of this WeatherData record.
+	 */
 	public int getDay() {
 		
 		return day;
 	}
-
+	
+	/************************************************************************************************************
+	 * An accessor method to retrieve the element type.
+	 * <p>
+	 * 
+	 * @return
+	 *   The element type.
+	 */
 	public String getElement() {
 		
 		return element;
 	}
-
+	
+	/************************************************************************************************************
+	 * An accessor method to retrieve the value on the first day of the month.
+	 * <p>
+	 * 
+	 * @return
+	 *   The value on the first day of the month.
+	 */
 	public float getValue() {
 		
 		return value;
 	}
-
+	
+	/************************************************************************************************************
+	 * An accessor method to retrieve the quality flag for the first day of the month.
+	 * <p>
+	 * 
+	 * @return
+	 *   The quality flag for the first day of the month.
+	 */
 	public String getQflag() {
 		
 		return qflag;
