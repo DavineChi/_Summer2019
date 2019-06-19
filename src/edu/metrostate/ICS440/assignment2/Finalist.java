@@ -3,13 +3,14 @@ package edu.metrostate.ICS440.assignment2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Finalist implements Callable<Queue<WeatherData>> {
+public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 	
 	private static final AtomicInteger nextId = new AtomicInteger(1);
 	
@@ -26,15 +27,15 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 	};
 	
 	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
-	private static List<Future<Queue<WeatherData>>> list = new ArrayList<Future<Queue<WeatherData>>>();
+	private static List<Future<ConcurrentLinkedQueue<WeatherData>>> list = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
 	
 	private static Query localQuery;
 	
-	private static Queue<WeatherData> localQueue;
-	private static Queue<WeatherData> result = new Queue<WeatherData>();
+	private static ConcurrentLinkedQueue<WeatherData> localQueue;
+	private static ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 	
 	@Override
-	public Queue<WeatherData> call() throws Exception {
+	public ConcurrentLinkedQueue<WeatherData> call() throws Exception {
 		
 		String element = localQuery.getElement();
 		
@@ -61,7 +62,7 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 		
 		// TODO: implementation
 		
-		Queue<WeatherData> queueResult = new Queue<WeatherData>();
+		ConcurrentLinkedQueue<WeatherData> queueResult = new ConcurrentLinkedQueue<WeatherData>();
 		
 		WeatherData result = null;
 		
@@ -74,7 +75,7 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 				String temp = "";
 			}
 			
-			WeatherData item = localQueue.dequeue();
+			WeatherData item = localQueue.poll();
 			float currentItemValue = item.getValue();
 			
 			if (currentItemValue > largest) {
@@ -83,7 +84,7 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 				result = item;
 			}
 			
-			queueResult.enqueue(result);
+			queueResult.add(result);
 		}
 		
 		String stop = "";
@@ -132,11 +133,11 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 //		return result;
 //	}
 	
-	private static void addFutures(Callable<Queue<WeatherData>> callable) {
+	private static void addFutures(Callable<ConcurrentLinkedQueue<WeatherData>> callable) {
 		
 		for (int i = 0; i < Constants.FINAL_FUTURES; i++) {
 			
-			Future<Queue<WeatherData>> future = executor.submit(callable);
+			Future<ConcurrentLinkedQueue<WeatherData>> future = executor.submit(callable);
 			
 			list.add(future);
 		}
@@ -146,13 +147,13 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 		
 		try {
 			
-			for (Future<Queue<WeatherData>> future : list) {
+			for (Future<ConcurrentLinkedQueue<WeatherData>> future : list) {
 				
 				int weatherDataSize = future.get().size();
 				
 				for (int i = 0; i < weatherDataSize; i++) {
 					
-					result.enqueue(future.get().dequeue());
+					result.add(future.get().poll());
 				}
 			}
 		}
@@ -163,9 +164,9 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 		}
 	}
 	
-	public static Queue<WeatherData> process(Queue<WeatherData> queue, Query query) {
+	public static ConcurrentLinkedQueue<WeatherData> process(ConcurrentLinkedQueue<WeatherData> queue, Query query) {
 		
-		Callable<Queue<WeatherData>> finalCallable = new Finalist();
+		Callable<ConcurrentLinkedQueue<WeatherData>> finalCallable = new Finalist();
 		
 		localQueue = queue;
 		localQuery = query;

@@ -172,11 +172,11 @@ public class WeatherData {
 		return queue;
 	}
 	
-	public static Queue<WeatherData> filter(Queue<WeatherData> queue, int threshold) {
+	public static ConcurrentLinkedQueue<WeatherData> filter(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
 		
 		// TODO: determine sort mechanism for the top results
 		
-		Queue<WeatherData> result = new Queue<WeatherData>();
+		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		WeatherData dataItem;
 		String element = "";
 		
@@ -187,7 +187,7 @@ public class WeatherData {
 			
 			if (counter < threshold) {
 				
-				dataItem = queue.dequeue();
+				dataItem = queue.poll();
 				element = dataItem.getElement();
 				
 				// TMAX
@@ -197,7 +197,7 @@ public class WeatherData {
 						
 						limit = dataItem.getValue();
 						
-						result.enqueue(dataItem);
+						result.add(dataItem);
 					}
 				}
 				
@@ -211,7 +211,7 @@ public class WeatherData {
 					
 					if (dataItem.getValue() <= limit) {
 						
-						result.enqueue(dataItem);
+						result.add(dataItem);
 					}
 				}
 				

@@ -44,7 +44,7 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 	private static Query query;
 	
 	private static Queue<File> weatherFiles;
-	private static Queue<WeatherData> resultQueue = new Queue<WeatherData>();
+	//private static Queue<WeatherData> resultQueue = new Queue<WeatherData>();
 	private static ConcurrentLinkedQueue<WeatherData> uberQueue = new ConcurrentLinkedQueue<WeatherData>();
 	
 	private static void getProgramInput() {
@@ -105,11 +105,11 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 		}
 	}
 	
-	private static void printResults(Queue<WeatherData> queue) {
+	private static void printResults(ConcurrentLinkedQueue<WeatherData> queue) {
 		
 		while (queue.size() != 0) {
 
-			System.out.println(queue.dequeue().toString());
+			System.out.println(queue.poll().toString());
 		}
 		
 		System.out.println();
@@ -154,7 +154,8 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 					
 					// Step #2:
 					// Consolidate the query results from all the files into one list.
-					resultQueue.enqueue(future.get().poll());
+					///resultQueue.enqueue(future.get().poll());
+					uberQueue.add(future.get().poll());
 				}
 			}
 		}
@@ -199,8 +200,8 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 		
 		executor.shutdown();
 		
-		Queue<WeatherData> finalSet = Finalist.process(resultQueue, query);
-		Queue<WeatherData> results = WeatherData.filter(finalSet, 5);
+		ConcurrentLinkedQueue<WeatherData> finalSet = Finalist.process(uberQueue, query);
+		ConcurrentLinkedQueue<WeatherData> results = WeatherData.filter(finalSet, 5);
 		
 		WeatherApp.printResults(results);
 		
