@@ -1,4 +1,4 @@
-package edu.metrostate.ICS440.assignment2;
+package edu.metrostate.ICS440.sampleapp2;
 
 import java.util.ArrayList;
 import java.util.List;

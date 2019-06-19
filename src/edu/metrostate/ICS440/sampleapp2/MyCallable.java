@@ -1,4 +1,4 @@
-package edu.metrostate.ICS440.assignment2;
+package edu.metrostate.ICS440.sampleapp2;
 
 // Adapted from http://www.journaldev.com/1090/java-callable-future-example
 // by Ryan Hankins ryan.hankins@metrostate.edu

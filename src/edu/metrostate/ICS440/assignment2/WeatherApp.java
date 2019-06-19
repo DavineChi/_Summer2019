@@ -14,8 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class WeatherApp implements Callable<Queue<WeatherData>> {
 	
-	private static final int THREAD_POOL_SIZE = 10;
-	private static final AtomicInteger nextId = new AtomicInteger(1);
+	public static final AtomicInteger nextId = new AtomicInteger(1);
 	
 	/************************************************************************************************************
 	 * The current thread's ID, as assigned by this class.
@@ -29,7 +28,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		}
 	};
 	
-	private static ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
 	private static List<Future<Queue<WeatherData>>> list = new ArrayList<Future<Queue<WeatherData>>>();
 
 	private static Scanner input = new Scanner(System.in);
@@ -38,11 +37,13 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 	private static int endYear;
 	private static int startMonth;
 	private static int endMonth;
-
-	private static String element;
-	private static Query query;
-	private static Queue<File> weatherFiles;
+	private static int futuresCount;
 	
+	private static String element;
+	
+	private static Query query;
+	
+	private static Queue<File> weatherFiles;
 	private static Queue<WeatherData> resultQueue = new Queue<WeatherData>();
 	
 	private static void getProgramInput() {
@@ -113,6 +114,33 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		System.out.println();
 	}
 	
+	@Override
+	public Queue<WeatherData> call() throws Exception {
+		
+		return WeatherData.search(weatherFiles, query, threadId.get());
+	}
+	
+	// **********************************************************************************************************
+	// Private helper method to submit new futures to the thread pool for execution.
+	// 
+	private static void addFutures(Callable<Queue<WeatherData>> callable) {
+		
+		System.out.println("Running now...");
+		System.out.println();
+		
+		for (int i = 0; i < futuresCount; i++) {
+			
+			// Step #1:
+			// Add a new future and submit it for each weather data file.
+			Future<Queue<WeatherData>> future = executor.submit(callable);
+			
+			list.add(future);
+		}
+	}
+	
+	// **********************************************************************************************************
+	// Private helper method to wait for all futures to compute and return their results.
+	// 
 	private static void getFutures() {
 		
 		try {
@@ -121,6 +149,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 				
 				for (int i = 0; i < future.get().size(); i++) {
 					
+					// Step #2:
 					// Consolidate the query results from all the files into one list.
 					resultQueue.enqueue(future.get().dequeue());
 				}
@@ -133,25 +162,13 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		}
 	}
 	
-	@Override
-	public Queue<WeatherData> call() throws Exception {
-		
-		return WeatherData.search(weatherFiles, query, threadId.get());
-	}
-
-	private static void addFutures(Callable<Queue<WeatherData>> callable) {
-		
-		System.out.println("Running now...");
-		System.out.println();
-		
-		for (int i = 0; i < 100; i++) {
-			
-			Future<Queue<WeatherData>> future = executor.submit(callable);
-			
-			list.add(future);
-		}
-	}
-	
+	/************************************************************************************************************
+	 * Calling this method will initiate the search program.
+	 * <p>
+	 * 
+	 * @postcondition
+	 *   A search has been executed.
+	 */
 	public static void run() {
 		
 		Callable<Queue<WeatherData>> callable = new WeatherApp();
@@ -171,7 +188,8 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		
 //		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
 		weatherFiles = FileManager.getWeatherFilesQueue("ghcnd_hcn");
-
+		futuresCount = FileManager.getFileCount();
+		
 //		Queue<StationData> stationsList;
 		
 		WeatherApp.addFutures(callable);
@@ -179,7 +197,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		
 		executor.shutdown();
 		
-		Queue<WeatherData> finalSet = Finalist.process(resultQueue);
+		Queue<WeatherData> finalSet = Finalist.process(resultQueue, query);
 		Queue<WeatherData> results = WeatherData.filter(finalSet, 5);
 		
 		WeatherApp.printResults(results);

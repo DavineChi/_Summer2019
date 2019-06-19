@@ -1,0 +1,32 @@
+Sort(Q,n):
+
+  for i = 0 to n-1
+    min = findMin(Q, n-i, n)
+    reorder(Q, min, n)
+  end for
+
+findMin(Q, k, n):
+
+  min = infinity
+
+  for i = 1 to n
+    curr = dequeue(Q)
+    if curr < min && i<=k
+      min = curr
+    end if
+    enqueue(Q,curr)
+  end for
+
+  return min
+
+reorder(Q, min, n):
+
+  for i = 1 to n
+    curr = dequeue(Q)
+    if (curr != min)
+      enqueue(Q, curr)
+    end if
+  end for
+
+  enqueue(Q,min)
+  

@@ -59,56 +59,6 @@ public class WeatherData {
 		return qflag;
 	}
 	
-	public static Queue<WeatherData> filter(Queue<WeatherData> queue, int threshold) {
-		
-		// TODO: determine sort mechanism for the top results
-		
-		Queue<WeatherData> result = new Queue<WeatherData>();
-		WeatherData dataItem;
-		String element = "";
-		
-		int counter = 0;
-		float limit = 0;
-		
-		for (int i = 0; i < queue.size(); i++) {
-			
-			if (counter < threshold) {
-				
-				dataItem = queue.dequeue();
-				element = dataItem.getElement();
-				
-				// TMAX
-				if (element.equals("TMAX")) {
-					
-					if (dataItem.getValue() >= limit) {
-						
-						limit = dataItem.getValue();
-						
-						result.enqueue(dataItem);
-					}
-				}
-				
-				// TMIN
-				else if (element.equals("TMIN")) {
-					
-					if (limit == 0) {
-						
-						limit = dataItem.getValue();
-					}
-					
-					if (dataItem.getValue() <= limit) {
-						
-						result.enqueue(dataItem);
-					}
-				}
-				
-				counter++;
-			}
-		}
-		
-		return result;
-	}
-	
 	public static Queue<WeatherData> search(Queue<File> files, Query query, Integer threadId) {
 		
 		Scanner input = null;
@@ -169,12 +119,57 @@ public class WeatherData {
 			ex.printStackTrace();
 		}
 		
-		finally {
+		return queue;
+	}
+	
+	public static Queue<WeatherData> filter(Queue<WeatherData> queue, int threshold) {
+		
+		// TODO: determine sort mechanism for the top results
+		
+		Queue<WeatherData> result = new Queue<WeatherData>();
+		WeatherData dataItem;
+		String element = "";
+		
+		int counter = 0;
+		float limit = 0;
+		
+		for (int i = 0; i < queue.size(); i++) {
 			
-			input.close();
+			if (counter < threshold) {
+				
+				dataItem = queue.dequeue();
+				element = dataItem.getElement();
+				
+				// TMAX
+				if (element.equals("TMAX")) {
+					
+					if (dataItem.getValue() >= limit) {
+						
+						limit = dataItem.getValue();
+						
+						result.enqueue(dataItem);
+					}
+				}
+				
+				// TMIN
+				else if (element.equals("TMIN")) {
+					
+					if (limit == 0) {
+						
+						limit = dataItem.getValue();
+					}
+					
+					if (dataItem.getValue() <= limit) {
+						
+						result.enqueue(dataItem);
+					}
+				}
+				
+				counter++;
+			}
 		}
 		
-		return queue;
+		return result;
 	}
 	
 	@Override
