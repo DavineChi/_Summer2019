@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,6 +45,7 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 	
 	private static Queue<File> weatherFiles;
 	private static Queue<WeatherData> resultQueue = new Queue<WeatherData>();
+	private static ConcurrentLinkedQueue<WeatherData> uberQueue = new ConcurrentLinkedQueue<WeatherData>();
 	
 	private static void getProgramInput() {
 
@@ -128,7 +130,6 @@ public class WeatherApp implements Callable<Queue<WeatherData>> {
 		
 		System.out.println("Running now...");
 		System.out.println();
-		
 		
 		for (int i = 0; i < futuresCount; i++) {
 			

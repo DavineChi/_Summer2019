@@ -69,6 +69,9 @@ public class Queue<T> {
 	 * 
 	 * @return
 	 *   The next element in this Queue.
+	 * 
+	 * @throws NullPointerException
+	 *   Thrown if this method is activated on an empty Queue.
 	 */
 	public T dequeue() {
 		

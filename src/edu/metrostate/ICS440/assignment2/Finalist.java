@@ -30,51 +30,107 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 	
 	private static Query localQuery;
 	
+	private static Queue<WeatherData> localQueue;
 	private static Queue<WeatherData> result = new Queue<WeatherData>();
-	private static Queue<WeatherData> paredQueue;
 	
 	@Override
 	public Queue<WeatherData> call() throws Exception {
 		
-		Queue<WeatherData> result = new Queue<WeatherData>();
-		WeatherData dataItem;
-		String element = "";
+		String element = localQuery.getElement();
 		
-		float limit = 0;
+		switch (element) {
 		
-		for (int i = 0; i < paredQueue.size(); i++) {
+		case "TMAX":
+			// TODO: implementation
+			Finalist.findMax();
+			break;
 			
-			dataItem = paredQueue.dequeue();
-			element = dataItem.getElement();
+		case "TMIN":
+			// TODO: implementation
 			
-			// TMAX
-			if (element.equals("TMAX")) {
-				
-				if (dataItem.getValue() >= limit) {
-					
-					limit = dataItem.getValue();
-					
-					result.enqueue(dataItem);
-				}
-			}
-			
-			// TMIN
-			else if (element.equals("TMIN")) {
-				
-				if (limit == 0) {
-					
-					limit = dataItem.getValue();
-				}
-				
-				if (dataItem.getValue() <= limit) {
-					
-					result.enqueue(dataItem);
-				}
-			}
+			break;
 		}
 		
-		return result;
+		return null;
 	}
+	
+	// **********************************************************************************************************
+	// Private helper method to determine the largest item in the Queue.
+	// 
+	private static void findMax() {
+		
+		// TODO: implementation
+		
+		Queue<WeatherData> queueResult = new Queue<WeatherData>();
+		
+		WeatherData result = null;
+		
+		float largest = -9999.9f;
+		
+		while (!localQueue.isEmpty()) {
+			
+			if (localQueue.isEmpty()) {
+				
+				String temp = "";
+			}
+			
+			WeatherData item = localQueue.dequeue();
+			float currentItemValue = item.getValue();
+			
+			if (currentItemValue > largest) {
+				
+				largest = currentItemValue;
+				result = item;
+			}
+			
+			queueResult.enqueue(result);
+		}
+		
+		String stop = "";
+	}
+	
+//	@Override
+//	public Queue<WeatherData> call() throws Exception {
+//		
+//		Queue<WeatherData> result = new Queue<WeatherData>();
+//		WeatherData dataItem;
+//		String element = "";
+//		
+//		float limit = 0;
+//		
+//		for (int i = 0; i < paredQueue.size(); i++) {
+//			
+//			dataItem = paredQueue.dequeue();
+//			element = dataItem.getElement();
+//			
+//			// TMAX
+//			if (element.equals("TMAX")) {
+//				
+//				if (dataItem.getValue() >= limit) {
+//					
+//					limit = dataItem.getValue();
+//					
+//					result.enqueue(dataItem);
+//				}
+//			}
+//			
+//			// TMIN
+//			else if (element.equals("TMIN")) {
+//				
+//				if (limit == 0) {
+//					
+//					limit = dataItem.getValue();
+//				}
+//				
+//				if (dataItem.getValue() <= limit) {
+//					
+//					result.enqueue(dataItem);
+//				}
+//			}
+//		}
+//		
+//		return result;
+//	}
 	
 	private static void addFutures(Callable<Queue<WeatherData>> callable) {
 		
@@ -111,7 +167,7 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 		
 		Callable<Queue<WeatherData>> finalCallable = new Finalist();
 		
-		paredQueue = queue;
+		localQueue = queue;
 		localQuery = query;
 		
 		Finalist.addFutures(finalCallable);

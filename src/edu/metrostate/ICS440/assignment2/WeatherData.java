@@ -108,7 +108,7 @@ public class WeatherData {
 		return qflag;
 	}
 	
-	public static Queue<WeatherData> search(Queue<File> files, Query query, Integer threadId) {
+	public static Queue<WeatherData> search(Queue<File> fileList, Query query, Integer threadId) {
 		
 		Scanner input = null;
 		String nextLine;
@@ -116,9 +116,9 @@ public class WeatherData {
 		
 		try {
 			
-			for (int i = 0; i < files.size(); i++) {
+			for (int i = 0; i < fileList.size(); i++) {
 				
-				File file = files.dequeue();
+				File file = fileList.dequeue();
 				input = new Scanner(file);
 				
 				Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
