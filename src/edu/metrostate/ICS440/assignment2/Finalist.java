@@ -1,6 +1,7 @@
 package edu.metrostate.ICS440.assignment2;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -43,7 +44,7 @@ public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 		
 		case "TMAX":
 			// TODO: implementation
-			Finalist.findMax();
+			ConcurrentLinkedQueue<WeatherData> result = Finalist.findMax();
 			break;
 			
 		case "TMIN":
@@ -58,81 +59,51 @@ public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 	// **********************************************************************************************************
 	// Private helper method to determine the largest item in the Queue.
 	// 
-	private static void findMax() {
+	private static ConcurrentLinkedQueue<WeatherData> findMax() {
 		
 		// TODO: implementation
 		
-		ConcurrentLinkedQueue<WeatherData> queueResult = new ConcurrentLinkedQueue<WeatherData>();
-		
-		WeatherData result = null;
+		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
+		WeatherData item = null;
 		
 		float largest = -9999.9f;
 		
-		while (!localQueue.isEmpty()) {
+		Iterator<WeatherData> firstIterator = localQueue.iterator();
+		Iterator<WeatherData> secondIterator = localQueue.iterator();
+		
+		//for (WeatherData item : localQueue) {
+		while (firstIterator.hasNext()) {
+		
+			item = firstIterator.next();
 			
-			if (localQueue.isEmpty()) {
-				
-				String temp = "";
-			}
-			
-			WeatherData item = localQueue.poll();
 			float currentItemValue = item.getValue();
 			
-			if (currentItemValue > largest) {
+			if (currentItemValue >= largest) {
 				
 				largest = currentItemValue;
-				result = item;
 			}
-			
-			queueResult.add(result);
 		}
 		
-		String stop = "";
+		item = null;
+		
+		while (secondIterator.hasNext()) {
+			
+			item = secondIterator.next();
+			
+			float currentItemValue = item.getValue();
+			
+			if (currentItemValue == largest) {
+				
+				result.add(item);
+			}
+		}
+		
+		return result;
 	}
 	
-//	@Override
-//	public Queue<WeatherData> call() throws Exception {
-//		
-//		Queue<WeatherData> result = new Queue<WeatherData>();
-//		WeatherData dataItem;
-//		String element = "";
-//		
-//		float limit = 0;
-//		
-//		for (int i = 0; i < paredQueue.size(); i++) {
-//			
-//			dataItem = paredQueue.dequeue();
-//			element = dataItem.getElement();
-//			
-//			// TMAX
-//			if (element.equals("TMAX")) {
-//				
-//				if (dataItem.getValue() >= limit) {
-//					
-//					limit = dataItem.getValue();
-//					
-//					result.enqueue(dataItem);
-//				}
-//			}
-//			
-//			// TMIN
-//			else if (element.equals("TMIN")) {
-//				
-//				if (limit == 0) {
-//					
-//					limit = dataItem.getValue();
-//				}
-//				
-//				if (dataItem.getValue() <= limit) {
-//					
-//					result.enqueue(dataItem);
-//				}
-//			}
-//		}
-//		
-//		return result;
-//	}
-	
+	// **********************************************************************************************************
+	// Private helper method to submit new futures to the thread pool for execution.
+	// 
 	private static void addFutures(Callable<ConcurrentLinkedQueue<WeatherData>> callable) {
 		
 		for (int i = 0; i < Constants.FINAL_FUTURES; i++) {
@@ -143,15 +114,16 @@ public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 		}
 	}
 	
+	// **********************************************************************************************************
+	// Private helper method to wait for all futures to compute and return their results.
+	// 
 	private static void getFutures() {
 		
 		try {
 			
 			for (Future<ConcurrentLinkedQueue<WeatherData>> future : list) {
 				
-				int weatherDataSize = future.get().size();
-				
-				for (int i = 0; i < weatherDataSize; i++) {
+				for (int i = 0; i < future.get().size(); i++) {
 					
 					result.add(future.get().poll());
 				}
