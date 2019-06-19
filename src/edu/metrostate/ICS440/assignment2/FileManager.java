@@ -2,8 +2,6 @@ package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.List;
 
 /****************************************************************************************************************
  * This class is used to simplify retrieval of data files.
@@ -16,38 +14,19 @@ import java.util.List;
  * Due Date:	2019.06.27
  */
 public class FileManager {
-
+	
+	private static int fileCount = 0;
+	
 	/************************************************************************************************************
-	 * An accessor method to retrieve a list of files.
+	 * An accessor method to retrieve a count of weather data files.
 	 * <p>
 	 * 
-	 * @param pathname
-	 *   the resource path from which the list of files are retrieved
-	 * 
 	 * @return
-	 *   A list of weather data files.
+	 *   A count of weather data files.
 	 */
-	public static List<File> getWeatherFilesList(String pathname) {
+	public static int getFileCount() {
 		
-		List<File> result = new ArrayList<File>();
-		
-		File path = new File(pathname);
-		
-		FileFilter filter = new FileFilter() {
-			
-			@Override
-			public boolean accept(File pathname) {
-				
-				return pathname.getName().endsWith(".dly");
-			}
-		};
-		
-		for (File file : path.listFiles(filter)) {
-			
-			result.add(file);
-		}
-		
-		return result;
+		return fileCount;
 	}
 	
 	/************************************************************************************************************
@@ -78,6 +57,7 @@ public class FileManager {
 		for (File file : path.listFiles(filter)) {
 			
 			result.enqueue(file);
+			fileCount++;
 		}
 		
 		return result;

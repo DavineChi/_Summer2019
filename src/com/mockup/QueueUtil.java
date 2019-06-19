@@ -1,4 +1,7 @@
-package edu.metrostate.ICS440.assignment2;
+package com.mockup;
+
+import edu.metrostate.ICS440.assignment2.Queue;
+import edu.metrostate.ICS440.assignment2.WeatherData;
 
 // Queue sort algorithm can be found at end of this file.
 // Reference:
@@ -15,49 +18,55 @@ package edu.metrostate.ICS440.assignment2;
  */
 public class QueueUtil {
 	
-	private static Queue<Integer> localQueue;
+	private static Queue<WeatherData> localQueue;
 	
 	// **********************************************************************************************************
 	// Private helper method to determine the smallest item in the Queue.
 	// 
-	private static int findMinimum(int sortingIndex) {
-		
-		int result = Integer.MAX_VALUE;
-		int size = localQueue.size();
-		
-		for (int i = 1; i <= size; i++) {
-			
-			int currentItem = localQueue.dequeue();
-			
-			if (currentItem <= result && i <= sortingIndex) {
-				
-				result = currentItem;
-			}
-			
-			localQueue.enqueue(currentItem);
-		}
-		
-		return result;
-	}
+//	private static int findMinimum(int sortingIndex) {
+//		
+//		int result = Integer.MAX_VALUE;
+//		int size = localQueue.size();
+//		
+//		for (int i = 1; i <= size; i++) {
+//			
+//			int currentItem = localQueue.dequeue();
+//			
+//			if (currentItem <= result && i <= sortingIndex) {
+//				
+//				result = currentItem;
+//			}
+//			
+//			localQueue.enqueue(currentItem);
+//		}
+//		
+//		return result;
+//	}
 	
 	// **********************************************************************************************************
 	// Private helper method to determine the largest item in the Queue.
-	// TODO: implementation and testing
-	private static int findMaximum(int sortingIndex) {
+	// 
+	private static WeatherData findMaximum(int sortingIndex) {
 		
-		int result = Integer.MIN_VALUE;
+		WeatherData result = null;
+		
+		float largest = -9999.9f;
+		
 		int size = localQueue.size();
 		
 		for (int i = 1; i <= size; i++) {
 			
-			int currentItem = localQueue.dequeue();
+			WeatherData item = localQueue.dequeue();
 			
-			if (currentItem > result && i <= sortingIndex) {
+			float currentItemValue = item.getValue();
+			
+			if (currentItemValue > largest && i <= sortingIndex) {
 				
-				result = currentItem;
+				largest = currentItemValue;
+				result = item;
 			}
 			
-			localQueue.enqueue(currentItem);
+			localQueue.enqueue(item);
 		}
 		
 		return result;
@@ -66,38 +75,46 @@ public class QueueUtil {
 	// **********************************************************************************************************
 	// Private helper method to maintain ascending order on sorting.
 	// 
-	private static void reorderAscending(int min) {
-		
-		int size = localQueue.size();
-		
-		for (int i = 1; i <= size; i++) {
-			
-			int currentItem = localQueue.dequeue();
-			
-			if (currentItem != min) {
-				
-				localQueue.enqueue(currentItem);
-			}
-		}
-		
-		localQueue.enqueue(min);
-	}
+//	private static void reorderAscending(int min) {
+//		
+//		int size = localQueue.size();
+//		
+//		for (int i = 1; i <= size; i++) {
+//			
+//			int currentItem = localQueue.dequeue();
+//			
+//			if (currentItem != min) {
+//				
+//				localQueue.enqueue(currentItem);
+//			}
+//		}
+//		
+//		localQueue.enqueue(min);
+//	}
 	
 	// **********************************************************************************************************
 	// Private helper method to maintain descending order on sorting.
-	// TODO: implementation and testing
-	private static void reorderDescending(int max) {
+	// 
+	private static void reorderDescending(WeatherData max) {
+		
+		int counter = 0;
 		
 		int size = localQueue.size();
 		
 		for (int i = 1; i <= size; i++) {
 			
-			int currentItem = localQueue.dequeue();
+			WeatherData item = localQueue.dequeue();
 			
-			if (currentItem != max) {
+			//float currentItemValue = item.getValue();
+			
+			//if (currentItemValue != max) {
+			if (!item.equals(max)) {
 				
-				localQueue.enqueue(currentItem);
+				localQueue.enqueue(item);
 			}
+			
+			System.out.println("Inside reordering method, counter = " + counter);
+			counter++;
 		}
 		
 		localQueue.enqueue(max);
@@ -113,22 +130,22 @@ public class QueueUtil {
 	 * @postcondition
 	 *   The Queue has been sorted in ascending order.
 	 */
-	public static void sortAscending(Queue<Integer> queue) {
-		
-		localQueue = queue;
-		
-		int size = localQueue.size();
-		
-		for (int i = 0; i <= (size - 1); i++) {
-			
-			int min = findMinimum(size - i);
-			
-			reorderAscending(min);
-		}
-		
-		queue = localQueue;
-		localQueue = null;
-	}
+//	public static void sortAscending(Queue<WeatherData> queue) {
+//		
+//		localQueue = queue;
+//		
+//		int size = localQueue.size();
+//		
+//		for (int i = 0; i <= (size - 1); i++) {
+//			
+//			int min = findMinimum(size - i);
+//			
+//			reorderAscending(min);
+//		}
+//		
+//		queue = localQueue;
+//		localQueue = null;
+//	}
 	
 	/************************************************************************************************************
 	 * A modifier method to sort the specified Queue in descending order.
@@ -140,9 +157,7 @@ public class QueueUtil {
 	 * @postcondition
 	 *   The Queue has been sorted in descending order.
 	 */
-	public static void sortDescending(Queue<Integer> queue) {
-		
-		// TODO: implementation and testing
+	public static void sortDescending(Queue<WeatherData> queue) {
 		
 		localQueue = queue;
 		
@@ -150,7 +165,8 @@ public class QueueUtil {
 		
 		for (int i = 0; i <= (size - 1); i++) {
 			
-			int max = findMaximum(size - i);
+			//int max = findMaximum(size - i);
+			WeatherData max = findMaximum(size - i);
 			
 			reorderDescending(max);
 		}
@@ -169,38 +185,19 @@ public class QueueUtil {
 	 * @postcondition
 	 *   The specified Queue has been printed.
 	 */
-	public static void print(Queue<Integer> queue) {
-		
-		int size = queue.size();
-		
-		for (int i = 0; i < size; i++) {
-			
-			int current = queue.dequeue();
-			
-			System.out.println(current);
-			
-			queue.enqueue(current);
-		}
-	}
-	
-	public static void main(String[] args) {
-		
-		Queue<Integer> testQueue = new Queue<Integer>();
-		
-		testQueue.enqueue(new Integer(5));
-		testQueue.enqueue(new Integer(1));
-		testQueue.enqueue(new Integer(9));
-		testQueue.enqueue(new Integer(2));
-		testQueue.enqueue(new Integer(7));
-		
-		QueueUtil.print(testQueue);
-		QueueUtil.sortAscending(testQueue);
-		QueueUtil.print(testQueue);
-		QueueUtil.sortDescending(testQueue);
-		QueueUtil.print(testQueue);
-		
-		String temp = "";
-	}
+//	public static void print(Queue<WeatherData> queue) {
+//		
+//		int size = queue.size();
+//		
+//		for (int i = 0; i < size; i++) {
+//			
+//			int current = queue.dequeue();
+//			
+//			System.out.println(current);
+//			
+//			queue.enqueue(current);
+//		}
+//	}
 }
 
 /* **************************************************************************************************************

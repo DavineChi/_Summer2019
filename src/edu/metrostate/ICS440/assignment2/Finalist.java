@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Finalist implements Callable<Queue<WeatherData>> {
 	
-	private static final int THREAD_POOL_SIZE = 4;
 	private static final AtomicInteger nextId = new AtomicInteger(1);
 	
 	/************************************************************************************************************
@@ -26,8 +25,11 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 		}
 	};
 	
-	private static ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
 	private static List<Future<Queue<WeatherData>>> list = new ArrayList<Future<Queue<WeatherData>>>();
+	
+	private static Query localQuery;
+	
 	private static Queue<WeatherData> result = new Queue<WeatherData>();
 	private static Queue<WeatherData> paredQueue;
 	
@@ -38,44 +40,37 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 		WeatherData dataItem;
 		String element = "";
 		
-		int threshold = 1500; // TODO: not needed?
-		int counter = 0;
 		float limit = 0;
 		
 		for (int i = 0; i < paredQueue.size(); i++) {
 			
-			//if (counter < threshold) {
+			dataItem = paredQueue.dequeue();
+			element = dataItem.getElement();
+			
+			// TMAX
+			if (element.equals("TMAX")) {
 				
-				dataItem = paredQueue.dequeue();
-				element = dataItem.getElement();
-				
-				// TMAX
-				if (element.equals("TMAX")) {
+				if (dataItem.getValue() >= limit) {
 					
-					if (dataItem.getValue() >= limit) {
-						
-						limit = dataItem.getValue();
-						
-						result.enqueue(dataItem);
-					}
+					limit = dataItem.getValue();
+					
+					result.enqueue(dataItem);
+				}
+			}
+			
+			// TMIN
+			else if (element.equals("TMIN")) {
+				
+				if (limit == 0) {
+					
+					limit = dataItem.getValue();
 				}
 				
-				// TMIN
-				else if (element.equals("TMIN")) {
+				if (dataItem.getValue() <= limit) {
 					
-					if (limit == 0) {
-						
-						limit = dataItem.getValue();
-					}
-					
-					if (dataItem.getValue() <= limit) {
-						
-						result.enqueue(dataItem);
-					}
+					result.enqueue(dataItem);
 				}
-				
-				counter++;
-			//}
+			}
 		}
 		
 		return result;
@@ -83,7 +78,7 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 	
 	private static void addFutures(Callable<Queue<WeatherData>> callable) {
 		
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < Constants.FINAL_FUTURES; i++) {
 			
 			Future<Queue<WeatherData>> future = executor.submit(callable);
 			
@@ -97,26 +92,11 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 			
 			for (Future<Queue<WeatherData>> future : list) {
 				
-				if (future != null) {
-					
-					for (int i = 0; i < future.get().size(); i++) {
-						
-						// TODO: handle dequeue null issue
-						WeatherData item = future.get().dequeue();
-						
-						if (item == null) {
-							
-							throw new NullPointerException();
-						}
-						
-						// Consolidate the query results from all the files into one list.
-						result.enqueue(item);//future.get().dequeue());
-					}
-				}
+				int weatherDataSize = future.get().size();
 				
-				else {
+				for (int i = 0; i < weatherDataSize; i++) {
 					
-					throw new NullPointerException("Whoa.");
+					result.enqueue(future.get().dequeue());
 				}
 			}
 		}
@@ -127,11 +107,12 @@ public class Finalist implements Callable<Queue<WeatherData>> {
 		}
 	}
 	
-	public static Queue<WeatherData> process(Queue<WeatherData> queue) {
+	public static Queue<WeatherData> process(Queue<WeatherData> queue, Query query) {
 		
 		Callable<Queue<WeatherData>> finalCallable = new Finalist();
 		
 		paredQueue = queue;
+		localQuery = query;
 		
 		Finalist.addFutures(finalCallable);
 		Finalist.getFutures();
