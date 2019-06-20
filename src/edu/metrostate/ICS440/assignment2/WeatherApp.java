@@ -175,7 +175,17 @@ public class WeatherApp {
 		
 		processor.shutdownExecutor();
 		
-		ConcurrentLinkedQueue<WeatherData> finalSet = Finalist.process(resultQueue, query);
+		FinalProcessor finalProcessor = new FinalProcessor(resultQueue, query);
+		List<Future<ConcurrentLinkedQueue<WeatherData>>> finalsList = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
+		
+		for (int i = 0; i < 4; i++) {
+			
+			Future<ConcurrentLinkedQueue<WeatherData>> future = finalProcessor.process();
+			
+			finalsList.add(future);
+		}
+		
+//		ConcurrentLinkedQueue<WeatherData> finalSet = FinalProcessor.process(resultQueue, query);
 //		ConcurrentLinkedQueue<WeatherData> results = WeatherData.filter(finalSet, 5);
 		
 //		WeatherApp.printResults(results);

@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
+public class FinalProcessor implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 	
 	private static final AtomicInteger nextId = new AtomicInteger(1);
 	
@@ -34,6 +34,15 @@ public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 	
 	private static ConcurrentLinkedQueue<WeatherData> localQueue;
 	private static ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
+	
+	private ConcurrentLinkedQueue<WeatherData> instanceQueue;
+	private Query instanceQuery;
+	
+	public FinalProcessor(ConcurrentLinkedQueue<WeatherData> queue, Query query) {
+		
+		this.instanceQueue = queue;
+		this.instanceQuery = query;
+	}
 	
 	@Override
 	public ConcurrentLinkedQueue<WeatherData> call() throws Exception {
@@ -105,20 +114,30 @@ public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 	// **********************************************************************************************************
 	// Private helper method to submit new futures to the thread pool for execution.
 	// 
-	private static void addFutures(Callable<ConcurrentLinkedQueue<WeatherData>> callable) {
+//	private static void addFutures(Callable<ConcurrentLinkedQueue<WeatherData>> callable) {
+//		
+//		for (int i = 0; i < Constants.FINAL_FUTURES; i++) {
+//			
+//			Future<ConcurrentLinkedQueue<WeatherData>> future = executor.submit(callable);
+//			
+//			list.add(future);
+//		}
+//	}
+	
+	// **********************************************************************************************************
+	// Private helper method to submit new futures to the thread pool for execution.
+	// 
+	private static void addFutures() {
 		
-		for (int i = 0; i < Constants.FINAL_FUTURES; i++) {
-			
-			Future<ConcurrentLinkedQueue<WeatherData>> future = executor.submit(callable);
-			
-			list.add(future);
-		}
+		
 	}
 	
 	// **********************************************************************************************************
 	// Private helper method to wait for all futures to compute and return their results.
 	// 
 	private static void getFutures() {
+		
+		// TODO: getting NPE here
 		
 		try {
 			
@@ -137,18 +156,26 @@ public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 		}
 	}
 	
-	public static ConcurrentLinkedQueue<WeatherData> process(ConcurrentLinkedQueue<WeatherData> queue, Query query) {
+	public Future<ConcurrentLinkedQueue<WeatherData>> process() {
 		
-		Callable<ConcurrentLinkedQueue<WeatherData>> finalCallable = new Finalist();
-		
-		localQueue = queue;
-		localQuery = query;
-		
-		Finalist.addFutures(finalCallable);
-		Finalist.getFutures();
-		
-		executor.shutdown();
+		Future<ConcurrentLinkedQueue<WeatherData>> result = executor.submit(this);
 		
 		return result;
 	}
+	
+//	public static ConcurrentLinkedQueue<WeatherData> process(ConcurrentLinkedQueue<WeatherData> queue, Query query) {
+//		
+//		Callable<ConcurrentLinkedQueue<WeatherData>> finalCallable = new FinalProcessor();
+//		
+//		localQueue = queue;
+//		localQuery = query;
+//		
+//		//FinalProcessor.addFutures(finalCallable);
+//		FinalProcessor.addFutures();
+//		FinalProcessor.getFutures();
+//		
+//		executor.shutdown();
+//		
+//		return result;
+//	}
 }
