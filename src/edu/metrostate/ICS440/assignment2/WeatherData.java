@@ -172,6 +172,65 @@ public class WeatherData {
 		return queue;
 	}
 	
+	public static ConcurrentLinkedQueue<WeatherData> search(File file, Query query, Integer threadId) {
+		
+		Scanner input = null;
+		String nextLine;
+		ConcurrentLinkedQueue<WeatherData> queue = new ConcurrentLinkedQueue<WeatherData>();
+		
+		try {
+			
+			input = new Scanner(file);
+			
+			Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
+			
+			while (input.hasNextLine()) {
+
+				nextLine = input.nextLine();
+
+				String id = nextLine.substring(0,11);
+				int year = Integer.valueOf(nextLine.substring(11,15).trim());
+				int month = Integer.valueOf(nextLine.substring(15,17).trim());
+				String element = nextLine.substring(17,21);
+				int days = (nextLine.length() - 21) / 8;     // Number of days in the line
+
+				WeatherData weatherData;
+
+				for (int j = 0; j < days; j++) {             // Process each day in the line
+					
+					weatherData = new WeatherData();
+					
+					weatherData.day = j + 1;
+					
+					float value = Float.valueOf(nextLine.substring(21 + 8 * j, 26 + 8 * j).trim()) / 10.0f;
+					String qflag = nextLine.substring((27 + 8 * j), (28 + 8 * j));
+					
+					weatherData.id = id;
+					weatherData.year = year;
+					weatherData.month = month;
+					weatherData.element = element;
+					weatherData.value = value;
+					weatherData.qflag = qflag;
+					
+					if (qflag.equals(" ")) {
+						
+						if (query.matches(weatherData)) {
+							
+							queue.add(weatherData);
+						}
+					}
+				}
+			}
+		}
+		
+		catch (FileNotFoundException ex) {
+
+			ex.printStackTrace();
+		}
+		
+		return queue;
+	}
+	
 	public static ConcurrentLinkedQueue<WeatherData> filter(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
 		
 		// TODO: determine sort mechanism for the top results

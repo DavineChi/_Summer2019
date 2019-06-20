@@ -44,7 +44,8 @@ public class Finalist implements Callable<ConcurrentLinkedQueue<WeatherData>> {
 		
 		case "TMAX":
 			// TODO: implementation
-			ConcurrentLinkedQueue<WeatherData> result = Finalist.findMax();
+			//ConcurrentLinkedQueue<WeatherData> result = Finalist.findMax();
+			System.out.println("TODO: implementation");
 			break;
 			
 		case "TMIN":

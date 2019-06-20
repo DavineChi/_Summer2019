@@ -16,20 +16,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class FileManager {
 	
-	private static int fileCount = 0;
-	
-	/************************************************************************************************************
-	 * An accessor method to retrieve a count of weather data files.
-	 * <p>
-	 * 
-	 * @return
-	 *   A count of weather data files.
-	 */
-	public static int getFileCount() {
-		
-		return fileCount;
-	}
-	
 	/************************************************************************************************************
 	 * An accessor method to retrieve a list of files.
 	 * <p>
@@ -58,7 +44,6 @@ public class FileManager {
 		for (File file : path.listFiles(filter)) {
 			
 			result.add(file);
-			fileCount++;
 		}
 		
 		return result;
