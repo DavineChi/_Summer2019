@@ -2,6 +2,7 @@ package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /****************************************************************************************************************
  * This class is used to simplify retrieval of data files.
@@ -39,9 +40,9 @@ public class FileManager {
 	 * @return
 	 *   A list of weather data files.
 	 */
-	public static Queue<File> getWeatherFilesQueue(String pathname) {
+	public static ConcurrentLinkedQueue<File> getWeatherFilesQueue(String pathname) {
 		
-		Queue<File> result = new Queue<File>();
+		ConcurrentLinkedQueue<File> result = new ConcurrentLinkedQueue<File>();
 		
 		File path = new File(pathname);
 		
@@ -56,7 +57,7 @@ public class FileManager {
 		
 		for (File file : path.listFiles(filter)) {
 			
-			result.enqueue(file);
+			result.add(file);
 			fileCount++;
 		}
 		

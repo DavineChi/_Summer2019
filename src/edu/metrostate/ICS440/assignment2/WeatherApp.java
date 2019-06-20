@@ -43,7 +43,7 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 	
 	private static Query query;
 	
-	private static Queue<File> weatherFiles;
+	private static ConcurrentLinkedQueue<File> weatherFiles;
 	private static ConcurrentLinkedQueue<WeatherData> resultQueue = new ConcurrentLinkedQueue<WeatherData>();
 	
 	private static void getProgramInput() {
@@ -130,6 +130,7 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 		System.out.println("Running now...");
 		System.out.println();
 		
+		// TODO: ...your program should create one future for each file, and execute that future via a callable.
 		for (int i = 0; i < futuresCount; i++) {
 			
 			// Step #1:
@@ -145,17 +146,35 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 	// 
 	private static void getFutures() {
 		
+		int futureCount = 1;
+		
+		int qSize = resultQueue.size();
+		
+		System.out.println("Main Queue Size: " + qSize);
+		
 		try {
 			
 			for (Future<ConcurrentLinkedQueue<WeatherData>> future : list) {
 				
-				for (int i = 0; i < future.get().size(); i++) {
-					
-					// Step #2:
-					// Consolidate the query results from all the files into one list.
-					resultQueue.add(future.get().poll());
-				}
+				ConcurrentLinkedQueue<WeatherData> queue = future.get();
+				int size = queue.size();
+				
+				System.out.println("Future " + futureCount + ", Size: " + size);
+				
+				futureCount++;
 			}
+			
+//			for (Future<ConcurrentLinkedQueue<WeatherData>> future : list) {
+//				
+//				for (int i = 0; i < future.get().size(); i++) {
+//					
+//					// Step #2:
+//					// Consolidate the query results from all the files into one list.
+//					ConcurrentLinkedQueue<WeatherData> queue = future.get();
+//					
+//					resultQueue.addAll(queue);
+//				}
+//			}
 		}
 		
 		catch (InterruptedException | ExecutionException ex) {
@@ -176,9 +195,9 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 		Callable<ConcurrentLinkedQueue<WeatherData>> callable = new WeatherApp();
 		
 		{
-			startYear = 1990;
-			endYear = 1998;
-			startMonth = 7;
+			startYear = 1945;
+			endYear = 2015;
+			startMonth = 1;
 			endMonth = 12;
 			element = "TMAX";
 			
@@ -198,11 +217,11 @@ public class WeatherApp implements Callable<ConcurrentLinkedQueue<WeatherData>> 
 		
 		executor.shutdown();
 		
-		ConcurrentLinkedQueue<WeatherData> finalSet = Finalist.process(resultQueue, query);
-		ConcurrentLinkedQueue<WeatherData> results = WeatherData.filter(finalSet, 5);
-		
-		WeatherApp.printResults(results);
-		
-		System.out.println("Processing complete.");
+//		ConcurrentLinkedQueue<WeatherData> finalSet = Finalist.process(resultQueue, query);
+//		ConcurrentLinkedQueue<WeatherData> results = WeatherData.filter(finalSet, 5);
+//		
+//		WeatherApp.printResults(results);
+//		
+//		System.out.println("Processing complete.");
 	}
 }
