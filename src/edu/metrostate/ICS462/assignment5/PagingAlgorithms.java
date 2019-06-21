@@ -281,8 +281,8 @@ import java.util.Random;
 	 *   this parameter is not used
 	 * 
 	 * @postcondition
-	 *   The three following page-swapping algorithms have operated on three distinct sets of page-reference
-	 *   strings and the results have been output to a text file on local storage:
+	 *   The following three page-replacement algorithms have operated on three distinct sets of page-reference
+	 *   strings, and the results have been output to a text file on local storage:
 	 * <p>
 	 * 
 	 * <CODE>First-In-First-Out (FIFO)</CODE></br>
