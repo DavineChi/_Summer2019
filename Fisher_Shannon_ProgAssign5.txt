@@ -1,133 +1,91 @@
 Shannon Fisher
 ICS 462 Programming Assignment 5
 
-For 1 page frames, and using string page reference string: [8, 2, 0, 1, 7, 4, 1, 0, 8, 6, 4, 7, 5, 1, 6, 8, 4, 9, 6, 4]
+For 1 page frames, and using string page reference string: [1, 4, 9, 5, 6, 1, 1, 5, 7, 9, 1, 2, 8, 2, 8, 1, 2, 1, 4, 3]
 
-    FIFO had 20 page faults.
-     LRU had 20 page faults.
-     OPT had 20 page faults.
+    FIFO had 19 page faults.
 
-For 2 page frames, and using string page reference string: [8, 2, 0, 1, 7, 4, 1, 0, 8, 6, 4, 7, 5, 1, 6, 8, 4, 9, 6, 4]
+For 2 page frames, and using string page reference string: [1, 4, 9, 5, 6, 1, 1, 5, 7, 9, 1, 2, 8, 2, 8, 1, 2, 1, 4, 3]
 
-    FIFO had 20 page faults.
-     LRU had 20 page faults.
-     OPT had 16 page faults.
+    FIFO had 16 page faults.
 
-For 3 page frames, and using string page reference string: [8, 2, 0, 1, 7, 4, 1, 0, 8, 6, 4, 7, 5, 1, 6, 8, 4, 9, 6, 4]
-
-    FIFO had 18 page faults.
-     LRU had 18 page faults.
-     OPT had 13 page faults.
-
-For 4 page frames, and using string page reference string: [8, 2, 0, 1, 7, 4, 1, 0, 8, 6, 4, 7, 5, 1, 6, 8, 4, 9, 6, 4]
+For 3 page frames, and using string page reference string: [1, 4, 9, 5, 6, 1, 1, 5, 7, 9, 1, 2, 8, 2, 8, 1, 2, 1, 4, 3]
 
     FIFO had 13 page faults.
-     LRU had 16 page faults.
-     OPT had 11 page faults.
 
-For 5 page frames, and using string page reference string: [8, 2, 0, 1, 7, 4, 1, 0, 8, 6, 4, 7, 5, 1, 6, 8, 4, 9, 6, 4]
+For 4 page frames, and using string page reference string: [1, 4, 9, 5, 6, 1, 1, 5, 7, 9, 1, 2, 8, 2, 8, 1, 2, 1, 4, 3]
 
-    FIFO had 12 page faults.
-     LRU had 14 page faults.
-     OPT had 9 page faults.
+    FIFO had 13 page faults.
 
-For 6 page frames, and using string page reference string: [8, 2, 0, 1, 7, 4, 1, 0, 8, 6, 4, 7, 5, 1, 6, 8, 4, 9, 6, 4]
+For 5 page frames, and using string page reference string: [1, 4, 9, 5, 6, 1, 1, 5, 7, 9, 1, 2, 8, 2, 8, 1, 2, 1, 4, 3]
 
-    FIFO had 10 page faults.
-     LRU had 10 page faults.
-     OPT had 9 page faults.
+    FIFO had 11 page faults.
 
-For 7 page frames, and using string page reference string: [8, 2, 0, 1, 7, 4, 1, 0, 8, 6, 4, 7, 5, 1, 6, 8, 4, 9, 6, 4]
+For 6 page frames, and using string page reference string: [1, 4, 9, 5, 6, 1, 1, 5, 7, 9, 1, 2, 8, 2, 8, 1, 2, 1, 4, 3]
 
-    FIFO had 10 page faults.
-     LRU had 9 page faults.
-     OPT had 9 page faults.
+    FIFO had 11 page faults.
+
+For 7 page frames, and using string page reference string: [1, 4, 9, 5, 6, 1, 1, 5, 7, 9, 1, 2, 8, 2, 8, 1, 2, 1, 4, 3]
+
+    FIFO had 11 page faults.
 
 ========================================================================================================================
 For 1 page frames, and using string page reference string: [0, 7, 1, 1, 2, 0, 8, 9, 0, 3, 0, 4, 5, 6, 7, 0, 8, 9, 1, 2]
 
-    FIFO had 19 page faults.
-     LRU had 19 page faults.
-     OPT had 19 page faults.
+    FIFO had 18 page faults.
 
 For 2 page frames, and using string page reference string: [0, 7, 1, 1, 2, 0, 8, 9, 0, 3, 0, 4, 5, 6, 7, 0, 8, 9, 1, 2]
 
-    FIFO had 18 page faults.
-     LRU had 18 page faults.
-     OPT had 15 page faults.
+    FIFO had 17 page faults.
 
 For 3 page frames, and using string page reference string: [0, 7, 1, 1, 2, 0, 8, 9, 0, 3, 0, 4, 5, 6, 7, 0, 8, 9, 1, 2]
 
-    FIFO had 18 page faults.
-     LRU had 17 page faults.
-     OPT had 14 page faults.
+    FIFO had 17 page faults.
 
 For 4 page frames, and using string page reference string: [0, 7, 1, 1, 2, 0, 8, 9, 0, 3, 0, 4, 5, 6, 7, 0, 8, 9, 1, 2]
 
-    FIFO had 17 page faults.
-     LRU had 16 page faults.
-     OPT had 13 page faults.
+    FIFO had 16 page faults.
 
 For 5 page frames, and using string page reference string: [0, 7, 1, 1, 2, 0, 8, 9, 0, 3, 0, 4, 5, 6, 7, 0, 8, 9, 1, 2]
 
-    FIFO had 17 page faults.
-     LRU had 15 page faults.
-     OPT had 12 page faults.
+    FIFO had 16 page faults.
 
 For 6 page frames, and using string page reference string: [0, 7, 1, 1, 2, 0, 8, 9, 0, 3, 0, 4, 5, 6, 7, 0, 8, 9, 1, 2]
 
-    FIFO had 16 page faults.
-     LRU had 15 page faults.
-     OPT had 11 page faults.
+    FIFO had 15 page faults.
 
 For 7 page frames, and using string page reference string: [0, 7, 1, 1, 2, 0, 8, 9, 0, 3, 0, 4, 5, 6, 7, 0, 8, 9, 1, 2]
 
-    FIFO had 16 page faults.
-     LRU had 15 page faults.
-     OPT had 10 page faults.
+    FIFO had 15 page faults.
 
 ========================================================================================================================
 For 1 page frames, and using string page reference string: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
 
     FIFO had 20 page faults.
-     LRU had 20 page faults.
-     OPT had 20 page faults.
 
 For 2 page frames, and using string page reference string: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
 
-    FIFO had 15 page faults.
-     LRU had 17 page faults.
-     OPT had 13 page faults.
+    FIFO had 14 page faults.
 
 For 3 page frames, and using string page reference string: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
 
-    FIFO had 15 page faults.
-     LRU had 12 page faults.
-     OPT had 9 page faults.
+    FIFO had 14 page faults.
 
 For 4 page frames, and using string page reference string: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
 
     FIFO had 10 page faults.
-     LRU had 8 page faults.
-     OPT had 8 page faults.
 
 For 5 page frames, and using string page reference string: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
 
-    FIFO had 9 page faults.
-     LRU had 7 page faults.
-     OPT had 7 page faults.
+    FIFO had 8 page faults.
 
 For 6 page frames, and using string page reference string: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
 
-    FIFO had 6 page faults.
-     LRU had 6 page faults.
-     OPT had 6 page faults.
+    FIFO had 5 page faults.
 
 For 7 page frames, and using string page reference string: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
 
-    FIFO had 6 page faults.
-     LRU had 6 page faults.
-     OPT had 6 page faults.
+    FIFO had 5 page faults.
 
 ========================================================================================================================
 
