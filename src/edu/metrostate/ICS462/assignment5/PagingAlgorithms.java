@@ -19,11 +19,9 @@ import java.util.Random;
 	private static int[] secondPageReference = { 0, 7, 1, 1, 2, 0, 8, 9, 0, 3, 0, 4, 5, 6, 7, 0, 8, 9, 1, 2 };
 	private static int[] thirdPageReference = { 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1 };
 
- 	private StringBuilder stringBuilder;
+ 	private static StringBuilder stringBuilder = new StringBuilder();
  	
  	public PagingAlgorithms() {
-
- 		this.stringBuilder = new StringBuilder();
  		
  		initialize();
 	}
@@ -274,7 +272,29 @@ import java.util.Random;
 		}
 	}
 	
- 	public static void main(String[] args) {
+	/************************************************************************************************************
+	 * Main method from where program execution begins.
+	 * <p>
+	 * 
+	 * @param args
+	 *   this parameter is not used
+	 * 
+	 * @postcondition
+	 *   The three following page-swapping algorithms have operated on three distinct sets of page-reference
+	 *   strings and the results have been output to a text file on local storage:
+	 * <p>
+	 * 
+	 * <CODE>First-In-First-Out (FIFO)</CODE></br>
+	 * <CODE>Least Recently Used (LRU)</CODE></br>
+	 * <CODE>Optimal (OPT)</CODE></br>
+	 * 
+	 * @throws InterruptedException
+	 *   InterruptedException is thrown if a thread is interrupted before or during its activity.
+	 * 
+	 * @throws IOException
+	 *   IOException is thrown if there is an I/O problem with the results file output.
+	 */
+ 	public static void main(String[] args) throws InterruptedException, IOException {
 
  		PagingAlgorithms application = new PagingAlgorithms();
 
@@ -294,13 +314,17 @@ import java.util.Random;
  				lruFaults =application.leastRecentlyUsed(currentReferenceString, pageFrames);
 				optimalFaults = application.optimal(currentReferenceString, pageFrames);
 				
-				System.out.println("For " + pageFrames + " page frames, and using string page reference string: " + Arrays.toString(currentReferenceString));
-				System.out.println();
-				System.out.println("    FIFO had " + fifoFaults + " page faults.");
-				System.out.println("     LRU had " + lruFaults + " page faults.");
-				System.out.println("     OPT had " + optimalFaults + " page faults.");
-				System.out.println();
+				stringBuilder.append("For " + pageFrames + " page frames, and using string page reference string: " + Arrays.toString(currentReferenceString) + "\r\n");
+				stringBuilder.append("\r\n");
+				stringBuilder.append("    FIFO had " + fifoFaults + " page faults.\r\n");
+				stringBuilder.append("     LRU had " + lruFaults + " page faults.\r\n");
+				stringBuilder.append("     OPT had " + optimalFaults + " page faults.\r\n");
+				stringBuilder.append("\r\n");
 			}
+ 			
+ 			stringBuilder.append("========================================================================================================================\r\n");
 		}
+ 		
+ 		application.writeToFile();
 	}
 }
