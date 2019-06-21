@@ -105,6 +105,7 @@ public class WeatherApp {
 		System.out.println("# of weather files: " + weatherFiles.size());
 		
 		// TODO: ...your program should create one future for each file, and execute that future via a callable.
+		// TODO: Update from class lecture (6/20/19): each callable submitted here should return top 5 from the file it processed.
 		for (File file : weatherFiles) {
 			
 			processor = new FileProcessor(file, query);
