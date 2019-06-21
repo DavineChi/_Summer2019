@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Random;
 
  public class PagingAlgorithms {
@@ -84,13 +84,10 @@ import java.util.Random;
 	}
 
  	public int leastRecentlyUsed(int[] referenceString, int pageSize) {
-
- 		Deque<Integer> deque = new LinkedList<Integer>();
+ 		
+ 		Deque<Integer> deque = new ArrayDeque<Integer>();
  		Integer found = null;
  		int faultCount = 0;
- 		
- 		int[] testList = { 9, 5, 7, 0, 3, 7, 4, 4, 7, 8, 2, 5, 7, 7, 7, 8, 9, 0, 4, 8 };
- 		referenceString = testList;
  		
 		for (int k = 0; k < referenceString.length; k++) {
 			
@@ -105,6 +102,7 @@ import java.util.Random;
 					Integer nextItem = it.next();
 					
 					if (nextItem == pageValue) {
+						
 						found = nextItem;
 						break;
 					}
@@ -116,8 +114,15 @@ import java.util.Random;
 				}
 			}
 			
+			else if (deque.size() < pageSize) {
+				
+				deque.addFirst(pageValue);
+				faultCount++;
+			}
+			
 			else {
 				
+				deque.pollLast();
 				deque.addFirst(pageValue);
 				faultCount++;
 			}
