@@ -221,29 +221,32 @@ public class PagingAlgorithms {
  			boolean matchFound = false;
 			boolean vacant = false;
 			int pageValue = referenceString[i];
-
+			
+			// Iterate over the queue to determine if the it already contains the value being proposed.
  			for (int k = 0; k < queue.length; k++) {
 
  				int queueValue = queue[k];
 
  				matchFound = false;
 				vacant = false;
-
+				
+				// Check for matching values.
  				if (queueValue == pageValue) {
 
  					matchFound = true;
 					break;
 				}
-
+ 				
+ 				// Check if there are any vacancies from initialization.
  				if (queueValue == -1) {
 
  					vacant = true;
 				}
 			}
  			
- 			// Next, we need to check if there are any vacancies in the data structure.
- 			// If so, this code will add the page into the queue at the appropriate index and then
- 			// advance that index in a way that maintains the properties of a circular buffer.
+ 			// Next, we need to check if there are any vacancies in the data structure.  If so, this
+ 			// code will add the page into the queue at the appropriate index and then advance that
+ 			// index in a way that maintains the properties of a circularbuffer.
  			if (vacant) {
 
  				queue[nextIndex] = referenceString[i];
@@ -251,37 +254,57 @@ public class PagingAlgorithms {
 				faultCount++;
 				continue;
 			}
-
+ 			
+ 			// Enter this conditional if there is no matching pair found and if there exists no more vacancies.
  			if (!matchFound && !vacant) {
  				
  				int maxDistance = -1;
 				int targetIndex = -1;
-
+				
+				// Iterate through whatever values are currently in the page frames queue in order
+				// to compare them with the values in the page-reference string.
  				for (int queueIndex = 0; queueIndex < queue.length; queueIndex++) {
  					
  					int qValue = queue[queueIndex];
 					int size = referenceString.length;
+					
+					// The variable 'threshold' is used as a decrementing index value representing a
+					// difference between the size of the page-reference string list's elements and
+					// where we currently are at this point in the main outer loop (i).
 					int threshold = size - i;
-
+					
+					// Begin traversing the remainder of the page-reference string beginning at the
+					// indexed element just after where we currently are (i + 1). This will help to
+					// find pages that will be referenced again in the future.
  					for (int offsetIndex = i + 1; offsetIndex < size; offsetIndex++) {
 
  						int nextRefVal = referenceString[offsetIndex];
-
+ 						
+ 						// If we find a value in the remainder of the page-reference string that
+ 						// matches an element in our queue...
  						if (qValue == nextRefVal) {
-
+ 							
+ 							// Determine what is larger - the previously initialized or set maxDistance
+ 							// or the distance to the next matching value in the page-reference string.
  							if (offsetIndex - i > maxDistance) {
-
- 								maxDistance = offsetIndex - i;
-								targetIndex = queueIndex;
+ 								
+ 								maxDistance = offsetIndex - i;  // set a new max distance value
+								targetIndex = queueIndex;       // maintain a reference to the insertion index
 								break;
 							}
 
  							else {
-
+ 								
+ 								// Although we did find a matching value, the offset index (difference) to that
+ 								// element is not larger than a previously-set value. We break here because we
+ 								// are no longer interested in considering this page-reference value.
  								break;
 							}
 						}
-
+ 						
+ 						// Here, threshold is decremented until it is equal to 1. When this happens, it
+ 						// means that the inner iteration could not find a matching value between the
+ 						// queue and the remaining page-reference strings. So, 
  						else if (--threshold == 1) {
 
  							maxDistance = referenceString.length;
@@ -289,18 +312,23 @@ public class PagingAlgorithms {
 						}
 					}
 				}
-
+ 				
+ 				// If no matching element could be found, add the page into the queue at the appropriate index
+ 				// and then advance that index in a way that maintains the properties of a circular buffer.
  				if (targetIndex == -1) {
 
  					queue[nextIndex] = referenceString[i];
 					nextIndex = Math.floorMod((nextIndex + 1), queue.length);
 				}
-
+ 				
+ 				// Otherwise, replace whatever page is in targetIndex with the value (i) we happen to be on.
  				else {
 
  					queue[targetIndex] = referenceString[i];
 				}
  				
+ 				// In any case, some work to update a page has been done inside this conditional.
+ 				// Therefore, we increment a page fault.
  				faultCount++;
 			}
 		}
@@ -376,7 +404,7 @@ public class PagingAlgorithms {
  		PagingAlgorithms application = new PagingAlgorithms();
 
  		// Create an array of page-reference string arrays.
- 		int[][] pageReferenceList = { randomPageReference, secondPageReference, thirdPageReference };
+ 		int[][] pageReferenceList = { secondPageReference, thirdPageReference };
 
  		// Iterate over the list of page-reference string arrays for processing.
  		for (int i = 0; i < pageReferenceList.length; i++) {
@@ -397,8 +425,8 @@ public class PagingAlgorithms {
 				stringBuilder.append("For " + pageFrames + " page frames, and using string page reference string: " + Arrays.toString(currentReferenceString) + "\r\n");
 				stringBuilder.append("\r\n");
 				stringBuilder.append("    FIFO had " + fifoFaults + " page faults.\r\n");
-				//stringBuilder.append("     LRU had " + lruFaults + " page faults.\r\n");
-				//stringBuilder.append("     OPT had " + optimalFaults + " page faults.\r\n");
+				stringBuilder.append("     LRU had " + lruFaults + " page faults.\r\n");
+				stringBuilder.append("     OPT had " + optimalFaults + " page faults.\r\n");
 				stringBuilder.append("\r\n");
 			}
  			
