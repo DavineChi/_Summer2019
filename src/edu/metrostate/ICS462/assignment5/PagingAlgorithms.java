@@ -89,6 +89,9 @@ import java.util.Random;
  		Integer found = null;
  		int faultCount = 0;
  		
+ 		int[] testList = { 9, 5, 7, 0, 3, 7, 4, 4, 7, 8, 2, 5, 7, 7, 7, 8, 9, 0, 4, 8 };
+ 		referenceString = testList;
+ 		
 		for (int k = 0; k < referenceString.length; k++) {
 			
 			int pageValue = referenceString[k];
@@ -169,19 +172,12 @@ import java.util.Random;
 			}
 
  			if (!matchFound && !vacant) {
-
- 				// testRefString = { 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1 };
-
+ 				
  				int maxDistance = -1;
 				int targetIndex = -1;
 
  				for (int queueIndex = 0; queueIndex < queue.length; queueIndex++) {
-
- 					if (i == 10) {
-
- 						String stop = "";
-					}
-
+ 					
  					int qValue = queue[queueIndex];
 					int size = referenceString.length;
 					int threshold = size - i;
