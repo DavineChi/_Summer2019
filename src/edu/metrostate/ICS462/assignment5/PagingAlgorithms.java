@@ -5,8 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 
  public class PagingAlgorithms {
@@ -19,14 +20,11 @@ import java.util.Random;
 	private static int[] thirdPageReference = { 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1 };
 
  	private StringBuilder stringBuilder;
-
- 	private Queue<Integer> queue;
-
+ 	
  	public PagingAlgorithms() {
 
  		this.stringBuilder = new StringBuilder();
-		this.queue = new LinkedList<Integer>();
-
+ 		
  		initialize();
 	}
 
@@ -49,37 +47,7 @@ import java.util.Random;
  			randomPageReference[i] = random.nextInt(10);
 		}
 	}
-
- 	public static void main(String[] args) {
-
- 		PagingAlgorithms application = new PagingAlgorithms();
-
- 		int[][] pageReferenceList = { randomPageReference, secondPageReference, thirdPageReference };
-
- 		for (int i = 0; i < pageReferenceList.length; i++) {
-
- 			for (int pageFrames = 1; pageFrames <= 7; pageFrames++) {
-
- 				int fifoFaults;
-				int lruFaults = -999; // TODO: implementation
-				int optimalFaults;
-				int[] currentReferenceString = pageReferenceList[i];
-
- 				fifoFaults = application.firstInFirstOut(currentReferenceString, pageFrames);
-				//application.leastRecentlyUsed(currentReferenceString, pageFrames);
-				optimalFaults = application.optimal(currentReferenceString, pageFrames);
-
- 				// TODO: Output results for this run.
-				System.out.println("For " + pageFrames + " page frames, and using string page reference string: " + Arrays.toString(currentReferenceString));
-				System.out.println();
-				System.out.println("    FIFO had " + fifoFaults + " page faults.");
-				//System.out.println("     LRU had " + lruFaults + " page faults.");
-				System.out.println("     OPT had " + optimalFaults + " page faults.");
-				System.out.println();
-			}
-		}
-	}
-
+	
  	public int firstInFirstOut(int[] referenceString, int pageSize) {
 
  		int faultCount = 0;
@@ -119,11 +87,42 @@ import java.util.Random;
 
  	public int leastRecentlyUsed(int[] referenceString, int pageSize) {
 
+ 		Deque<Integer> deque = new LinkedList<Integer>();
+ 		Integer found = null;
  		int faultCount = 0;
-
- 		// TODO: implementation
-
- 		return 0;
+ 		
+		for (int k = 0; k < referenceString.length; k++) {
+			
+			int pageValue = referenceString[k];
+			
+			if (deque.contains(pageValue)) {
+				
+				Iterator<Integer> it = deque.iterator();
+				
+				while (it.hasNext()) {
+					
+					Integer nextItem = it.next();
+					
+					if (nextItem == pageValue) {
+						found = nextItem;
+						break;
+					}
+				}
+				
+				if (deque.remove(found)) {
+					
+					deque.addFirst(found);
+				}
+			}
+			
+			else {
+				
+				deque.addFirst(pageValue);
+				faultCount++;
+			}
+		}
+ 		
+ 		return faultCount;
 	}
 
  	// **********************************************************************************************************
@@ -135,10 +134,9 @@ import java.util.Random;
  		int faultCount = 0;
 		int nextIndex = 0;
 		int[] queue = new int[pageSize];
-		//int[] testRefString = { 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1 };
-
+		
  		Arrays.fill(queue, -1);
-
+ 		
  		for (int i = 0; i < referenceString.length; i++) {
 
  			boolean matchFound = false;
@@ -273,6 +271,36 @@ import java.util.Random;
  		finally {
 
  			printWriter.close();
+		}
+	}
+	
+ 	public static void main(String[] args) {
+
+ 		PagingAlgorithms application = new PagingAlgorithms();
+
+ 		int[][] pageReferenceList = { randomPageReference, secondPageReference, thirdPageReference };
+
+ 		for (int i = 0; i < pageReferenceList.length; i++) {
+
+ 			for (int pageFrames = 1; pageFrames <= 7; pageFrames++) {
+
+ 				int fifoFaults;
+				int lruFaults;
+				int optimalFaults;
+				
+				int[] currentReferenceString = pageReferenceList[i];
+
+ 				fifoFaults = application.firstInFirstOut(currentReferenceString, pageFrames);
+ 				lruFaults =application.leastRecentlyUsed(currentReferenceString, pageFrames);
+				optimalFaults = application.optimal(currentReferenceString, pageFrames);
+				
+				System.out.println("For " + pageFrames + " page frames, and using string page reference string: " + Arrays.toString(currentReferenceString));
+				System.out.println();
+				System.out.println("    FIFO had " + fifoFaults + " page faults.");
+				System.out.println("     LRU had " + lruFaults + " page faults.");
+				System.out.println("     OPT had " + optimalFaults + " page faults.");
+				System.out.println();
+			}
 		}
 	}
 }
