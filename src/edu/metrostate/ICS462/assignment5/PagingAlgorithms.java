@@ -147,42 +147,62 @@ public class PagingAlgorithms {
  	 */
  	public int leastRecentlyUsed(int[] referenceString, int frameSize) {
  		
+ 		// Java's Deque interface is well-suited for this algorithm by providing a few
+ 		// convenient methods to easily keep track of element additions and removals.
  		Deque<Integer> deque = new ArrayDeque<Integer>();
+ 		
+ 		// The 'found' variable will be used as a reference in a matching scenario.
  		Integer found = null;
  		int faultCount = 0;
  		
+ 		// Start by iterating over the page-reference string.
 		for (int k = 0; k < referenceString.length; k++) {
 			
 			int pageValue = referenceString[k];
 			
+			// Check if the deque contains the proposed value.
 			if (deque.contains(pageValue)) {
 				
 				Iterator<Integer> it = deque.iterator();
 				
+				// If the deque contains the proposed value, iterate over the deque.
 				while (it.hasNext()) {
 					
 					Integer nextItem = it.next();
 					
+					// Find the next item in the collection that matches the proposed value.
 					if (nextItem == pageValue) {
 						
+						// Store a reference to the matching item, then break because there
+						// will never be two items of the same value in the deque so there is
+						// no need to look any further in the collection.
 						found = nextItem;
 						break;
 					}
 				}
 				
+				// Remove the matching item from the deque, regardless of where it is located.
 				if (deque.remove(found)) {
 					
+					// Add the matching item back to the front of the deque ('top' of the stack);
 					deque.addFirst(found);
 				}
 			}
 			
+			// If the deque does not contain the proposed value, check to see if we still have
+			// enough capacity to add to the deque without shifting any other elements around.
 			else if (deque.size() < frameSize) {
 				
+				// Add to the front of the deque.
 				deque.addFirst(pageValue);
 				faultCount++;
 			}
 			
+			// If the proposed value is not found in the deque, and if there is no more room to
+			// add to the deque, the we remove the 'last' element in the deque and then add the
+			// page value to the front of the deque.
 			else {
+				
 				
 				deque.pollLast();
 				deque.addFirst(pageValue);
