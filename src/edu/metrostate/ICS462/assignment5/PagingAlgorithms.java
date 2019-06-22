@@ -96,6 +96,9 @@ public class PagingAlgorithms {
 		int nextIndex = 0;
 		int[] queue = new int[frameSize];
 		
+		// Fill the queue with sentinel values to indicate vacancies.
+ 		Arrays.fill(queue, -1);
+		
 		// Start by iterating over the page-reference string.
  		for (int i = 0; i < referenceString.length; i++) {
  			
@@ -202,7 +205,6 @@ public class PagingAlgorithms {
 			// add to the deque, the we remove the 'last' element in the deque and then add the
 			// page value to the front of the deque.
 			else {
-				
 				
 				deque.pollLast();
 				deque.addFirst(pageValue);
@@ -424,8 +426,8 @@ public class PagingAlgorithms {
  		PagingAlgorithms application = new PagingAlgorithms();
 
  		// Create an array of page-reference string arrays.
- 		int[][] pageReferenceList = { secondPageReference, thirdPageReference };
-
+ 		int[][] pageReferenceList = { randomPageReference, secondPageReference, thirdPageReference };
+ 		
  		// Iterate over the list of page-reference string arrays for processing.
  		for (int i = 0; i < pageReferenceList.length; i++) {
  			
