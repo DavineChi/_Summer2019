@@ -109,12 +109,18 @@ public class Query {
 		int wdYear = weatherData.getYear();
 		int wdMonth = weatherData.getMonth();
 		String wdElement = weatherData.getElement();
+		float wdValue = weatherData.getValue();
+		String wdQflag = weatherData.getQflag();
 		
 		boolean result = false;
 		
-		if (wdYear >= startYear && wdYear <= endYear &&
-			wdMonth >= startMonth && wdMonth <= endMonth &&
-			wdElement.equals(element)) {
+		if (wdYear >= startYear &&
+			wdYear <= endYear &&
+			wdMonth >= startMonth &&
+			wdMonth <= endMonth &&
+			wdElement.equals(element) &&
+			wdValue != -999.9f &&
+			wdQflag.equals(" ")) {
 			
 			result = true;
 		}

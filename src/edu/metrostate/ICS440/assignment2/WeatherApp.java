@@ -1,8 +1,8 @@
 package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -72,17 +72,17 @@ public class WeatherApp {
 		System.out.println("   End month: " + endMonth);
 		System.out.println("Temperatures: " + element);
 		System.out.println();
-		System.out.println("Press [Enter] to execute the search.");
-		
-		try {
-			
-			System.in.read();
-		}
-		
-		catch (IOException ex) {
-			
-			ex.printStackTrace();
-		}
+//		System.out.println("Press [Enter] to execute the search.");
+//		
+//		try {
+//			
+//			System.in.read();
+//		}
+//		
+//		catch (IOException ex) {
+//			
+//			ex.printStackTrace();
+//		}
 	}
 	
 	private static void printResults(ConcurrentLinkedQueue<WeatherData> queue) {
@@ -114,7 +114,10 @@ public class WeatherApp {
 			// Add a new future and submit it for each weather data file.
 			Future<ConcurrentLinkedQueue<WeatherData>> future = processor.process();
 			
-			list.add(future);
+			if (future != null) {
+				
+				list.add(future);
+			}
 		}
 	}
 	
@@ -127,11 +130,17 @@ public class WeatherApp {
 			
 			for (Future<ConcurrentLinkedQueue<WeatherData>> future : list) {
 				
-				for (WeatherData item : future.get()) {
+				if (future.get() != null) {
 					
-					// Step #2:
-					// Consolidate the query results from all the files into one list.
-					resultQueue.add(item);
+					for (WeatherData item : future.get()) {
+						
+						// Step #2:
+						// Consolidate the query results from all the files into one list.
+						if (item != null) {
+							
+							resultQueue.add(item);
+						}
+					}
 				}
 			}
 		}
@@ -176,21 +185,40 @@ public class WeatherApp {
 		
 		processor.shutdownExecutor();
 		
-		FinalProcessor finalProcessor = new FinalProcessor(resultQueue, query);
 		List<Future<ConcurrentLinkedQueue<WeatherData>>> finalsList = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
 		
-		for (int i = 0; i < 4; i++) {
+		double size = resultQueue.size();
+		int splitSize = (int)Math.ceil(size / Constants.FINAL_FUTURES);
+		
+		ConcurrentLinkedQueue<WeatherData> splitQueue = new ConcurrentLinkedQueue<WeatherData>();
+		Iterator<WeatherData> it = resultQueue.iterator();
+		
+		int limit = 0;
+		
+		while (it.hasNext()) {
 			
-			Future<ConcurrentLinkedQueue<WeatherData>> future = finalProcessor.process();
+			WeatherData nextItem = it.next();
 			
-			finalsList.add(future);
+			if (limit < splitSize) {
+				
+				splitQueue.add(nextItem);
+				limit++;
+			}
+			
+			if (limit == splitSize) {
+				
+//				FinalProcessor finalProcessor = new FinalProcessor(splitQueue, query);
+//				Future<ConcurrentLinkedQueue<WeatherData>> future = finalProcessor.process();
+//				finalsList.add(future);
+				
+				splitQueue.clear();
+				
+				// reset the limit counter, continue splitting the queue
+				limit = 0;
+			}
 		}
 		
-//		ConcurrentLinkedQueue<WeatherData> finalSet = FinalProcessor.process(resultQueue, query);
-//		ConcurrentLinkedQueue<WeatherData> results = WeatherData.filter(finalSet, 5);
-		
 //		WeatherApp.printResults(results);
-		
 		System.out.println("Processing complete.");
 	}
 }

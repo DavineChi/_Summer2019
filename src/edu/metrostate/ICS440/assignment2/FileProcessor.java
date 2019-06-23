@@ -35,6 +35,20 @@ public class FileProcessor implements Callable<ConcurrentLinkedQueue<WeatherData
 		this.query = query;
 	}
 	
+	@Override
+	public ConcurrentLinkedQueue<WeatherData> call() throws Exception {
+		
+		ConcurrentLinkedQueue<WeatherData> discovered = WeatherData.search(file, query, threadId.get());
+		ConcurrentLinkedQueue<WeatherData> filtered = null;
+		
+		if (discovered != null) {
+			
+			filtered = WeatherData.filter(discovered, 5);
+		}
+		
+		return filtered;
+	}
+	
 	public Future<ConcurrentLinkedQueue<WeatherData>> process() {
 		
 		Future<ConcurrentLinkedQueue<WeatherData>> result = executor.submit(this);
@@ -45,11 +59,5 @@ public class FileProcessor implements Callable<ConcurrentLinkedQueue<WeatherData
 	public void shutdownExecutor() {
 		
 		executor.shutdown();
-	}
-	
-	@Override
-	public ConcurrentLinkedQueue<WeatherData> call() throws Exception {
-		
-		return WeatherData.search(file, query, threadId.get());
 	}
 }

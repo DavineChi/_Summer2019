@@ -1,11 +1,9 @@
 package edu.metrostate.ICS440.assignment2;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -66,116 +64,10 @@ public class FinalProcessor implements Callable<ConcurrentLinkedQueue<WeatherDat
 		return null;
 	}
 	
-	// **********************************************************************************************************
-	// Private helper method to determine the largest item in the Queue.
-	// 
-	private static ConcurrentLinkedQueue<WeatherData> findMax() {
-		
-		// TODO: implementation
-		
-		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
-		WeatherData item = null;
-		
-		float largest = -9999.9f;
-		
-		Iterator<WeatherData> firstIterator = localQueue.iterator();
-		Iterator<WeatherData> secondIterator = localQueue.iterator();
-		
-		//for (WeatherData item : localQueue) {
-		while (firstIterator.hasNext()) {
-		
-			item = firstIterator.next();
-			
-			float currentItemValue = item.getValue();
-			
-			if (currentItemValue >= largest) {
-				
-				largest = currentItemValue;
-			}
-		}
-		
-		item = null;
-		
-		while (secondIterator.hasNext()) {
-			
-			item = secondIterator.next();
-			
-			float currentItemValue = item.getValue();
-			
-			if (currentItemValue == largest) {
-				
-				result.add(item);
-			}
-		}
-		
-		return result;
-	}
-	
-	// **********************************************************************************************************
-	// Private helper method to submit new futures to the thread pool for execution.
-	// 
-//	private static void addFutures(Callable<ConcurrentLinkedQueue<WeatherData>> callable) {
-//		
-//		for (int i = 0; i < Constants.FINAL_FUTURES; i++) {
-//			
-//			Future<ConcurrentLinkedQueue<WeatherData>> future = executor.submit(callable);
-//			
-//			list.add(future);
-//		}
-//	}
-	
-	// **********************************************************************************************************
-	// Private helper method to submit new futures to the thread pool for execution.
-	// 
-	private static void addFutures() {
-		
-		
-	}
-	
-	// **********************************************************************************************************
-	// Private helper method to wait for all futures to compute and return their results.
-	// 
-	private static void getFutures() {
-		
-		// TODO: getting NPE here
-		
-		try {
-			
-			for (Future<ConcurrentLinkedQueue<WeatherData>> future : list) {
-				
-				for (int i = 0; i < future.get().size(); i++) {
-					
-					result.add(future.get().poll());
-				}
-			}
-		}
-		
-		catch (InterruptedException | ExecutionException ex) {
-			
-			ex.printStackTrace();
-		}
-	}
-	
 	public Future<ConcurrentLinkedQueue<WeatherData>> process() {
 		
 		Future<ConcurrentLinkedQueue<WeatherData>> result = executor.submit(this);
 		
 		return result;
 	}
-	
-//	public static ConcurrentLinkedQueue<WeatherData> process(ConcurrentLinkedQueue<WeatherData> queue, Query query) {
-//		
-//		Callable<ConcurrentLinkedQueue<WeatherData>> finalCallable = new FinalProcessor();
-//		
-//		localQueue = queue;
-//		localQuery = query;
-//		
-//		//FinalProcessor.addFutures(finalCallable);
-//		FinalProcessor.addFutures();
-//		FinalProcessor.getFutures();
-//		
-//		executor.shutdown();
-//		
-//		return result;
-//	}
 }

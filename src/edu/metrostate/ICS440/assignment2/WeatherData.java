@@ -2,6 +2,7 @@ package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -109,69 +110,6 @@ public class WeatherData {
 		return qflag;
 	}
 	
-	public static ConcurrentLinkedQueue<WeatherData> search(ConcurrentLinkedQueue<File> fileList, Query query, Integer threadId) {
-		
-		Scanner input = null;
-		String nextLine;
-		ConcurrentLinkedQueue<WeatherData> queue = new ConcurrentLinkedQueue<WeatherData>();
-		
-		try {
-			
-			for (int i = 0; i < fileList.size(); i++) {
-				
-				File file = fileList.poll();
-				input = new Scanner(file);
-				
-				Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
-				
-				while (input.hasNextLine()) {
-
-					nextLine = input.nextLine();
-
-					String id = nextLine.substring(0,11);
-					int year = Integer.valueOf(nextLine.substring(11,15).trim());
-					int month = Integer.valueOf(nextLine.substring(15,17).trim());
-					String element = nextLine.substring(17,21);
-					int days = (nextLine.length() - 21) / 8;     // Number of days in the line
-
-					WeatherData weatherData;
-
-					for (int j = 0; j < days; j++) {             // Process each day in the line
-						
-						weatherData = new WeatherData();
-						
-						weatherData.day = j + 1;
-						
-						float value = Float.valueOf(nextLine.substring(21 + 8 * j, 26 + 8 * j).trim()) / 10.0f;
-						String qflag = nextLine.substring((27 + 8 * j), (28 + 8 * j));
-						
-						weatherData.id = id;
-						weatherData.year = year;
-						weatherData.month = month;
-						weatherData.element = element;
-						weatherData.value = value;
-						weatherData.qflag = qflag;
-						
-						if (qflag.equals(" ")) {
-							
-							if (query.matches(weatherData)) {
-								
-								queue.add(weatherData);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		catch (FileNotFoundException ex) {
-
-			ex.printStackTrace();
-		}
-		
-		return queue;
-	}
-	
 	public static ConcurrentLinkedQueue<WeatherData> search(File file, Query query, Integer threadId) {
 		
 		Scanner input = null;
@@ -212,12 +150,9 @@ public class WeatherData {
 					weatherData.value = value;
 					weatherData.qflag = qflag;
 					
-					if (qflag.equals(" ")) {
+					if (query.matches(weatherData)) {
 						
-						if (query.matches(weatherData)) {
-							
-							queue.add(weatherData);
-						}
+						queue.add(weatherData);
 					}
 				}
 			}
@@ -228,53 +163,60 @@ public class WeatherData {
 			ex.printStackTrace();
 		}
 		
+		if (queue.isEmpty()) {
+			
+			queue = null;
+		}
+		
 		return queue;
 	}
 	
 	public static ConcurrentLinkedQueue<WeatherData> filter(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
 		
-		// TODO: determine sort mechanism for the top results
-		
 		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
-		WeatherData dataItem;
-		String element = "";
+		WeatherData largestWeatherDataItem = null;
+		
+		float[] ignoreList = new float[threshold];
+		
+		Arrays.fill(ignoreList, -1.0f);
 		
 		int counter = 0;
-		float limit = 0;
 		
-		for (int i = 0; i < queue.size(); i++) {
+		while (counter < threshold) {
 			
-			if (counter < threshold) {
+			largestWeatherDataItem = getLargest(queue, ignoreList);
+			ignoreList[counter] = largestWeatherDataItem.getValue();
+			
+			result.add(largestWeatherDataItem);
+			
+			counter++;
+		}
+		
+		return result;
+	}
+	
+	private static WeatherData getLargest(ConcurrentLinkedQueue<WeatherData> queue, float[] ignore) {
+		
+		WeatherData result = null;
+		float largest = -9999.9f;
+		
+		for (WeatherData item : queue) {
+			
+			float wdValue = item.getValue();
+			boolean matchFound = false;
+			
+			for (int i = 0; i < ignore.length; i++) {
 				
-				dataItem = queue.poll();
-				element = dataItem.getElement();
-				
-				// TMAX
-				if (element.equals("TMAX")) {
+				if (wdValue == ignore[i]) {
 					
-					if (dataItem.getValue() >= limit) {
-						
-						limit = dataItem.getValue();
-						
-						result.add(dataItem);
-					}
+					matchFound = true;
 				}
+			}
+			
+			if (wdValue > largest  && !matchFound) {
 				
-				// TMIN
-				else if (element.equals("TMIN")) {
-					
-					if (limit == 0) {
-						
-						limit = dataItem.getValue();
-					}
-					
-					if (dataItem.getValue() <= limit) {
-						
-						result.add(dataItem);
-					}
-				}
-				
-				counter++;
+				largest = wdValue;
+				result = item;
 			}
 		}
 		
