@@ -1,6 +1,7 @@
 package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,6 +13,7 @@ public class WeatherApp {
 	
 	private static List<Future<ConcurrentLinkedQueue<WeatherData>>> list = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
 	private static List<Future<ConcurrentLinkedQueue<WeatherData>>> finalsList = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
+	
 	private static Scanner input = new Scanner(System.in);
 
 	private static int startYear;
@@ -87,7 +89,7 @@ public class WeatherApp {
 //		}
 	}
 	
-	static void printResults(ConcurrentLinkedQueue<WeatherData> queue) {
+	public static void printResults(ConcurrentLinkedQueue<WeatherData> queue) {
 		
 		System.out.println();
 		
@@ -217,6 +219,13 @@ public class WeatherApp {
 		WeatherApp.addFutures();
 		WeatherApp.getFutures();
 		
+		// Needed to ensure that all results have been collected from the futures
+		// before proceeding to the next phase of processing. Failure to do this
+		// seems to occasionally result in a NullPointerException and duplicated
+		// output result sets, presumably from moving to the final set before this
+		// part is complete.
+		// while (!processor.shutdownExecutor()) {};
+		
 		processor.shutdownExecutor();
 	}
 	
@@ -237,13 +246,11 @@ public class WeatherApp {
 	 */
 	public static void run() {
 		
-		//WeatherApp weatherApp = new WeatherApp();
-		
 		{
-			startYear = 1996;
-			endYear = 1998;
-			startMonth = 6;
-			endMonth = 8;
+			startYear = 2005;
+			endYear = 2006;
+			startMonth = 2;
+			endMonth = 4;
 			element = "TMIN";
 			
 			query = new Query(startYear, endYear, startMonth, endMonth, element);

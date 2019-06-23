@@ -59,5 +59,24 @@ public class FileProcessor implements Callable<ConcurrentLinkedQueue<WeatherData
 	public void shutdownExecutor() {
 		
 		executor.shutdown();
+		
+//		boolean result = false;
+//		
+//		try {
+//			
+//			executor.shutdown();
+//			
+//			if (executor.awaitTermination(60, TimeUnit.SECONDS)) {
+//				
+//				result = true;
+//			}
+//		}
+//		
+//		catch (InterruptedException ex) {
+//			
+//			ex.printStackTrace();
+//		}
+//		
+//		return result;
 	}
 }

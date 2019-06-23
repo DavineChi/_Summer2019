@@ -197,8 +197,6 @@ public class WeatherData {
 	
 	public static ConcurrentLinkedQueue<WeatherData> filterMin(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
 		
-		//WeatherApp.printResults(queue);
-		
 		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		WeatherData smallestWeatherDataItem = null;
 		
