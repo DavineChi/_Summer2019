@@ -2,7 +2,6 @@ package edu.metrostate.ICS440.assignment2;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,6 +11,7 @@ import java.util.concurrent.Future;
 public class WeatherApp {
 	
 	private static List<Future<ConcurrentLinkedQueue<WeatherData>>> list = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
+	private static List<Future<ConcurrentLinkedQueue<WeatherData>>> finalsList = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
 	private static Scanner input = new Scanner(System.in);
 
 	private static int startYear;
@@ -24,8 +24,10 @@ public class WeatherApp {
 	
 	private static ConcurrentLinkedQueue<File> weatherFiles;
 	private static ConcurrentLinkedQueue<WeatherData> resultQueue = new ConcurrentLinkedQueue<WeatherData>();
+	private static ConcurrentLinkedQueue<WeatherData> finalQueue = new ConcurrentLinkedQueue<WeatherData>();
 	
-	private static FileProcessor processor;
+	private static FileProcessor processor = null;
+	private static FinalProcessor finalProcessor = null;
 	
 	private static void getProgramInput() {
 
@@ -85,7 +87,9 @@ public class WeatherApp {
 //		}
 	}
 	
-	private static void printResults(ConcurrentLinkedQueue<WeatherData> queue) {
+	static void printResults(ConcurrentLinkedQueue<WeatherData> queue) {
+		
+		System.out.println();
 		
 		while (queue.size() != 0) {
 
@@ -100,12 +104,9 @@ public class WeatherApp {
 	// 
 	private static void addFutures() {
 		
-		System.out.println("Running now...");
+		System.out.println("Running now... (processing " + weatherFiles.size() + " weather data files)");
 		System.out.println();
-		System.out.println("# of weather files: " + weatherFiles.size());
 		
-		// TODO: ...your program should create one future for each file, and execute that future via a callable.
-		// TODO: Update from class lecture (6/20/19): each callable submitted here should return top 5 from the file it processed.
 		for (File file : weatherFiles) {
 			
 			processor = new FileProcessor(file, query);
@@ -151,6 +152,82 @@ public class WeatherApp {
 		}
 	}
 	
+	// **********************************************************************************************************
+	// Private helper method to submit new final futures to the thread pool for execution.
+	// 
+	private static void addFinalFutures() {
+		
+		ConcurrentLinkedQueue<WeatherData> splitQueue;
+		
+		double queueSize = resultQueue.size();
+		int splitSize = (int)Math.ceil(queueSize / Constants.FINAL_FUTURES); // Divide the results list by 4.
+		
+		for (int futureNumber = 1; futureNumber <= Constants.FINAL_FUTURES; futureNumber++) {
+			
+			splitQueue = new ConcurrentLinkedQueue<WeatherData>();
+			
+			for (int queueIndex = 0; (resultQueue.peek() != null) && (queueIndex < splitSize); queueIndex++) {
+				
+				WeatherData nextItem = resultQueue.poll();
+				splitQueue.add(nextItem);
+			}
+			
+			finalProcessor = new FinalProcessor(splitQueue, query);
+			Future<ConcurrentLinkedQueue<WeatherData>> future = finalProcessor.process();
+			
+			if (future != null) {
+				
+				finalsList.add(future);
+			}
+		}
+	}
+	
+	// **********************************************************************************************************
+	// Private helper method to wait for all final futures to compute and return their results.
+	// 
+	private static void getFinalFutures() {
+		
+		try {
+			
+			for (Future<ConcurrentLinkedQueue<WeatherData>> future : finalsList) {
+				
+				if (future.get() != null) {
+					
+					for (WeatherData item : future.get()) {
+						
+						// Step #2:
+						// Consolidate the query results from all the files into one list.
+						if (item != null) {
+							
+							finalQueue.add(item);
+						}
+					}
+				}
+			}
+		}
+		
+		catch (InterruptedException | ExecutionException ex) {
+			
+			ex.printStackTrace();
+		}
+	}
+	
+	public static void processInitialFutures() {
+		
+		WeatherApp.addFutures();
+		WeatherApp.getFutures();
+		
+		processor.shutdownExecutor();
+	}
+	
+	public static void processFinalFutures() {
+		
+		WeatherApp.addFinalFutures();
+		WeatherApp.getFinalFutures();
+		
+		finalProcessor.shutdownExecutor();
+	}
+	
 	/************************************************************************************************************
 	 * Calling this method will initiate the search program.
 	 * <p>
@@ -167,7 +244,7 @@ public class WeatherApp {
 			endYear = 1998;
 			startMonth = 6;
 			endMonth = 8;
-			element = "TMAX";
+			element = "TMIN";
 			
 			query = new Query(startYear, endYear, startMonth, endMonth, element);
 		}
@@ -180,45 +257,12 @@ public class WeatherApp {
 		
 //		Queue<StationData> stationsList;
 		
-		WeatherApp.addFutures();
-		WeatherApp.getFutures();
+		WeatherApp.processInitialFutures();
+		WeatherApp.processFinalFutures();
 		
-		processor.shutdownExecutor();
+		ConcurrentLinkedQueue<WeatherData> endingResults = query.retrieve(finalQueue, Constants.QUERY_RESULT_SIZE);
 		
-		List<Future<ConcurrentLinkedQueue<WeatherData>>> finalsList = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
-		
-		double size = resultQueue.size();
-		int splitSize = (int)Math.ceil(size / Constants.FINAL_FUTURES);
-		
-		ConcurrentLinkedQueue<WeatherData> splitQueue = new ConcurrentLinkedQueue<WeatherData>();
-		Iterator<WeatherData> it = resultQueue.iterator();
-		
-		int limit = 0;
-		
-		while (it.hasNext()) {
-			
-			WeatherData nextItem = it.next();
-			
-			if (limit < splitSize) {
-				
-				splitQueue.add(nextItem);
-				limit++;
-			}
-			
-			if (limit == splitSize) {
-				
-//				FinalProcessor finalProcessor = new FinalProcessor(splitQueue, query);
-//				Future<ConcurrentLinkedQueue<WeatherData>> future = finalProcessor.process();
-//				finalsList.add(future);
-				
-				splitQueue.clear();
-				
-				// reset the limit counter, continue splitting the queue
-				limit = 0;
-			}
-		}
-		
-//		WeatherApp.printResults(results);
+		WeatherApp.printResults(endingResults);
 		System.out.println("Processing complete.");
 	}
 }

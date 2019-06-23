@@ -1,5 +1,7 @@
 package edu.metrostate.ICS440.assignment2;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /****************************************************************************************************************
  * A class to encapsulate query information for use with weather data files.
  * <p>
@@ -92,6 +94,24 @@ public class Query {
 	public String getElement() {
 		
 		return element;
+	}
+	
+	public ConcurrentLinkedQueue<WeatherData> retrieve(ConcurrentLinkedQueue<WeatherData> queue, int size) {
+		
+		ConcurrentLinkedQueue<WeatherData> result = null;
+		
+		switch (element) {
+		
+		case "TMAX":
+			result = WeatherData.filterMax(queue, size);
+			break;
+			
+		case "TMIN":
+			result = WeatherData.filterMin(queue, size);
+			break;
+		}
+		
+		return result;
 	}
 	
 	/************************************************************************************************************

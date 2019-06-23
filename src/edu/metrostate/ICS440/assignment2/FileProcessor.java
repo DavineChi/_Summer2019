@@ -43,7 +43,7 @@ public class FileProcessor implements Callable<ConcurrentLinkedQueue<WeatherData
 		
 		if (discovered != null) {
 			
-			filtered = WeatherData.filter(discovered, 5);
+			filtered = query.retrieve(discovered, Constants.QUERY_RESULT_SIZE);
 		}
 		
 		return filtered;

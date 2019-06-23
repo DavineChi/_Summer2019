@@ -171,7 +171,7 @@ public class WeatherData {
 		return queue;
 	}
 	
-	public static ConcurrentLinkedQueue<WeatherData> filter(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
+	public static ConcurrentLinkedQueue<WeatherData> filterMax(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
 		
 		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		WeatherData largestWeatherDataItem = null;
@@ -188,6 +188,32 @@ public class WeatherData {
 			ignoreList[counter] = largestWeatherDataItem.getValue();
 			
 			result.add(largestWeatherDataItem);
+			
+			counter++;
+		}
+		
+		return result;
+	}
+	
+	public static ConcurrentLinkedQueue<WeatherData> filterMin(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
+		
+		//WeatherApp.printResults(queue);
+		
+		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
+		WeatherData smallestWeatherDataItem = null;
+		
+		float[] ignoreList = new float[threshold];
+		
+		Arrays.fill(ignoreList, -1.0f);
+		
+		int counter = 0;
+		
+		while (counter < threshold) {
+			
+			smallestWeatherDataItem = getSmallest(queue, ignoreList);
+			ignoreList[counter] = smallestWeatherDataItem.getValue();
+			
+			result.add(smallestWeatherDataItem);
 			
 			counter++;
 		}
@@ -216,6 +242,34 @@ public class WeatherData {
 			if (wdValue > largest  && !matchFound) {
 				
 				largest = wdValue;
+				result = item;
+			}
+		}
+		
+		return result;
+	}
+	
+	private static WeatherData getSmallest(ConcurrentLinkedQueue<WeatherData> queue, float[] ignore) {
+		
+		WeatherData result = null;
+		float smallest = 9999.9f;
+		
+		for (WeatherData item : queue) {
+			
+			float wdValue = item.getValue();
+			boolean matchFound = false;
+			
+			for (int i = 0; i < ignore.length; i++) {
+				
+				if (wdValue == ignore[i]) {
+					
+					matchFound = true;
+				}
+			}
+			
+			if (wdValue < smallest && !matchFound) {
+				
+				smallest = wdValue;
 				result = item;
 			}
 		}
