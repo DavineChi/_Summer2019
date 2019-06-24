@@ -113,38 +113,4 @@ public class Query {
 		
 		return result;
 	}
-	
-	/************************************************************************************************************
-	 * A method to determine if the specified data matches this Query.
-	 * <p>
-	 * 
-	 * @param weatherData
-	 *   the specified weather data to test against this Query
-	 * 
-	 * @return
-	 *   True if the specified data matches this Query, false otherwise.
-	 */
-	public boolean matches(WeatherData weatherData) {
-		
-		int wdYear = weatherData.getYear();
-		int wdMonth = weatherData.getMonth();
-		String wdElement = weatherData.getElement();
-		float wdValue = weatherData.getValue();
-		String wdQflag = weatherData.getQflag();
-		
-		boolean result = false;
-		
-		if (wdYear >= startYear &&
-			wdYear <= endYear &&
-			wdMonth >= startMonth &&
-			wdMonth <= endMonth &&
-			wdElement.equals(element) &&
-			wdValue != -999.9f &&
-			wdQflag.equals(" ")) {
-			
-			result = true;
-		}
-		
-		return result;
-	}
 }

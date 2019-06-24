@@ -3,6 +3,7 @@ package edu.metrostate.ICS440.assignment2;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -23,6 +24,8 @@ public class WeatherApp {
 	private static String element;
 	
 	private static Query query;
+	
+	private static File stationFile;
 	
 	private static ConcurrentLinkedQueue<File> weatherFiles;
 	private static ConcurrentLinkedQueue<WeatherData> resultQueue = new ConcurrentLinkedQueue<WeatherData>();
@@ -76,29 +79,44 @@ public class WeatherApp {
 		System.out.println("   End month: " + endMonth);
 		System.out.println("Temperatures: " + element);
 		System.out.println();
-//		System.out.println("Press [Enter] to execute the search.");
-//		
-//		try {
-//			
-//			System.in.read();
-//		}
-//		
-//		catch (IOException ex) {
-//			
-//			ex.printStackTrace();
-//		}
-	}
-	
-	public static void printResults(ConcurrentLinkedQueue<WeatherData> queue) {
+		System.out.println("Press [Enter] to execute the search.");
 		
-		System.out.println();
-		
-		while (queue.size() != 0) {
-
-			System.out.println(queue.poll().toString());
+		try {
+			
+			System.in.read();
 		}
 		
+		catch (IOException ex) {
+			
+			ex.printStackTrace();
+		}
+	}
+	
+	public static void printResults(ConcurrentLinkedQueue<WeatherData> searchResults, ConcurrentLinkedQueue<StationData> stations) {
+		
+		StringBuilder stringBuilder = new StringBuilder();
+		
 		System.out.println();
+		
+		Iterator<WeatherData> iterator = searchResults.iterator();
+		
+		while (iterator.hasNext()) {
+			
+			WeatherData weatherData = iterator.next();
+			
+			for (StationData station : stations) {
+				
+				String stationId = station.getId();
+				
+				if (weatherData.getId().equals(stationId)) {
+					
+					stringBuilder.append(weatherData.toString() + "\r\n");
+					stringBuilder.append(station.toString() + "\r\n");
+				}
+			}
+		}
+		
+		System.out.println(stringBuilder.toString());
 	}
 	
 	// **********************************************************************************************************
@@ -219,13 +237,6 @@ public class WeatherApp {
 		WeatherApp.addFutures();
 		WeatherApp.getFutures();
 		
-		// Needed to ensure that all results have been collected from the futures
-		// before proceeding to the next phase of processing. Failure to do this
-		// seems to occasionally result in a NullPointerException and duplicated
-		// output result sets, presumably from moving to the final set before this
-		// part is complete.
-		// while (!processor.shutdownExecutor()) {};
-		
 		processor.shutdownExecutor();
 	}
 	
@@ -246,30 +257,29 @@ public class WeatherApp {
 	 */
 	public static void run() {
 		
-		{
-			startYear = 2005;
-			endYear = 2006;
-			startMonth = 2;
-			endMonth = 4;
-			element = "TMIN";
-			
-			query = new Query(startYear, endYear, startMonth, endMonth, element);
-		}
+//		{
+//			startYear = 2005;
+//			endYear = 2006;
+//			startMonth = 2;
+//			endMonth = 4;
+//			element = "TMIN";
+//			
+//			query = new Query(startYear, endYear, startMonth, endMonth, element);
+//		}
 		
-//		WeatherApp.getProgramInput();
+		WeatherApp.getProgramInput();
 		WeatherApp.printInputs();
 		
-//		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
 		weatherFiles = FileManager.getWeatherFilesQueue("ghcnd_hcn");
-		
-//		Queue<StationData> stationsList;
+		stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
 		
 		WeatherApp.processInitialFutures();
 		WeatherApp.processFinalFutures();
 		
 		ConcurrentLinkedQueue<WeatherData> endingResults = query.retrieve(finalQueue, Constants.QUERY_RESULT_SIZE);
+		ConcurrentLinkedQueue<StationData> stationsList = StationData.search(stationFile, endingResults);
 		
-		WeatherApp.printResults(endingResults);
-		System.out.println("Processing complete.");
+		WeatherApp.printResults(endingResults, stationsList);
+		System.out.println("Search complete.");
 	}
 }

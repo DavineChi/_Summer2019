@@ -3,6 +3,7 @@ package edu.metrostate.ICS440.assignment2;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /****************************************************************************************************************
  * This class is used to hold weather station data.
@@ -14,7 +15,7 @@ import java.util.Scanner;
  * <p>
  * Due Date:	2019.06.27
  */
-class StationData {
+public class StationData {
 	
     private String id;
     private float latitude;
@@ -23,14 +24,19 @@ class StationData {
     private String state;
     private String name;
     
-    private static Queue<StationData> stationQueue;
+    private static ConcurrentLinkedQueue<StationData> stationQueue;
     
-	public static Queue<StationData> search(File file, Query query) {
+    public String getId() {
+    	
+    	return id;
+    }
+    
+	public static ConcurrentLinkedQueue<StationData> search(File file, ConcurrentLinkedQueue<WeatherData> queue) {
 		
 		Scanner input;
 		String nextLine;
 		
-		stationQueue = new Queue<StationData>();
+		stationQueue = new ConcurrentLinkedQueue<StationData>();
 		
 		try {
 			
@@ -49,9 +55,12 @@ class StationData {
 				stationData.longitude = Float.valueOf(nextLine.substring(21, 30).trim());
 				stationData.elevation = Float.valueOf(nextLine.substring(31, 37).trim());
 				stationData.state = nextLine.substring(38, 40);
-				stationData.name = nextLine.substring(41, 71);
+				stationData.name = nextLine.substring(41, 71).trim();
 				
-				stationQueue.enqueue(stationData);
+				if (stationData.matches(queue)) {
+					
+					stationQueue.add(stationData);
+				}
 			}
 		}
 		
@@ -63,33 +72,37 @@ class StationData {
 		return stationQueue;
 	}
 	
+	/************************************************************************************************************
+	 * A method to determine if the specified queue contains the ID in this StationData object.
+	 * <p>
+	 * 
+	 * @param queue
+	 *   the queue to test against this StationData object's ID
+	 * 
+	 * @return
+	 *   True if the specified queue contains the ID in this StationData object, false otherwise.
+	 */
+	public boolean matches(ConcurrentLinkedQueue<WeatherData> queue) {
+		
+		boolean result = false;
+		
+		for (WeatherData item : queue) {
+			
+			String id = item.getId();
+			
+			if (this.id.equals(id)) {
+				
+				result = true;
+			}
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public String toString() {
 		
-		return "StationData [id=" + id + ", latitude=" + latitude + ", longitude=" + longitude + ", elevation="
-				+ elevation + ", state=" + state + ", name=" + name + "]";
+		return "id=" + id + ", latitude=" + latitude + ", longitude=" + longitude +
+				", elevation=" + elevation + ", state=" + state + ", name=" + name;
 	}
-	
-	/************************************************************************************************************
-	 * Main method from where program execution begins. Used here for testing and debugging.
-	 * <p>
-	 * 
-	 * @param args
-	 *   this parameter is not used
-	 * 
-	 * @postcondition
-	 *   Varies depending on testing.
-	 */
-//	public static void main(String[] args) {
-//
-//		StationData stationData = new StationData();
-//
-//		File stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
-//		
-//		//stationData.parseData(stationFile);
-//		
-//		Queue<StationData> queue = StationData.search(stationFile);
-//		
-//		String stop = "STOP";
-//	}
 }

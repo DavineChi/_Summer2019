@@ -150,7 +150,7 @@ public class WeatherData {
 					weatherData.value = value;
 					weatherData.qflag = qflag;
 					
-					if (query.matches(weatherData)) {
+					if (weatherData.matches(query)) {
 						
 						queue.add(weatherData);
 					}
@@ -270,6 +270,40 @@ public class WeatherData {
 				smallest = wdValue;
 				result = item;
 			}
+		}
+		
+		return result;
+	}
+	
+	/************************************************************************************************************
+	 * A method to determine if the specified Query matches this WeatherData object.
+	 * <p>
+	 * 
+	 * @param query
+	 *   the specified Query to test against this WeatherData object
+	 * 
+	 * @return
+	 *   True if the specified data matches this WeatherData object, false otherwise.
+	 */
+	public boolean matches(Query query) {
+		
+		int queryStartYear = query.getStartYear();
+		int queryEndYear = query.getEndYear();
+		int queryStartMonth = query.getStartMonth();
+		int queryEndMonth = query.getEndMonth();
+		String queryElement = query.getElement();
+		
+		boolean result = false;
+		
+		if (year >= queryStartYear &&
+			year <= queryEndYear &&
+			month >= queryStartMonth &&
+			month <= queryEndMonth &&
+			element.equals(queryElement) &&
+			value != -999.9f &&
+			qflag.equals(" ")) {
+			
+			result = true;
 		}
 		
 		return result;
