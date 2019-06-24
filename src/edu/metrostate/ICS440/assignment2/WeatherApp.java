@@ -153,8 +153,6 @@ public class WeatherApp {
 				
 				if (future.get() != null) {
 					
-					Debug.printMessage(future.get().toString());
-					
 					for (WeatherData item : future.get()) {
 						
 						// Step #2:

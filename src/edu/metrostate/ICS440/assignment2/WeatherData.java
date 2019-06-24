@@ -187,7 +187,16 @@ public class WeatherData {
 		while (counter < threshold) {
 			
 			largestWeatherDataItem = getLargest(queue, ignoreList);
-			ignoreList[counter] = largestWeatherDataItem.getValue();
+			
+			if (largestWeatherDataItem != null) {
+				
+				ignoreList[counter] = largestWeatherDataItem.getValue();
+			}
+			
+			else {
+				
+				break;
+			}
 			
 			result.add(largestWeatherDataItem);
 			
