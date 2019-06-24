@@ -79,17 +79,17 @@ public class WeatherApp {
 		System.out.println("   End month: " + endMonth);
 		System.out.println("Temperatures: " + element);
 		System.out.println();
-		System.out.println("Press [Enter] to execute the search.");
-		
-		try {
-			
-			System.in.read();
-		}
-		
-		catch (IOException ex) {
-			
-			ex.printStackTrace();
-		}
+//		System.out.println("Press [Enter] to execute the search.");
+//		
+//		try {
+//			
+//			System.in.read();
+//		}
+//		
+//		catch (IOException ex) {
+//			
+//			ex.printStackTrace();
+//		}
 	}
 	
 	public static void printResults(ConcurrentLinkedQueue<WeatherData> searchResults, ConcurrentLinkedQueue<StationData> stations) {
@@ -152,6 +152,8 @@ public class WeatherApp {
 			for (Future<ConcurrentLinkedQueue<WeatherData>> future : list) {
 				
 				if (future.get() != null) {
+					
+					Debug.printMessage(future.get().toString());
 					
 					for (WeatherData item : future.get()) {
 						
@@ -257,17 +259,17 @@ public class WeatherApp {
 	 */
 	public static void run() {
 		
-//		{
-//			startYear = 2005;
-//			endYear = 2006;
-//			startMonth = 2;
-//			endMonth = 4;
-//			element = "TMIN";
-//			
-//			query = new Query(startYear, endYear, startMonth, endMonth, element);
-//		}
+		{
+			startYear = 2005;
+			endYear = 2006;
+			startMonth = 1;
+			endMonth = 2;
+			element = "TMAX";
+			
+			query = new Query(startYear, endYear, startMonth, endMonth, element);
+		}
 		
-		WeatherApp.getProgramInput();
+//		WeatherApp.getProgramInput();
 		WeatherApp.printInputs();
 		
 		weatherFiles = FileManager.getWeatherFilesQueue("ghcnd_hcn");

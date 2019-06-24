@@ -120,7 +120,7 @@ public class WeatherData {
 			
 			input = new Scanner(file);
 			
-			Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
+			//Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
 			
 			while (input.hasNextLine()) {
 
@@ -172,6 +172,8 @@ public class WeatherData {
 	}
 	
 	public static ConcurrentLinkedQueue<WeatherData> filterMax(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
+		
+		// TODO: NPE in this method...
 		
 		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		WeatherData largestWeatherDataItem = null;
