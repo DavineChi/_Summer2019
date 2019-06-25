@@ -12,7 +12,7 @@ package edu.metrostate.ICS440.assignment2;
  */
 public class Debug {
 	
-	private static final boolean ENABLED = true;
+	private static boolean enabled = false;
 	
 	/************************************************************************************************************
 	 * Writes a specified message to the console.
@@ -26,9 +26,14 @@ public class Debug {
 	 */
 	public static void printMessage(String message) {
 		
-		if (ENABLED) {
+		if (enabled) {
 			
 			System.out.println(message);
 		}
+	}
+	
+	public static void enabled(boolean value) {
+		
+		enabled = value;
 	}
 }

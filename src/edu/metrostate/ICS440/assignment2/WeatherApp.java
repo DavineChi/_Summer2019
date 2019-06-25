@@ -69,27 +69,28 @@ public class WeatherApp {
 		}
 
 		query = new Query(startYear, endYear, startMonth, endMonth, element);
+		
+		System.out.println("Press [Enter] to execute the search.");
+		
+		try {
+			
+			System.in.read();
+		}
+		
+		catch (IOException ex) {
+			
+			ex.printStackTrace();
+		}
 	}
 	
 	public static void printInputs() {
 
+		System.out.println();
 		System.out.println("  Start year: " + startYear);
 		System.out.println("    End year: " + endYear);
 		System.out.println(" Start month: " + startMonth);
 		System.out.println("   End month: " + endMonth);
 		System.out.println("Temperatures: " + element);
-		System.out.println();
-//		System.out.println("Press [Enter] to execute the search.");
-//		
-//		try {
-//			
-//			System.in.read();
-//		}
-//		
-//		catch (IOException ex) {
-//			
-//			ex.printStackTrace();
-//		}
 	}
 	
 	public static void printResults(ConcurrentLinkedQueue<WeatherData> searchResults, ConcurrentLinkedQueue<StationData> stations) {
@@ -255,20 +256,25 @@ public class WeatherApp {
 	 * @postcondition
 	 *   A search has been executed.
 	 */
-	public static void run() {
+	public static void run(String[] args) {
 		
-		{
-			startYear = 2005;
-			endYear = 2006;
-			startMonth = 1;
-			endMonth = 2;
-			element = "TMAX";
-			
-			query = new Query(startYear, endYear, startMonth, endMonth, element);
+//		{
+//			startYear = 2005;
+//			endYear = 2006;
+//			startMonth = 1;
+//			endMonth = 2;
+//			element = "TMAX";
+//			
+//			query = new Query(startYear, endYear, startMonth, endMonth, element);
+//		}
+		
+		if (args.length > 0 && args[0].equals("-debug")) {
+			 
+			Debug.enabled(true);
 		}
 		
-//		WeatherApp.getProgramInput();
-		WeatherApp.printInputs();
+		WeatherApp.getProgramInput();
+		
 		
 		weatherFiles = FileManager.getWeatherFilesQueue("ghcnd_hcn");
 		stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
@@ -279,6 +285,7 @@ public class WeatherApp {
 		ConcurrentLinkedQueue<WeatherData> endingResults = query.retrieve(finalQueue, Constants.QUERY_RESULT_SIZE);
 		ConcurrentLinkedQueue<StationData> stationsList = StationData.search(stationFile, endingResults);
 		
+		WeatherApp.printInputs();
 		WeatherApp.printResults(endingResults, stationsList);
 		System.out.println("Search complete.");
 	}

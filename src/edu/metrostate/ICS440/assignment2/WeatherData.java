@@ -120,7 +120,7 @@ public class WeatherData {
 			
 			input = new Scanner(file);
 			
-			//Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
+			Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
 			
 			while (input.hasNextLine()) {
 
