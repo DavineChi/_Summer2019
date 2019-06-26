@@ -29,18 +29,18 @@ public class FileManager {
 	public static ConcurrentLinkedQueue<File> getWeatherFilesQueue(String pathname) {
 		
 		ConcurrentLinkedQueue<File> result = new ConcurrentLinkedQueue<File>();
-		
 		File path = new File(pathname);
-		
 		FileFilter filter = new FileFilter() {
 			
 			@Override
 			public boolean accept(File pathname) {
 				
+				// Filter only on ".dly" weather files.
 				return pathname.getName().endsWith(".dly");
 			}
 		};
 		
+		// Add each ".dly" file from the file system (using the FileFilter) to a list.
 		for (File file : path.listFiles(filter)) {
 			
 			result.add(file);

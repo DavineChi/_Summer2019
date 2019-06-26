@@ -12,7 +12,10 @@ import java.util.concurrent.Future;
 
 public class WeatherApp {
 	
-	private static List<Future<ConcurrentLinkedQueue<WeatherData>>> list = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
+	// This list will store all of the Futures from the first search pass.
+	private static List<Future<ConcurrentLinkedQueue<WeatherData>>> initialList = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
+	
+	// This list will store the four Futures from the second search pass.
 	private static List<Future<ConcurrentLinkedQueue<WeatherData>>> finalsList = new ArrayList<Future<ConcurrentLinkedQueue<WeatherData>>>();
 	
 	private static Scanner input = new Scanner(System.in);
@@ -31,9 +34,12 @@ public class WeatherApp {
 	private static ConcurrentLinkedQueue<WeatherData> resultQueue = new ConcurrentLinkedQueue<WeatherData>();
 	private static ConcurrentLinkedQueue<WeatherData> finalQueue = new ConcurrentLinkedQueue<WeatherData>();
 	
-	private static FileProcessor processor = null;
-	private static FinalProcessor finalProcessor = null;
+	private static FileProcessor processor = null;         // Processor for the first pass.
+	private static FinalProcessor finalProcessor = null;   // Processor for the second pass.
 	
+	// **********************************************************************************************************
+	// Private helper method to get search input parameters from the user.
+	// 
 	private static void getProgramInput() {
 
 		System.out.println(" Enter a starting year:");
@@ -83,6 +89,12 @@ public class WeatherApp {
 		}
 	}
 	
+	/************************************************************************************************************
+	 * This method will print the input parameters that the user has entered.
+	 * 
+	 * @postcondition
+	 *   TODO
+	 */
 	public static void printInputs() {
 
 		System.out.println();
@@ -93,6 +105,19 @@ public class WeatherApp {
 		System.out.println("Temperatures: " + element);
 	}
 	
+	/************************************************************************************************************
+	 * This method will display the final results of the search query including station information.
+	 * <p>
+	 * 
+	 * @param searchResults
+	 *   the list of top (or bottom) results to display
+	 * 
+	 * @param stations
+	 *   the station list to match with the corresponding weather data
+	 * 
+	 * @postcondition
+	 *   The search query results have been displayed, including corresponding station information.
+	 */
 	public static void printResults(ConcurrentLinkedQueue<WeatherData> searchResults, ConcurrentLinkedQueue<StationData> stations) {
 		
 		StringBuilder stringBuilder = new StringBuilder();
@@ -101,10 +126,12 @@ public class WeatherApp {
 		
 		Iterator<WeatherData> iterator = searchResults.iterator();
 		
+		// Iterate through the searchResults list.
 		while (iterator.hasNext()) {
 			
 			WeatherData weatherData = iterator.next();
 			
+			// Iterate through the stations list.
 			for (StationData station : stations) {
 				
 				String stationId = station.getId();
@@ -128,17 +155,20 @@ public class WeatherApp {
 		System.out.println("Running now... (processing " + weatherFiles.size() + " weather data files)");
 		System.out.println();
 		
+		// Process each .dly weather data file on the file system.
 		for (File file : weatherFiles) {
 			
+			// Create a new processor using this file and the given query.
 			processor = new FileProcessor(file, query);
 			
 			// Step #1:
-			// Add a new future and submit it for each weather data file.
+			// Add a new Future and submit it for each weather data file.
 			Future<ConcurrentLinkedQueue<WeatherData>> future = processor.process();
 			
 			if (future != null) {
 				
-				list.add(future);
+				// Collect the Future in a list for later processing.
+				initialList.add(future);
 			}
 		}
 	}
@@ -150,7 +180,8 @@ public class WeatherApp {
 		
 		try {
 			
-			for (Future<ConcurrentLinkedQueue<WeatherData>> future : list) {
+			// Process each Future in the initial processing list.
+			for (Future<ConcurrentLinkedQueue<WeatherData>> future : initialList) {
 				
 				if (future.get() != null) {
 					
@@ -160,6 +191,7 @@ public class WeatherApp {
 						// Consolidate the query results from all the files into one list.
 						if (item != null) {
 							
+							// If this WeatherData item is not null, add it to the resultQueue.
 							resultQueue.add(item);
 						}
 					}
@@ -181,18 +213,21 @@ public class WeatherApp {
 		ConcurrentLinkedQueue<WeatherData> splitQueue;
 		
 		double queueSize = resultQueue.size();
-		int splitSize = (int)Math.ceil(queueSize / Constants.FINAL_FUTURES); // Divide the results list by 4.
+		int splitSize = (int)Math.ceil(queueSize / Constants.FINAL_FUTURES); // Divide the results size by 4.
 		
+		// Loop 4 times to create 4 Futures, adding each of the 4 Futures to the finalsList collection.
 		for (int futureNumber = 1; futureNumber <= Constants.FINAL_FUTURES; futureNumber++) {
 			
 			splitQueue = new ConcurrentLinkedQueue<WeatherData>();
 			
+			// Keep polling items of the resultQueue and adding them to a smaller splitQueue.
 			for (int queueIndex = 0; (resultQueue.peek() != null) && (queueIndex < splitSize); queueIndex++) {
 				
 				WeatherData nextItem = resultQueue.poll();
 				splitQueue.add(nextItem);
 			}
 			
+			// Instantiate a new FinalProcessor, passing in a smaller splitQueue and the initial query.
 			finalProcessor = new FinalProcessor(splitQueue, query);
 			Future<ConcurrentLinkedQueue<WeatherData>> future = finalProcessor.process();
 			
@@ -233,6 +268,15 @@ public class WeatherApp {
 		}
 	}
 	
+	/************************************************************************************************************
+	 * This method will analyze weather data files on local storage using input from the user. This is the first
+	 * pass of the overall search. One Future is created for each file processed by this method's invokation.
+	 * <p>
+	 * 
+	 * @postcondition
+	 *   An initial search pass has transpired and the top results from each file on local storage have been
+	 *   collected and await further processing.
+	 */
 	public static void processInitialFutures() {
 		
 		WeatherApp.addFutures();
@@ -241,6 +285,13 @@ public class WeatherApp {
 		processor.shutdownExecutor();
 	}
 	
+	/************************************************************************************************************
+	 * TODO
+	 * <p>
+	 * 
+	 * @postcondition
+	 *   
+	 */
 	public static void processFinalFutures() {
 		
 		WeatherApp.addFinalFutures();
@@ -250,31 +301,17 @@ public class WeatherApp {
 	}
 	
 	/************************************************************************************************************
-	 * Calling this method will initiate the search program.
+	 * This method will initiate the search program.
 	 * <p>
 	 * 
 	 * @postcondition
 	 *   A search has been executed.
 	 */
-	public static void run(String[] args) {
+	public static void run() {
 		
-//		{
-//			startYear = 2005;
-//			endYear = 2006;
-//			startMonth = 1;
-//			endMonth = 2;
-//			element = "TMAX";
-//			
-//			query = new Query(startYear, endYear, startMonth, endMonth, element);
-//		}
-		
-		if (args.length > 0 && args[0].equals("-debug")) {
-			 
-			Debug.enabled(true);
-		}
+		Debug.enabled(false);
 		
 		WeatherApp.getProgramInput();
-		
 		
 		weatherFiles = FileManager.getWeatherFilesQueue("ghcnd_hcn");
 		stationFile = FileManager.getStationFile("ghcnd_hcn", "ghcnd-stations.txt");
@@ -282,7 +319,10 @@ public class WeatherApp {
 		WeatherApp.processInitialFutures();
 		WeatherApp.processFinalFutures();
 		
-		ConcurrentLinkedQueue<WeatherData> endingResults = query.retrieve(finalQueue, Constants.QUERY_RESULT_SIZE);
+		// Retrieve the top results from the finalQueue list (this is the third and final search pass).
+		ConcurrentLinkedQueue<WeatherData> endingResults = query.retrieveResults(finalQueue, Constants.QUERY_RESULT_SIZE);
+		
+		// Only return those stations that are found in the endingResults list.
 		ConcurrentLinkedQueue<StationData> stationsList = StationData.search(stationFile, endingResults);
 		
 		WeatherApp.printInputs();

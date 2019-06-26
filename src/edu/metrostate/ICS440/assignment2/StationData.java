@@ -26,11 +26,31 @@ public class StationData {
     
     private static ConcurrentLinkedQueue<StationData> stationQueue;
     
+    /************************************************************************************************************
+     * An accessor method to return the ID for this StationData.
+     * <p>
+     * 
+     * @return
+     *   This StationData's ID.
+     */
     public String getId() {
     	
     	return id;
     }
     
+    /************************************************************************************************************
+     * A method to provide a list of matching weather stations from the given parameters.
+     * <p>
+     * 
+     * @param file
+     *   the station data file to search
+     * 
+     * @param queue
+     *   the results of a search pass for weather data (contains the station data this method will return)
+     * 
+     * @return
+     *   A list of weather stations matching the passed-in <CODE>queue</CODE> parameter.
+     */
 	public static ConcurrentLinkedQueue<StationData> search(File file, ConcurrentLinkedQueue<WeatherData> queue) {
 		
 		Scanner input;
@@ -43,9 +63,10 @@ public class StationData {
 			StationData stationData;
 			
 			input = new Scanner(file);
-
+			
+			// Begin parsing the station file for a collection of matching StationData items.
 			while (input.hasNextLine()) {
-
+				
 				stationData = new StationData();
 				
 				nextLine = input.nextLine();
@@ -57,8 +78,10 @@ public class StationData {
 				stationData.state = nextLine.substring(38, 40);
 				stationData.name = nextLine.substring(41, 71).trim();
 				
+				// If this StationData's ID matches an ID in the specified queue, ...
 				if (stationData.matches(queue)) {
 					
+					// ... then add this StationData item to a list.
 					stationQueue.add(stationData);
 				}
 			}

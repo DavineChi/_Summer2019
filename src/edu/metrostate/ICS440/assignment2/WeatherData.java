@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /****************************************************************************************************************
- * This class is used to hold and process weather data.
+ * This class is used to store and process weather data.
  * <p>
  * 
  * @author Shannon L. Fisher
@@ -110,11 +110,27 @@ public class WeatherData {
 		return qflag;
 	}
 	
+	/************************************************************************************************************
+     * A method to provide search results from a specified weather data file and a specified search query.
+     * <p>
+     * 
+	 * @param file
+	 *   the specified weather data file to search
+	 * 
+	 * @param query
+	 *   the specified search query to use
+	 * 
+	 * @param threadId
+	 *   the ID of the current thread in execution for this WeatherData object
+	 * 
+	 * @return
+	 *   The search results from a single weather data file.
+	 */
 	public static ConcurrentLinkedQueue<WeatherData> search(File file, Query query, Integer threadId) {
 		
 		Scanner input = null;
 		String nextLine;
-		ConcurrentLinkedQueue<WeatherData> queue = new ConcurrentLinkedQueue<WeatherData>();
+		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		
 		try {
 			
@@ -122,6 +138,7 @@ public class WeatherData {
 			
 			Debug.printMessage("Analyzing file: " + file.getName() + " using Thread ID " + threadId);
 			
+			// Begin parsing the weather data file for a collection of matching WeatherData items.
 			while (input.hasNextLine()) {
 
 				nextLine = input.nextLine();
@@ -150,9 +167,11 @@ public class WeatherData {
 					weatherData.value = value;
 					weatherData.qflag = qflag;
 					
+					// If this WeatherData matches the specified query, ...
 					if (weatherData.matches(query)) {
 						
-						queue.add(weatherData);
+						// ... then add this WeatherData item to a list.
+						result.add(weatherData);
 					}
 				}
 			}
@@ -163,17 +182,30 @@ public class WeatherData {
 			ex.printStackTrace();
 		}
 		
-		if (queue.isEmpty()) {
+		if (result.isEmpty()) {
 			
-			queue = null;
+			result = null;
 		}
 		
-		return queue;
+		return result;
 	}
 	
+	/************************************************************************************************************
+	 * Retrieves the highest <CODE>n</CODE> temperature <CODE>WeatherData</CODE> items from the specified queue.
+	 * <p>
+	 * 
+	 * @param queue
+	 *   the queue to filter for maximum values
+	 * 
+	 * @param n
+	 *   the number of results to return
+	 * 
+	 * @return
+	 *   The highest <CODE>n</CODE> temperature values in the specified queue.
+	 */
 	public static ConcurrentLinkedQueue<WeatherData> filterMax(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
 		
-		// TODO: NPE in this method...
+		// TODO: thorough implementation comments required
 		
 		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		WeatherData largestWeatherDataItem = null;
@@ -206,18 +238,33 @@ public class WeatherData {
 		return result;
 	}
 	
-	public static ConcurrentLinkedQueue<WeatherData> filterMin(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
+	/************************************************************************************************************
+	 * Retrieves the lowest <CODE>n</CODE> temperature <CODE>WeatherData</CODE> items from the specified queue.
+	 * <p>
+	 * 
+	 * @param queue
+	 *   the queue to filter for minimum values
+	 * 
+	 * @param n
+	 *   the number of results to return
+	 * 
+	 * @return
+	 *   The lowest <CODE>n</CODE> temperature values in the specified queue.
+	 */
+	public static ConcurrentLinkedQueue<WeatherData> filterMin(ConcurrentLinkedQueue<WeatherData> queue, int n) {
+		
+		// TODO: thorough implementation comments required
 		
 		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		WeatherData smallestWeatherDataItem = null;
 		
-		float[] ignoreList = new float[threshold];
+		float[] ignoreList = new float[n];
 		
 		Arrays.fill(ignoreList, -1.0f);
 		
 		int counter = 0;
 		
-		while (counter < threshold) {
+		while (counter < n) {
 			
 			smallestWeatherDataItem = getSmallest(queue, ignoreList);
 			ignoreList[counter] = smallestWeatherDataItem.getValue();
@@ -230,7 +277,13 @@ public class WeatherData {
 		return result;
 	}
 	
+	// **********************************************************************************************************
+	// Private helper method return the WeatherData with the highest temperature, while ignoring any
+	// previously-discovered highest temperatures.
+	// 
 	private static WeatherData getLargest(ConcurrentLinkedQueue<WeatherData> queue, float[] ignore) {
+		
+		// TODO: thorough implementation comments required
 		
 		WeatherData result = null;
 		float largest = -9999.9f;
@@ -258,7 +311,13 @@ public class WeatherData {
 		return result;
 	}
 	
+	// **********************************************************************************************************
+	// Private helper method return the WeatherData with the lowest temperature, while ignoring any
+	// previously-discovered lowest temperatures.
+	// 
 	private static WeatherData getSmallest(ConcurrentLinkedQueue<WeatherData> queue, float[] ignore) {
+		
+		// TODO: thorough implementation comments required
 		
 		WeatherData result = null;
 		float smallest = 9999.9f;

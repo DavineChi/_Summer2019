@@ -3,7 +3,7 @@ package edu.metrostate.ICS440.assignment2;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /****************************************************************************************************************
- * A class to encapsulate query information for use with weather data files.
+ * A class to encapsulate query information for use with searching weather data files.
  * <p>
  * 
  * @author Shannon L. Fisher
@@ -96,7 +96,20 @@ public class Query {
 		return element;
 	}
 	
-	public ConcurrentLinkedQueue<WeatherData> retrieve(ConcurrentLinkedQueue<WeatherData> queue, int size) {
+	/************************************************************************************************************
+	 * An accessor method that returns the top (or bottom) results of the search.
+	 * <p>
+	 * 
+	 * @param queue
+	 *   the list from which to retrieve the results
+	 * 
+	 * @param size
+	 *   the number of results to return from the specified list
+	 * 
+	 * @return
+	 *   
+	 */
+	public ConcurrentLinkedQueue<WeatherData> retrieveResults(ConcurrentLinkedQueue<WeatherData> queue, int size) {
 		
 		ConcurrentLinkedQueue<WeatherData> result = null;
 		

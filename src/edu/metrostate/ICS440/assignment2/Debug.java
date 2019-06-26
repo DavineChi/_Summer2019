@@ -1,7 +1,7 @@
 package edu.metrostate.ICS440.assignment2;
 
 /****************************************************************************************************************
- * This class contains static methods used for debugging.
+ * This class contains methods used for debugging.
  * <p>
  * 
  * @author Shannon L. Fisher
@@ -32,6 +32,16 @@ public class Debug {
 		}
 	}
 	
+	/************************************************************************************************************
+	 * A method to set the enabled/disabled state for debugging.
+	 * <p>
+	 * 
+	 * @param value
+	 *   the state to which debugging is set
+	 * 
+	 * @postcondition
+	 *   Debugging state is set to the passed-in <CODE>value</CODE> parameter.
+	 */
 	public static void enabled(boolean value) {
 		
 		enabled = value;

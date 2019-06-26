@@ -6,14 +6,14 @@ public class Main {
 	 * Main method from where program execution begins.
 	 * <p>
 	 * 
-	 * @param
-	 *   args this parameter is not used
+	 * @param args
+	 *   parameter not used
 	 * 
 	 * @postcondition
-	 *   ...
+	 *   The search application has been executed.
 	 */
 	public static void main(String[] args) {
 		
-		WeatherApp.run(args);
+		WeatherApp.run();
 	}
 }
