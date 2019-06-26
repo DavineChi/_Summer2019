@@ -10,6 +10,36 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+/****************************************************************************************************************
+ * This program prompts the user for search criteria including a starting year and month, and ending year and
+ * month, and asks whether minimum or maximum temperatures should be searched. It then returns the resulting
+ * data set or weather data corresponding to the given search parameters.
+ * <p>
+ * 
+ * The operations of this program are as follows:</br>
+ * <p>
+ * 
+ * 1.  First, a thread pool is created. Steps 2 and 4 below support multithreaded processing</br>
+ * 2.  Each weather data file is processed and searched individually by its own Callable/Future using the query
+ *     provided by the user. The results from this process include the top (or bottom) results that each Future
+ *     returns. For example: There are 1,218 weather data files, so there are potentially 1,218 individual lists
+ *     of "top" or "bottom" results.</br>
+ * 3.  Next, these individual lists are joined together into one list after each Future completes its task.</br>
+ * 4.  Once all results from the initial pass have been joined together into one list, the list is then divided
+ *     into 4 smaller lists, and another search for the top or bottom results is performed on each of these lists 
+ *     by its own Callable/Future (e.g. - only 4 Callables/Futures are used in this step).</br>
+ * 5.  The results of this second pass are joined together into a single list, and this list is then searched for
+ *     the top or bottom results using only a single execution thread.</br>
+ * 6.  The program displays the user-provided input parameters along with the results of the search, including the
+ *     associated station information for each weather data record.</br>
+ * <p>
+ * 
+ * @author Shannon L. Fisher
+ * <p>
+ * Begin Date:	2019.06.07
+ * <p>
+ * Due Date:	2019.06.27
+ */
 public class WeatherApp {
 	
 	// This list will store all of the Futures from the first search pass.
