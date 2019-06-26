@@ -36,19 +36,19 @@ public class WeatherApp {
 	
 	private static void getProgramInput() {
 
-		System.out.println(" Enter a starting year...");
+		System.out.println(" Enter a starting year:");
 		System.out.print(" > ");
 		startYear = Integer.parseInt(input.nextLine());
 
-		System.out.println(" Enter an ending year: ");
+		System.out.println(" Enter an ending year:");
 		System.out.print(" > ");
 		endYear = Integer.parseInt(input.nextLine());
 
-		System.out.println(" Enter a starting month: ");
+		System.out.println(" Enter a starting month:");
 		System.out.print(" > ");
 		startMonth = Integer.parseInt(input.nextLine());
 
-		System.out.println(" Enter an ending month: ");
+		System.out.println(" Enter an ending month:");
 		System.out.print(" > ");
 		endMonth = Integer.parseInt(input.nextLine());
 
