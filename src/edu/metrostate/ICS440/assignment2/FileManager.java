@@ -30,6 +30,7 @@ public class FileManager {
 		
 		ConcurrentLinkedQueue<File> result = new ConcurrentLinkedQueue<File>();
 		File path = new File(pathname);
+		
 		FileFilter filter = new FileFilter() {
 			
 			@Override
@@ -39,6 +40,13 @@ public class FileManager {
 				return pathname.getName().endsWith(".dly");
 			}
 		};
+		
+		// Check if the "ghcnd_hcn" path exists before proceeding.
+		if (path.listFiles() == null) {
+			
+			System.out.println("Path not found: " + pathname + " - exiting now.");
+			System.exit(1);
+		}
 		
 		// Add each ".dly" file from the file system (using the FileFilter) to a list.
 		for (File file : path.listFiles(filter)) {
@@ -65,8 +73,14 @@ public class FileManager {
 	public static File getStationFile(String pathname, String fileName) {
 		
 		File result = null;
-		
 		File path = new File(pathname);
+		
+		// Check if the "ghcnd_hcn" path exists before proceeding.
+		if (path.listFiles() == null) {
+			
+			System.out.println("Path not found: " + pathname + " - exiting now.");
+			System.exit(1);
+		}
 		
 		for (File file : path.listFiles()) {
 			
