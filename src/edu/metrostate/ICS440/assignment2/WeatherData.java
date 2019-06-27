@@ -197,7 +197,7 @@ public class WeatherData {
 	 * @param queue
 	 *   the queue to filter for maximum values
 	 * 
-	 * @param n
+	 * @param threshold
 	 *   the number of results to return
 	 * 
 	 * @return
@@ -205,28 +205,33 @@ public class WeatherData {
 	 */
 	public static ConcurrentLinkedQueue<WeatherData> filterMax(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
 		
-		// TODO: thorough implementation comments required
-		
 		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		WeatherData largestWeatherDataItem = null;
 		
+		// Establish a list of values to ignore as new maximums are discovered.
 		float[] ignoreList = new float[threshold];
 		
+		// Fill the list with sentinel values to indicate vacancies.
 		Arrays.fill(ignoreList, -1.0f);
 		
 		int counter = 0;
 		
+		// Iterate for the specified number of requested records.
 		while (counter < threshold) {
 			
+			// Retrieve the "largest" (TMAX) weather data item.
 			largestWeatherDataItem = getLargest(queue, ignoreList);
 			
+			// If there was such an item, ...
 			if (largestWeatherDataItem != null) {
 				
+				// ... then store its temperature value in the ignore list, using the current counter as the index.
 				ignoreList[counter] = largestWeatherDataItem.getValue();
 			}
 			
 			else {
 				
+				// If no such item exists (e.g. == null), break out of this while loop.
 				break;
 			}
 			
@@ -245,29 +250,43 @@ public class WeatherData {
 	 * @param queue
 	 *   the queue to filter for minimum values
 	 * 
-	 * @param n
+	 * @param threshold
 	 *   the number of results to return
 	 * 
 	 * @return
 	 *   The lowest <CODE>n</CODE> temperature values in the specified queue.
 	 */
-	public static ConcurrentLinkedQueue<WeatherData> filterMin(ConcurrentLinkedQueue<WeatherData> queue, int n) {
-		
-		// TODO: thorough implementation comments required
+	public static ConcurrentLinkedQueue<WeatherData> filterMin(ConcurrentLinkedQueue<WeatherData> queue, int threshold) {
 		
 		ConcurrentLinkedQueue<WeatherData> result = new ConcurrentLinkedQueue<WeatherData>();
 		WeatherData smallestWeatherDataItem = null;
 		
-		float[] ignoreList = new float[n];
+		// Establish a list of values to ignore as new minimums are discovered.
+		float[] ignoreList = new float[threshold];
 		
+		// Fill the list with sentinel values to indicate vacancies.
 		Arrays.fill(ignoreList, -1.0f);
 		
 		int counter = 0;
 		
-		while (counter < n) {
+		// Iterate for the specified number of requested records.
+		while (counter < threshold) {
 			
+			// Retrieve the "smallest" (TMIN) weather data item.
 			smallestWeatherDataItem = getSmallest(queue, ignoreList);
-			ignoreList[counter] = smallestWeatherDataItem.getValue();
+			
+			// If there was such an item, ...
+			if (smallestWeatherDataItem != null) {
+				
+				// ... then store its temperature value in the ignore list, using the current counter as the index.
+				ignoreList[counter] = smallestWeatherDataItem.getValue();
+			}
+			
+			else {
+				
+				// If no such item exists (e.g. == null), break out of this while loop.
+				break;
+			}
 			
 			result.add(smallestWeatherDataItem);
 			
@@ -283,27 +302,33 @@ public class WeatherData {
 	// 
 	private static WeatherData getLargest(ConcurrentLinkedQueue<WeatherData> queue, float[] ignore) {
 		
-		// TODO: thorough implementation comments required
-		
 		WeatherData result = null;
-		float largest = -9999.9f;
+		float largest = -9999.9f;   // Set an initial ceiling value.
 		
 		for (WeatherData item : queue) {
 			
 			float wdValue = item.getValue();
 			boolean matchFound = false;
 			
+			// Iterate through the ignore list.
 			for (int i = 0; i < ignore.length; i++) {
 				
+				// Check if the weather data's value is found in the ignore list.
 				if (wdValue == ignore[i]) {
 					
+					// If so, set the match flag.
 					matchFound = true;
 				}
 			}
 			
+			// If the weather data's value is greater than the last largest value,
+			// and if no matching value was found in the ignore list, ...
 			if (wdValue > largest  && !matchFound) {
 				
+				// This weather data's value is now the largest, ...
 				largest = wdValue;
+				
+				// ... and this weather data item also becomes the largest.
 				result = item;
 			}
 		}
@@ -317,27 +342,33 @@ public class WeatherData {
 	// 
 	private static WeatherData getSmallest(ConcurrentLinkedQueue<WeatherData> queue, float[] ignore) {
 		
-		// TODO: thorough implementation comments required
-		
 		WeatherData result = null;
-		float smallest = 9999.9f;
+		float smallest = 9999.9f;   // Set an initial floor value.
 		
 		for (WeatherData item : queue) {
 			
 			float wdValue = item.getValue();
 			boolean matchFound = false;
 			
+			// Iterate through the ignore list.
 			for (int i = 0; i < ignore.length; i++) {
 				
+				// Check if the weather data's value is found in the ignore list.
 				if (wdValue == ignore[i]) {
 					
+					// If so, set the match flag.
 					matchFound = true;
 				}
 			}
 			
+			// If the weather data's value is smaller than the last smallest value,
+			// and if no matching value was found in the ignore list, ...
 			if (wdValue < smallest && !matchFound) {
 				
+				// This weather data's value is now the smallest, ...
 				smallest = wdValue;
+				
+				// ... and this weather data item also becomes the smallest.
 				result = item;
 			}
 		}

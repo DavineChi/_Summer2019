@@ -51,10 +51,11 @@ public class FinalProcessor implements Callable<ConcurrentLinkedQueue<WeatherDat
 	}
 	
 	/************************************************************************************************************
-	 * TODO: Javadoc
+	 * Initiates processing of this FinalProcessor's data.
 	 * <p>
 	 * 
 	 * @return
+	 *   The results from searching a list of weather data items.
 	 */
 	public Future<ConcurrentLinkedQueue<WeatherData>> process() {
 		
