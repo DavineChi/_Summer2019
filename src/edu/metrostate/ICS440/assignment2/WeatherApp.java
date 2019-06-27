@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
  * The operations of this program are as follows:</br>
  * <p>
  * 
- * 1.  First, a thread pool is created. Steps 2 and 4 below support multithreaded processing</br>
+ * 1.  First, a thread pool is created. Steps 2 and 4 below support multithreaded processing.</br>
  * 2.  Each weather data file is processed and searched individually by its own Callable/Future using the query
  *     provided by the user. The results from this process include the top (or bottom) results that each Future
  *     returns. For example: There are 1,218 weather data files, so there are potentially 1,218 individual lists
