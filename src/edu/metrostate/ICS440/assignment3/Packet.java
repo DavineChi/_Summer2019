@@ -9,10 +9,12 @@ import java.util.LinkedList;
  */
 class Packet {
 	
-	// The final router
-	private int destination;
 	// The origin router
 	private int source;
+	
+	// The final router
+	private int destination;
+	
 	// The path this packet takes
 	private LinkedList<Integer> path = new LinkedList<Integer>();
 	
@@ -21,10 +23,10 @@ class Packet {
 	 * <p>
 	 * 
 	 */
-	Packet(int s, int d) {
+	Packet(int source, int destination) {
 		
-		source = s;
-		destination = d;
+		this.source = source;
+		this.destination = destination;
 	}
 
 	/************************************************************************************************************
@@ -73,5 +75,11 @@ class Packet {
 		}
 		
 		System.out.println();
+	}
+
+	@Override
+	public String toString() {
+		
+		return "source=" + source + ", destination=" + destination + ", path=" + path;
 	}
 }

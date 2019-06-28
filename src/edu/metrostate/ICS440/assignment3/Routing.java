@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  */
 public class Routing {
-
+	
 	/************************************************************************************************************
 	 * This is the routing table. It implements the function f(r, c), where r corresponds to the row, and c
 	 * corresponds to the column. r is the current router, and c is the destination of the packet.  f(r, c)
@@ -19,7 +19,7 @@ public class Routing {
 	 * 
 	 */
 	private static int routingTable[][] = {
-
+			
 			//  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
 			{ -1, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13 }, // 0
 			{  2, -1,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 27,  2,  2,  2,  2 }, // 1
@@ -54,35 +54,38 @@ public class Routing {
 			{ 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, -1, 17 }, //30
 			{ 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, -1 }, //31
 	};
-
+	
 	public static AtomicInteger packetCount = new AtomicInteger(0);
-
+	
 	// A table of routers, one for each vertex in the network.
-	static Router router[] = new Router[routingTable.length];
-
-	static public int getPacketCount() {
+	public static Router[] router = new Router[routingTable.length];
+	
+	public static int getPacketCount() {
 
 		return packetCount.get();
 	}
-
-	static public void incPacketCount() {
+	
+	public static void incPacketCount() {
 
 		packetCount.getAndIncrement();
 	}
-
+	
 	/************************************************************************************************************
 	 * Decrement the packet count, and if there are no packets left, let the network know.
 	 * <p>
 	 * 
 	 */
-	static public void decPacketCount() {
+	public static void decPacketCount() {
+		
 		if ((packetCount.decrementAndGet()) == 0) {
+			
 			for (int i = 0; i < routingTable.length; i++) {
+				
 				router[i].networkEmpty();
 			}
 		}
 	}
-
+	
 	/************************************************************************************************************
 	 * Run the program.
 	 * <p>
@@ -91,45 +94,48 @@ public class Routing {
 	public static void main(String args[]) {
 
 		// A table of threads, one for each thread in the network.
-		Thread th[] = new Thread[routingTable.length];
+		Thread[] thread = new Thread[routingTable.length];
 		LinkedList<Packet> packetList = new LinkedList<Packet>();
 
 		// A reference to a Packet, that will be introduced to the network.
-		Packet p;
+		Packet packet;
 
 		// A random number generator, for generating random Packets.
-		Random rand = new Random();
+		Random random = new Random();
 
-		/********************************************************************************************************
-		 * Create a Router and corresponding thread, and start the thread.
-		 * <p>
-		 * 
-		 */
+		// ******************************************************************************************************
+		// Create a Router and corresponding thread, and start the thread.
+		//
 		for (int i = 0; i < routingTable.length; i++) {
+			
 			router[i] = new Router(routingTable[i], router, i);
-			th[i] = new Thread(router[i]);
-			th[i].start();
+			thread[i] = new Thread(router[i]);
+			
+			thread[i].start();
 		}
 
-		/********************************************************************************************************
-		 * Create some Packets, and insert them at the source Router.
-		 * <p>
-		 * 
-		 */
+		// ******************************************************************************************************
+		// Create some Packets, and insert them at the source Router.
+		//
 		for (int i = 0; i < 500; i++) {
-			int s = rand.nextInt(routingTable.length);
-			int d = rand.nextInt(routingTable.length);
-			p = new Packet(s, d);
+			
+			int s = random.nextInt(routingTable.length);
+			int d = random.nextInt(routingTable.length);
+			
+			packet = new Packet(s, d);
+			
 			incPacketCount();
-			packetList.add(p);
-			router[p.getSource()].addWork(p);
+			packetList.add(packet);
+			router[packet.getSource()].addWork(packet);
+			
+			String stop = "";
 		}
-
-		/********************************************************************************************************
-		 * Let the network quiesce.
-		 * <p>
-		 * 
-		 */
+		
+		String stop = "";
+		
+		// ******************************************************************************************************
+		// Let the network quiesce.
+		//
 		try {
 
 			Thread.sleep(500);
@@ -144,19 +150,20 @@ public class Routing {
 
 
 		}
-
-		/********************************************************************************************************
-		 * Create some Packets, and insert them at the source Router. The network should start processing again.
-		 * <p>
-		 * 
-		 */
+		
+		// ******************************************************************************************************
+		// Create some Packets, and insert them at the source Router. The network should start processing again.
+		//
 		for (int i = 0; i < 500; i++) {
-			int s = rand.nextInt(routingTable.length);
-			int d = rand.nextInt(routingTable.length);
-			p = new Packet(s, d);
+			
+			int s = random.nextInt(routingTable.length);
+			int d = random.nextInt(routingTable.length);
+			
+			packet = new Packet(s, d);
+			
 			incPacketCount();
-			packetList.add(p);
-			router[p.getSource()].addWork(p);
+			packetList.add(packet);
+			router[packet.getSource()].addWork(packet);
 		}
 
 		/* MOVE TO FIX A BUG */
@@ -164,19 +171,18 @@ public class Routing {
 		/* for (int i = 0; i < packetList.size(); i++) {
             packetList.get(i).Print();
         } */
-
-		/********************************************************************************************************
-		 * Shut down each thread gracefully.
-		 * <p>
-		 * 
-		 */
+		
+		
+		// ******************************************************************************************************
+		// Shut down each thread gracefully.
+		//
 		for (int i = 0; i < routingTable.length; i++) {
 			
 			router[i].end();
 			
 			try {
 				
-				th[i].join();
+				thread[i].join();
 			}
 			
 			catch (InterruptedException e) {
@@ -189,12 +195,10 @@ public class Routing {
 				
 			}
 		}
-
-		/********************************************************************************************************
-		 * Shut down each thread gracefully.
-		 * <p>
-		 * 
-		 */
+		
+		// ******************************************************************************************************
+		// Shut down each thread gracefully.
+		//
 		for (int i = 0; i < packetList.size(); i++) {
 
 			packetList.get(i).print();
