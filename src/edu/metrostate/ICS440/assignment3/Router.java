@@ -98,7 +98,13 @@ public class Router implements Runnable {
 				this.addWork(packet);
 				// Intended behavior:
 				// Forward the Packet to the ***next appropriate Router*** in the routing table.
+				// Consider iterating over the routers array to find the "appropriate Router" for the Packet.
 				//break;
+			}
+			
+			if (this.routerNum == packet.getDestination()) {
+				
+				packet.record(routerNum);
 			}
 		}
 		
