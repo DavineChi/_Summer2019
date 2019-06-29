@@ -7,7 +7,7 @@ import java.util.LinkedList;
  * <p>
  * 
  */
-class Router implements Runnable {
+public class Router implements Runnable {
 	
 	private LinkedList<Packet> list = new LinkedList<Packet>();
 	private int[] routes;
@@ -41,11 +41,12 @@ class Router implements Runnable {
 	 * <p>
 	 * 
 	 * @param packet
-	 *   the Packet used to add more work to this Router's work queue
+	 *   the Packet to add to this Router's work queue
 	 */
 	public void addWork(Packet packet) {
 		
 		// TODO: implementation
+		list.add(packet);
 	}
 	
 	/************************************************************************************************************
@@ -56,6 +57,15 @@ class Router implements Runnable {
 	public synchronized void end() {
 		
 		// TODO: implementation
+		try {
+			
+			Thread.currentThread().join();
+		}
+		
+		catch (InterruptedException ex) {
+			
+			ex.printStackTrace();
+		}
 	}
 	
 	/************************************************************************************************************
@@ -78,5 +88,26 @@ class Router implements Runnable {
 	public void run() {
 		
 		// TODO: implementation
+		while (list.isEmpty()) {}
+		
+		for (Packet packet : list) {
+			
+			if (this.routerNum != packet.getDestination()) {
+				
+				// TODO: this is (probably) incorrect, but will suffice for now.
+				this.addWork(packet);
+				// Intended behavior:
+				// Forward the Packet to the ***next appropriate Router*** in the routing table.
+				//break;
+			}
+		}
+		
+//		// If this Router is NOT the Packet's destination, ...
+//		// How would you know this? Locate / get the Packets, see if this Router is in that list.
+//		if (list.contains(this)) {
+//			
+//			// ... then forward the Packet to the next appropriate Router in the routing table.
+//			// Do this by calling the addWork() method, passing the Packet as the argument:
+//		}
 	}
 }

@@ -20,7 +20,7 @@ public class Routing {
 	 */
 	private static int routingTable[][] = {
 			
-			//  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
+			// 0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31
 			{ -1, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13 }, // 0
 			{  2, -1,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  2, 27,  2,  2,  2,  2 }, // 1
 			{ 18,  1, -1, 18, 18, 18, 18, 18, 18,  9, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,  1, 18, 18, 18, 18 }, // 2
@@ -119,36 +119,32 @@ public class Routing {
 		//
 		for (int i = 0; i < 500; i++) {
 			
-			int s = random.nextInt(routingTable.length);
-			int d = random.nextInt(routingTable.length);
+			int source = random.nextInt(routingTable.length);
+			int destination = random.nextInt(routingTable.length);
 			
-			packet = new Packet(s, d);
+			packet = new Packet(source, destination);
 			
 			incPacketCount();
 			packetList.add(packet);
 			router[packet.getSource()].addWork(packet);
-			
-			String stop = "";
 		}
-		
-		String stop = "";
 		
 		// ******************************************************************************************************
 		// Let the network quiesce.
 		//
 		try {
-
+			
 			Thread.sleep(500);
 		}
 
-		catch (InterruptedException e) {
-
-
+		catch (InterruptedException ex) {
+			
+			
 		}
 
 		finally {
-
-
+			
+			
 		}
 		
 		// ******************************************************************************************************
@@ -156,10 +152,10 @@ public class Routing {
 		//
 		for (int i = 0; i < 500; i++) {
 			
-			int s = random.nextInt(routingTable.length);
-			int d = random.nextInt(routingTable.length);
+			int source = random.nextInt(routingTable.length);
+			int destination = random.nextInt(routingTable.length);
 			
-			packet = new Packet(s, d);
+			packet = new Packet(source, destination);
 			
 			incPacketCount();
 			packetList.add(packet);
@@ -185,7 +181,7 @@ public class Routing {
 				thread[i].join();
 			}
 			
-			catch (InterruptedException e) {
+			catch (InterruptedException ex) {
 				
 				
 			}
@@ -197,7 +193,7 @@ public class Routing {
 		}
 		
 		// ******************************************************************************************************
-		// Shut down each thread gracefully.
+		// Print the route of all Packets that traversed the network.
 		//
 		for (int i = 0; i < packetList.size(); i++) {
 

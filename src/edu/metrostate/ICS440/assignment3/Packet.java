@@ -7,23 +7,28 @@ import java.util.LinkedList;
  * <p>
  * 
  */
-class Packet {
+public class Packet {
 	
-	// The origin router
+	// The origin router.
 	private int source;
 	
-	// The final router
+	// The final router.
 	private int destination;
 	
-	// The path this packet takes
+	// The path this packet takes.
 	private LinkedList<Integer> path = new LinkedList<Integer>();
 	
 	/************************************************************************************************************
-	 * Instantiate a Packet, given source and destination.
+	 * Constructor for a new Packet object.
 	 * <p>
 	 * 
+	 * @param source
+	 *   the source of this Packet's route
+	 * 
+	 * @param destination
+	 *   the destination of this Packet's route
 	 */
-	Packet(int source, int destination) {
+	public Packet(int source, int destination) {
 		
 		this.source = source;
 		this.destination = destination;
@@ -34,7 +39,7 @@ class Packet {
 	 * <p>
 	 * 
 	 */
-	int getSource() {
+	public int getSource() {
 		
 		return source;
 	}
@@ -44,7 +49,7 @@ class Packet {
 	 * <p>
 	 * 
 	 */
-	int getDestination() {
+	public int getDestination() {
 		
 		return destination;
 	}
@@ -54,7 +59,7 @@ class Packet {
 	 * <p>
 	 * 
 	 */
-	void record(int router) {
+	public void record(int router) {
 		
 		path.add(router);
 	}
@@ -64,7 +69,7 @@ class Packet {
 	 * <p>
 	 * 
 	 */
-	void print() {
+	public void print() {
 		
 		System.out.println("Packet source=" + source + " destination=" + destination);
 		System.out.print("    path: ");
