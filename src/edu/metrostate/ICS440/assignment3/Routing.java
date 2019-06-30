@@ -58,7 +58,7 @@ public class Routing {
 	public static AtomicInteger packetCount = new AtomicInteger(0);
 	
 	// A table of routers, one for each vertex in the network.
-	public static Router[] router = new Router[routingTable.length];
+	public static Router[] routerTable = new Router[routingTable.length];
 	
 	public static int getPacketCount() {
 
@@ -81,7 +81,7 @@ public class Routing {
 			
 			for (int i = 0; i < routingTable.length; i++) {
 				
-				router[i].networkEmpty();
+				routerTable[i].networkEmpty();
 			}
 		}
 	}
@@ -91,10 +91,10 @@ public class Routing {
 	 * <p>
 	 * 
 	 */
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 
 		// A table of threads, one for each thread in the network.
-		Thread[] thread = new Thread[routingTable.length];
+		Thread[] threadList = new Thread[routingTable.length];
 		LinkedList<Packet> packetList = new LinkedList<Packet>();
 
 		// A reference to a Packet, that will be introduced to the network.
@@ -108,12 +108,17 @@ public class Routing {
 		//
 		for (int i = 0; i < routingTable.length; i++) {
 			
-			router[i] = new Router(routingTable[i], router, i);
-			thread[i] = new Thread(router[i]);
+			// Create a Router with a specific set of routes from the routing table, a reference
+			// to the list of all Routers in the network, and a specified Router number.
+			routerTable[i] = new Router(routingTable[i], routerTable, i);
 			
-			thread[i].start();
+			// Create a corresponding thread using a Router from the router table.
+			threadList[i] = new Thread(routerTable[i]);
+			
+			// Start the thread.
+			threadList[i].start();
 		}
-
+		
 		// ******************************************************************************************************
 		// Create some Packets, and insert them at the source Router.
 		//
@@ -126,7 +131,7 @@ public class Routing {
 			
 			incPacketCount();
 			packetList.add(packet);
-			router[packet.getSource()].addWork(packet);
+			routerTable[packet.getSource()].addWork(packet);
 		}
 		
 		// ******************************************************************************************************
@@ -159,7 +164,7 @@ public class Routing {
 			
 			incPacketCount();
 			packetList.add(packet);
-			router[packet.getSource()].addWork(packet);
+			routerTable[packet.getSource()].addWork(packet);
 		}
 
 		/* MOVE TO FIX A BUG */
@@ -174,11 +179,11 @@ public class Routing {
 		//
 		for (int i = 0; i < routingTable.length; i++) {
 			
-			router[i].end();
+			routerTable[i].end();
 			
 			try {
 				
-				thread[i].join();
+				threadList[i].join();
 			}
 			
 			catch (InterruptedException ex) {

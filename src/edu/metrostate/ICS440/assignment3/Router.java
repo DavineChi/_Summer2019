@@ -1,5 +1,6 @@
 package edu.metrostate.ICS440.assignment3;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /****************************************************************************************************************
@@ -46,7 +47,10 @@ public class Router implements Runnable {
 	public void addWork(Packet packet) {
 		
 		// TODO: implementation
-		list.add(packet);
+		synchronized (this) {
+			
+			list.add(packet);
+		}
 	}
 	
 	/************************************************************************************************************
@@ -77,8 +81,7 @@ public class Router implements Runnable {
 		
 		// TODO: implementation
 	}
-
-
+	
 	/************************************************************************************************************
 	 * Process packets. Add some details on how this works.
 	 * <p>
@@ -92,28 +95,40 @@ public class Router implements Runnable {
 		
 		for (Packet packet : list) {
 			
-			if (this.routerNum != packet.getDestination()) {
+			int packetDestination = packet.getDestination();
+			
+			if (this.routerNum != packetDestination) {
 				
 				// TODO: this is (probably) incorrect, but will suffice for now.
-				this.addWork(packet);
+				// this.addWork(packet);
 				// Intended behavior:
 				// Forward the Packet to the ***next appropriate Router*** in the routing table.
 				// Consider iterating over the routers array to find the "appropriate Router" for the Packet.
-				//break;
+				
+				for (int i = 0; i < routers.length; i++) {
+					
+					Router router = routers[i];
+					
+					int routerNumber = router.routerNum;
+					
+					if (routerNumber == packetDestination) {
+						
+						this.addWork(packet);
+					}
+				}
 			}
 			
-			if (this.routerNum == packet.getDestination()) {
+			if (this.routerNum == packetDestination) {
 				
 				packet.record(routerNum);
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
 		
-//		// If this Router is NOT the Packet's destination, ...
-//		// How would you know this? Locate / get the Packets, see if this Router is in that list.
-//		if (list.contains(this)) {
-//			
-//			// ... then forward the Packet to the next appropriate Router in the routing table.
-//			// Do this by calling the addWork() method, passing the Packet as the argument:
-//		}
+		return "list=" + list + ", routes=" + Arrays.toString(routes) + ", routers=" +
+		       Arrays.toString(routers) + ", routerNum=" + routerNum + ", end=" + end;
 	}
 }
