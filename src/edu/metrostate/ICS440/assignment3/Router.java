@@ -47,10 +47,8 @@ public class Router implements Runnable {
 	public void addWork(Packet packet) {
 		
 		// TODO: implementation
-		synchronized (this) {
-			
-			list.add(packet);
-		}
+		
+		list.add(packet);
 	}
 	
 	/************************************************************************************************************
@@ -61,15 +59,15 @@ public class Router implements Runnable {
 	public synchronized void end() {
 		
 		// TODO: implementation
-		try {
-			
-			Thread.currentThread().join();
-		}
-		
-		catch (InterruptedException ex) {
-			
-			ex.printStackTrace();
-		}
+//		try {
+//			
+//			Thread.currentThread().join();
+//		}
+//		
+//		catch (InterruptedException ex) {
+//			
+//			ex.printStackTrace();
+//		}
 	}
 	
 	/************************************************************************************************************
@@ -90,39 +88,39 @@ public class Router implements Runnable {
 	@Override
 	public void run() {
 		
-		// TODO: implementation
-		while (list.isEmpty()) {}
-		
-		for (Packet packet : list) {
-			
-			int packetDestination = packet.getDestination();
-			
-			if (this.routerNum != packetDestination) {
-				
-				// TODO: this is (probably) incorrect, but will suffice for now.
-				// this.addWork(packet);
-				// Intended behavior:
-				// Forward the Packet to the ***next appropriate Router*** in the routing table.
-				// Consider iterating over the routers array to find the "appropriate Router" for the Packet.
-				
-				for (int i = 0; i < routers.length; i++) {
-					
-					Router router = routers[i];
-					
-					int routerNumber = router.routerNum;
-					
-					if (routerNumber == packetDestination) {
-						
-						this.addWork(packet);
-					}
-				}
-			}
-			
-			if (this.routerNum == packetDestination) {
-				
-				packet.record(routerNum);
-			}
-		}
+//		// TODO: implementation
+//		while (list.isEmpty()) {}
+//		
+//		for (Packet packet : list) {
+//			
+//			int packetDestination = packet.getDestination();
+//			
+//			if (this.routerNum != packetDestination) {
+//				
+//				// TODO: this is (probably) incorrect, but will suffice for now.
+//				// this.addWork(packet);
+//				// Intended behavior:
+//				// Forward the Packet to the ***next appropriate Router*** in the routing table.
+//				// Consider iterating over the routers array to find the "appropriate Router" for the Packet.
+//				
+//				for (int i = 0; i < routers.length; i++) {
+//					
+//					Router router = routers[i];
+//					
+//					int routerNumber = router.routerNum;
+//					
+//					if (routerNumber == packetDestination) {
+//						
+//						this.addWork(packet);
+//					}
+//				}
+//			}
+//			
+//			if (this.routerNum == packetDestination) {
+//				
+//				packet.record(routerNum);
+//			}
+//		}
 	}
 
 	@Override
