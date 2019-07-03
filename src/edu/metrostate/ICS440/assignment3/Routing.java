@@ -166,13 +166,12 @@ public class Routing {
 			packetList.add(packet);
 			routerTable[packet.getSource()].addWork(packet);
 		}
-
+		
 		/* MOVE TO FIX A BUG */
 
 		/* for (int i = 0; i < packetList.size(); i++) {
             packetList.get(i).Print();
         } */
-		
 		
 		// ******************************************************************************************************
 		// Shut down each thread gracefully.

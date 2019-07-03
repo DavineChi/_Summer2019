@@ -10,7 +10,7 @@ import java.util.LinkedList;
  */
 public class Router implements Runnable {
 	
-	private LinkedList<Packet> workQueue = new LinkedList<Packet>();
+	private LinkedList<Packet> workQueue = new LinkedList<Packet>();  // TODO: Only need to lock access to this.
 	private int[] routes;
 	private Router[] routers;
 	private int routerNum;
@@ -58,6 +58,7 @@ public class Router implements Runnable {
 	public synchronized void end() {
 		
 		// TODO: implementation
+		// this method is only called one time (may need to keep track of this somehow)
 		return;
 	}
 	
@@ -80,8 +81,14 @@ public class Router implements Runnable {
 	public void run() {
 		
 		// TODO: implementation
+		// Only lock accesses to the queue.
+		// Before causing a thread to sleep/wait, check the truth table's conditions first.
+		// Need a "process", "return", "wait" loop structure with truth table checks.
 		
-		while (workQueue.isEmpty()) {}
+		synchronized (workQueue) {
+			
+			while (workQueue.isEmpty()) {}
+		}
 		
 		for (Packet packet : workQueue) {
 			
@@ -89,20 +96,10 @@ public class Router implements Runnable {
 			
 			if (this.routerNum != packetDestination) {
 				
-				for (int i = 0; i < routers.length; i++) {
-					
-					Router router = routers[i];
-					
-					int routerNumber = router.routerNum;
-					
-					if (routerNumber == packetDestination) {
-						
-						router.addWork(packet);
-					}
-				}
+				routers[packetDestination].addWork(packet);
 			}
 			
-			if (this.routerNum == packetDestination) {
+			else {
 				
 				packet.record(routerNum);
 			}
