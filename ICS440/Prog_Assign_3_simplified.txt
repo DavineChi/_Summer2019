@@ -1,0 +1,29 @@
+Your task is to implement the Router class.
+
+This is the class that forwards packets to the next router on the way to their destination.
+
+As you can see, Router implements Runnable.
+
+The main() method calls the addWork() method in Router, once it has created the Packet.
+
+The addWork() method enqueues the work to that particular thread.
+
+The end() method indicates to Router that, once there are no more packets in the network, it should return.
+
+The run() method (from Runnable) does the following:
+waits until the queue has some contents,
+then records the number of the current router in the packet.
+
+If the router is not the packet’s destination,
+it forwards that packet to the appropriate next router in the routing table
+by calling the addWork() method for that instance of Router, with the packet as the argument.
+
+Since there is one instance of Router for each router in the network,
+addWork() must add to the queue that corresponds to the correct router.
+
+Under no circumstances should any router process a packet more than once.
+
+If this is the destination router for the network,
+the router should record itself, but should not forward the packet any further.
+
+Router should use the monitors we discussed in class to manage its synchronization.

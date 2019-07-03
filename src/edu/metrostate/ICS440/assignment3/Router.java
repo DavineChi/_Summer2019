@@ -10,7 +10,7 @@ import java.util.LinkedList;
  */
 public class Router implements Runnable {
 	
-	private LinkedList<Packet> list = new LinkedList<Packet>();
+	private LinkedList<Packet> workQueue = new LinkedList<Packet>();
 	private int[] routes;
 	private Router[] routers;
 	private int routerNum;
@@ -47,7 +47,7 @@ public class Router implements Runnable {
 	public void addWork(Packet packet) {
 		
 		// TODO: implementation
-		list.add(packet);
+		workQueue.add(packet);
 	}
 	
 	/************************************************************************************************************
@@ -58,15 +58,7 @@ public class Router implements Runnable {
 	public synchronized void end() {
 		
 		// TODO: implementation
-//		try {
-//			
-//			Thread.currentThread().join();
-//		}
-//		
-//		catch (InterruptedException ex) {
-//			
-//			ex.printStackTrace();
-//		}
+		return;
 	}
 	
 	/************************************************************************************************************
@@ -88,43 +80,39 @@ public class Router implements Runnable {
 	public void run() {
 		
 		// TODO: implementation
-		while (list.isEmpty()) {}
 		
-		synchronized (this) {
+		while (workQueue.isEmpty()) {}
+		
+		for (Packet packet : workQueue) {
 			
-			for (Packet packet : list) {
+			int packetDestination = packet.getDestination();
+			
+			if (this.routerNum != packetDestination) {
 				
-				int packetDestination = packet.getDestination();
-				
-				if (this.routerNum != packetDestination) {
+				for (int i = 0; i < routers.length; i++) {
 					
-					for (int i = 0; i < routers.length; i++) {
+					Router router = routers[i];
+					
+					int routerNumber = router.routerNum;
+					
+					if (routerNumber == packetDestination) {
 						
-						Router router = routers[i];
-						
-						int routerNumber = router.routerNum;
-						
-						if (routerNumber == packetDestination) {
-							
-							router.addWork(packet);
-						}
+						router.addWork(packet);
 					}
 				}
+			}
+			
+			if (this.routerNum == packetDestination) {
 				
-				if (this.routerNum == packetDestination) {
-				
-					packet.record(routerNum);
-				}
+				packet.record(routerNum);
 			}
 		}
-		
-		String stop = "";
 	}
-
+	
 	@Override
 	public String toString() {
 		
-		return "list=" + list + ", routes=" + Arrays.toString(routes) + ", routers=" +
+		return "list=" + workQueue + ", routes=" + Arrays.toString(routes) + ", routers=" +
 		       Arrays.toString(routers) + ", routerNum=" + routerNum + ", end=" + end;
 	}
 }

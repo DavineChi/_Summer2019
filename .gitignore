@@ -11,6 +11,12 @@ ghcnd-version.txt
 *.dly
 ghcnd_hcn/
 ghcnd_hcn_BACKUP/
+/ghcnd-stations.txt
+/readme.txt
+/ghcnd_hcn/
+/Fisher_Shannon_ProgAssign2.txt
+/Fisher_Shannon_ProgAssign3.txt
+/Fisher_Shannon_ProgAssign5.txt
 
 ##########################
 ## Maven
@@ -64,6 +70,3 @@ nb-configuration.xml
 ##########################
 .DS_Store
 /org.eclipse.jdt.core.prefs
-/ghcnd-stations.txt
-/readme.txt
-/ghcnd_hcn/
