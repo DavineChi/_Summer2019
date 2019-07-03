@@ -85,9 +85,26 @@ public class Router implements Runnable {
 		// Before causing a thread to sleep/wait, check the truth table's conditions first.
 		// Need a "process", "return", "wait" loop structure with truth table checks.
 		
-		synchronized (workQueue) {
+		synchronized (this) {
 			
-			while (workQueue.isEmpty()) {}
+			System.out.println("Inside synchronized: " + Thread.currentThread().getId());
+			
+			while (workQueue.isEmpty()) {
+				
+				System.out.println("Inside while-loop: " + Thread.currentThread().getId());
+				
+				try {
+					
+					System.out.println("Before calling wait(): " + Thread.currentThread().getId());
+					this.wait();
+				}
+				
+				catch (InterruptedException ex) {
+					
+					Thread.currentThread().interrupt();
+					ex.printStackTrace();
+				}
+			}
 		}
 		
 		for (Packet packet : workQueue) {
@@ -97,11 +114,13 @@ public class Router implements Runnable {
 			if (this.routerNum != packetDestination) {
 				
 				routers[packetDestination].addWork(packet);
+				this.notifyAll();
 			}
 			
 			else {
 				
 				packet.record(routerNum);
+				this.notifyAll();
 			}
 		}
 	}
