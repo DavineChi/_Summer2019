@@ -131,6 +131,7 @@ public class Routing {
 			
 			incPacketCount();
 			packetList.add(packet);
+			//System.out.println("Creating packet #" + (i + 1) + " - Round 1, before addWork(): " + Thread.currentThread().getId());
 			routerTable[packet.getSource()].addWork(packet);
 		}
 		
@@ -164,6 +165,7 @@ public class Routing {
 			
 			incPacketCount();
 			packetList.add(packet);
+			//System.out.println("Creating packet #" + (i + 1) + " - Round 2, before addWork(): " + Thread.currentThread().getId());
 			routerTable[packet.getSource()].addWork(packet);
 		}
 		

@@ -47,7 +47,14 @@ public class Router implements Runnable {
 	public void addWork(Packet packet) {
 		
 		// TODO: implementation
-		workQueue.add(packet);
+		
+		long threadId = Thread.currentThread().getId();
+		
+		synchronized (workQueue) {
+			
+			System.out.println("Inside addWork(), inside synchronized: " + threadId);
+			workQueue.add(packet);
+		}
 	}
 	
 	/************************************************************************************************************
@@ -59,7 +66,26 @@ public class Router implements Runnable {
 		
 		// TODO: implementation
 		// this method is only called one time (may need to keep track of this somehow)
-		return;
+		
+		while (!networkEmpty()) {
+			
+			try {
+				
+				System.out.println("Inside end(), before wait: " + Thread.currentThread().getId());
+				this.wait();
+			}
+			
+			catch (InterruptedException ex) {
+				
+				Thread.currentThread().interrupt();
+				ex.printStackTrace();
+			}
+		}
+		
+		this.end = true;
+		
+		System.out.println("Inside end(), before notifyAll: " + Thread.currentThread().getId());
+		this.notifyAll();
 	}
 	
 	/************************************************************************************************************
@@ -67,9 +93,23 @@ public class Router implements Runnable {
 	 * <p>
 	 * 
 	 */
-	public synchronized void networkEmpty() {
+	public synchronized boolean networkEmpty() {
 		
 		// TODO: implementation
+		boolean result = true;
+		
+		for (int i = 0; i < routers.length; i++) {
+			
+			Router router = routers[i];
+			
+			if (!router.workQueue.isEmpty()) {
+				
+				result = false;
+				break;
+			}
+		}
+		
+		return result;
 	}
 	
 	/************************************************************************************************************
@@ -82,21 +122,21 @@ public class Router implements Runnable {
 		
 		// TODO: implementation
 		// Only lock accesses to the queue.
-		// Before causing a thread to sleep/wait, check the truth table's conditions first.
 		// Need a "process", "return", "wait" loop structure with truth table checks.
 		
 		synchronized (this) {
 			
-			System.out.println("Inside synchronized: " + Thread.currentThread().getId());
+			System.out.println("Inside run(), inside synchronized: " + Thread.currentThread().getId());
 			
-			while (workQueue.isEmpty()) {
+			while (!workQueue.isEmpty()) {
 				
-				System.out.println("Inside while-loop: " + Thread.currentThread().getId());
+				System.out.println("Inside run(), inside while-loop: " + Thread.currentThread().getId());
 				
 				try {
 					
-					System.out.println("Before calling wait(): " + Thread.currentThread().getId());
-					this.wait();
+					// TODO: Before causing a thread to sleep/wait, check the truth table's conditions first.
+					System.out.println("Inside run(), before wait: " + Thread.currentThread().getId());
+					workQueue.wait();
 				}
 				
 				catch (InterruptedException ex) {
@@ -105,6 +145,8 @@ public class Router implements Runnable {
 					ex.printStackTrace();
 				}
 			}
+			
+			this.notifyAll();
 		}
 		
 		for (Packet packet : workQueue) {
@@ -113,14 +155,13 @@ public class Router implements Runnable {
 			
 			if (this.routerNum != packetDestination) {
 				
+				System.out.println("Inside packet loop, before addWork(): " + Thread.currentThread().getId());
 				routers[packetDestination].addWork(packet);
-				this.notifyAll();
 			}
 			
 			else {
 				
 				packet.record(routerNum);
-				this.notifyAll();
 			}
 		}
 	}
