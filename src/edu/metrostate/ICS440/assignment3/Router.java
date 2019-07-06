@@ -10,7 +10,7 @@ import java.util.LinkedList;
  */
 public class Router implements Runnable {
 	
-	private LinkedList<Packet> workQueue = new LinkedList<Packet>();  // TODO: Only need to lock access to this.
+	private LinkedList<Packet> packetQueue = new LinkedList<Packet>();  // TODO: Only need to lock access to this.
 	private int[] routes;
 	private Router[] routers;
 	private int routerNum;
@@ -50,10 +50,14 @@ public class Router implements Runnable {
 		
 		long threadId = Thread.currentThread().getId();
 		
-		synchronized (workQueue) {
+		synchronized (packetQueue) {
 			
-			System.out.println("Inside addWork(), inside synchronized: " + threadId);
-			workQueue.add(packet);
+			if (threadId != 1) {
+				
+				System.out.println("Inside addWork(), inside synchronized: " + "Thread-" + threadId);
+			}
+			
+			packetQueue.add(packet);
 		}
 	}
 	
@@ -64,14 +68,16 @@ public class Router implements Runnable {
 	 */
 	public synchronized void end() {
 		
-		// TODO: implementation
-		// this method is only called one time (may need to keep track of this somehow)
+		// TODO: implementation - method is only called one time (may need to keep track of this somehow)
 		
-		while (!networkEmpty()) {
+		boolean noPacketsInQueue = packetQueue.isEmpty();
+		boolean noPacketsInNetwork = this.networkEmpty();
+		
+		while (noPacketsInQueue && noPacketsInNetwork) {
 			
 			try {
 				
-				System.out.println("Inside end(), before wait: " + Thread.currentThread().getId());
+				System.out.println("Inside end(), before wait: " + "Thread-" + Thread.currentThread().getId());
 				this.wait();
 			}
 			
@@ -84,7 +90,8 @@ public class Router implements Runnable {
 		
 		this.end = true;
 		
-		System.out.println("Inside end(), before notifyAll: " + Thread.currentThread().getId());
+		System.out.println("Inside end(), before notifyAll, end == " + this.end + ", " +
+		                   "Thread-" + Thread.currentThread().getId());
 		this.notifyAll();
 	}
 	
@@ -95,21 +102,7 @@ public class Router implements Runnable {
 	 */
 	public synchronized boolean networkEmpty() {
 		
-		// TODO: implementation
-		boolean result = true;
-		
-		for (int i = 0; i < routers.length; i++) {
-			
-			Router router = routers[i];
-			
-			if (!router.workQueue.isEmpty()) {
-				
-				result = false;
-				break;
-			}
-		}
-		
-		return result;
+		return Routing.getPacketCount() == 0;
 	}
 	
 	/************************************************************************************************************
@@ -124,19 +117,23 @@ public class Router implements Runnable {
 		// Only lock accesses to the queue.
 		// Need a "process", "return", "wait" loop structure with truth table checks.
 		
+		boolean noPacketsInQueue = packetQueue.isEmpty();
+		boolean noPacketsInNetwork = this.networkEmpty();
+		boolean endCalled = this.end;
+		
 		synchronized (this) {
 			
-			System.out.println("Inside run(), inside synchronized: " + Thread.currentThread().getId());
+			System.out.println("Inside run(), inside synchronized: Thread-" + Thread.currentThread().getId());
 			
-			while (!workQueue.isEmpty()) {
+			while (noPacketsInQueue && (!noPacketsInNetwork || !endCalled)) {
 				
-				System.out.println("Inside run(), inside while-loop: " + Thread.currentThread().getId());
+				System.out.println("Inside run(), inside while-loop: Thread-" + Thread.currentThread().getId());
 				
 				try {
 					
 					// TODO: Before causing a thread to sleep/wait, check the truth table's conditions first.
-					System.out.println("Inside run(), before wait: " + Thread.currentThread().getId());
-					workQueue.wait();
+					System.out.println("Inside run(), before wait(): Thread-" + Thread.currentThread().getId());
+					this.wait();
 				}
 				
 				catch (InterruptedException ex) {
@@ -146,22 +143,30 @@ public class Router implements Runnable {
 				}
 			}
 			
+			System.out.println("Inside run(), before notifyAll(): Thread-" + Thread.currentThread().getId());
 			this.notifyAll();
+			System.out.println("Inside run(), after notifyAll(): Thread-" + Thread.currentThread().getId());
 		}
 		
-		for (Packet packet : workQueue) {
+		while (!noPacketsInNetwork) {
 			
-			int packetDestination = packet.getDestination();
-			
-			if (this.routerNum != packetDestination) {
+			for (Packet packet : packetQueue) {
 				
-				System.out.println("Inside packet loop, before addWork(): " + Thread.currentThread().getId());
-				routers[packetDestination].addWork(packet);
-			}
-			
-			else {
+				int packetDestination = packet.getDestination();
 				
-				packet.record(routerNum);
+				System.out.println("Inside run(), looping through packets in the workQueue: " + "Thread-" + Thread.currentThread().getId());
+				
+				if (this.routerNum != packetDestination) {
+					
+					System.out.println("Inside run(), before addWork(): " + "Thread-" + Thread.currentThread().getId());
+					routers[packetDestination].addWork(packet);
+				}
+				
+				else {
+					
+					System.out.println("Inside run(), recording Router #" + routerNum + ": " + "Thread-" + Thread.currentThread().getId());
+					packet.record(routerNum);
+				}
 			}
 		}
 	}
@@ -169,7 +174,7 @@ public class Router implements Runnable {
 	@Override
 	public String toString() {
 		
-		return "list=" + workQueue + ", routes=" + Arrays.toString(routes) + ", routers=" +
+		return "list=" + packetQueue + ", routes=" + Arrays.toString(routes) + ", routers=" +
 		       Arrays.toString(routers) + ", routerNum=" + routerNum + ", end=" + end;
 	}
 }
