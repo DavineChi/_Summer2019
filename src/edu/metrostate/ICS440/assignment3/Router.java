@@ -12,7 +12,7 @@ public class Router implements Runnable {
 	
 	private LinkedList<Packet> packetQueue = new LinkedList<Packet>();  // TODO: Only need to lock access to this.
 	private int[] routes;
-	private Router[] routers;
+	private Router[] allRouters;
 	private int routerNum;
 	private boolean end = false;
 	
@@ -23,17 +23,16 @@ public class Router implements Runnable {
 	 * @param routes
 	 *   the routes that this Router is assigned to take
 	 * 
-	 * @param routers
+	 * @param allRouters
 	 *   a reference to the entire list of Routers in the network
 	 * 
 	 * @param routerNum
 	 *   a unique Router ID
-	 *   
 	 */
-	public Router(int[] routes, Router[] routers, int routerNum) {
+	public Router(int[] routes, Router[] allRouters, int routerNum) {
 		
 		this.routes = routes;
-		this.routers = routers;
+		this.allRouters = allRouters;
 		this.routerNum = routerNum;
 	}
 	
@@ -73,7 +72,7 @@ public class Router implements Runnable {
 		boolean noPacketsInQueue = packetQueue.isEmpty();
 		boolean noPacketsInNetwork = this.networkEmpty();
 		
-		while (noPacketsInQueue && noPacketsInNetwork) {
+		while (!noPacketsInQueue && !noPacketsInNetwork) {
 			
 			try {
 				
@@ -117,13 +116,13 @@ public class Router implements Runnable {
 		// Only lock accesses to the queue.
 		// Need a "process", "return", "wait" loop structure with truth table checks.
 		
-		boolean noPacketsInQueue = packetQueue.isEmpty();
-		boolean noPacketsInNetwork = this.networkEmpty();
-		boolean endCalled = this.end;
-		
 		synchronized (packetQueue) {
 			
-			while (noPacketsInQueue && (!noPacketsInNetwork || !endCalled)) {
+			boolean noPacketsInQueue = packetQueue.isEmpty();
+			boolean noPacketsInNetwork = this.networkEmpty();
+			boolean endCalled = this.end;
+			
+			while (!(noPacketsInQueue && (!noPacketsInNetwork || !endCalled))) {
 				
 				try {
 					
@@ -139,7 +138,9 @@ public class Router implements Runnable {
 			packetQueue.notifyAll();
 		}
 		
-		while (!noPacketsInNetwork) {
+		while (!this.networkEmpty()) {
+			
+			// TODO: I think you will need to dequeue() at some point here...
 			
 			for (Packet packet : packetQueue) {
 				
@@ -149,16 +150,18 @@ public class Router implements Runnable {
 				
 				if (this.routerNum != packetDestination) {
 					
-					routers[packetDestination].addWork(packet);
+					allRouters[packetDestination].addWork(packet);
 				}
 			}
 		}
+		
+		String stop = "";
 	}
 	
 	@Override
 	public String toString() {
 		
 		return "list=" + packetQueue + ", routes=" + Arrays.toString(routes) + ", routers=" +
-		       Arrays.toString(routers) + ", routerNum=" + routerNum + ", end=" + end;
+		       Arrays.toString(allRouters) + ", routerNum=" + routerNum + ", end=" + end;
 	}
 }
