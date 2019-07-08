@@ -60,9 +60,24 @@ public class Requests {
 	 */
 	public synchronized Vector<Integer> get(boolean waitIfEmpty) {
 		
-		while (waitIfEmpty) {}  // wait...
+		Vector<Integer> result = null;
 		
-		Vector<Integer> result = cylinderList;
+		while (cylinderList.isEmpty() && waitIfEmpty) {
+			
+			try {
+				
+				wait();
+			}
+			
+			catch (InterruptedException ex) {
+				
+				ex.printStackTrace();
+			}
+		}
+		
+		notifyAll();
+		
+		result = new Vector<Integer>(cylinderList);
 		
 		cylinderList.clear();
 		
@@ -81,23 +96,23 @@ public class Requests {
 	 */
 	public static void main(String[] args) {
 		
-		Requests req = new Requests();
+		Requests requests = new Requests();
 		
-		int iterations = 100;
+		int iterations = 20;
 		
 		for (int index = 0; index < iterations; index++) {
 			
 			int candidate = ThreadLocalRandom.current().nextInt(RANGE_MINIMUM, RANGE_MAXIMUM);
 			Integer integer = new Integer(candidate);
 			
-			req.add(integer);
+			requests.add(integer);
 		}
 		
-		String temp = "";
+		Vector<Integer> result = requests.get(false);
 		
-		for (int index = 0; index < iterations; index++) {
+		for (int k = 0; k < result.size(); k++) {
 			
-			// TODO: getter implementation
+			System.out.println("Cylinder #: " + result.get(k));
 		}
 	}
 }
