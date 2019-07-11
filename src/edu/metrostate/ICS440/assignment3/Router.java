@@ -1,6 +1,7 @@
 package edu.metrostate.ICS440.assignment3;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /****************************************************************************************************************
@@ -138,11 +139,13 @@ public class Router implements Runnable {
 			packetQueue.notifyAll();
 		}
 		
-		while (!this.networkEmpty()) {
+		while (!this.networkEmpty() && !packetQueue.isEmpty()) {
 			
 			// TODO: I think you will need to dequeue() at some point here...
 			
-			for (Packet packet : packetQueue) {
+			for (int k = 0; k < packetQueue.size(); k++) {
+				
+				Packet packet = packetQueue.poll();
 				
 				int packetDestination = packet.getDestination();
 				
@@ -152,10 +155,13 @@ public class Router implements Runnable {
 					
 					allRouters[packetDestination].addWork(packet);
 				}
+				
+				else {
+					
+					Routing.decPacketCount();
+				}
 			}
 		}
-		
-		String stop = "";
 	}
 	
 	@Override
