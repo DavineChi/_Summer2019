@@ -73,7 +73,10 @@ public class Router implements Runnable {
 		boolean noPacketsInQueue = packetQueue.isEmpty();
 		boolean noPacketsInNetwork = this.networkEmpty();
 		
-		while (!noPacketsInQueue && !noPacketsInNetwork) {
+		boolean packetsInQueue = !packetQueue.isEmpty();
+		boolean packetsInNetwork = !this.networkEmpty();
+		
+		while (!packetsInQueue && !packetsInNetwork) {
 			
 			try {
 				
@@ -143,7 +146,9 @@ public class Router implements Runnable {
 			
 			// TODO: I think you will need to dequeue() at some point here...
 			
-			for (int k = 0; k < packetQueue.size(); k++) {
+			int iterations = packetQueue.size();
+			
+			for (int k = 0; k < iterations; k++) {
 				
 				Packet packet = packetQueue.poll();
 				
