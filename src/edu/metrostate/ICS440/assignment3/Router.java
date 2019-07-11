@@ -11,7 +11,7 @@ import java.util.LinkedList;
  */
 public class Router implements Runnable {
 	
-	private LinkedList<Packet> packetQueue = new LinkedList<Packet>();  // TODO: Only need to lock access to this.
+	private LinkedList<Packet> packetQueue = new LinkedList<Packet>();
 	private int[] routes;
 	private Router[] allRouters;
 	private int routerNum;
@@ -48,11 +48,11 @@ public class Router implements Runnable {
 		
 		// TODO: implementation
 		
-		long threadId = Thread.currentThread().getId();
+		String threadId = Thread.currentThread().getName();
 		
 		synchronized (packetQueue) {
 			
-			if (threadId != 1) {
+			if (!threadId.equals("main")) {
 				
 				System.out.println("Inside addWork(), inside synchronized: " + "Thread-" + threadId);
 			}
@@ -76,11 +76,11 @@ public class Router implements Runnable {
 		boolean packetsInQueue = !packetQueue.isEmpty();
 		boolean packetsInNetwork = !this.networkEmpty();
 		
-		while (!packetsInQueue && !packetsInNetwork) {
+		while (packetsInNetwork) {
 			
 			try {
 				
-				System.out.println("Inside end(), before wait: " + "Thread-" + Thread.currentThread().getId());
+				System.out.println("Inside end(), before wait: " + Thread.currentThread().getName());
 				this.wait();
 			}
 			
@@ -94,7 +94,7 @@ public class Router implements Runnable {
 		this.end = true;
 		
 		System.out.println("Inside end(), before notifyAll, end == " + this.end + ", " +
-		                   "Thread-" + Thread.currentThread().getId());
+		                   Thread.currentThread().getName());
 		this.notifyAll();
 	}
 	
@@ -116,45 +116,27 @@ public class Router implements Runnable {
 	@Override
 	public void run() {
 		
-		// TODO: implementation
 		// Only lock accesses to the queue.
 		// Need a "process", "return", "wait" loop structure with truth table checks.
 		
-		synchronized (packetQueue) {
+		while (!this.networkEmpty() && !packetQueue.isEmpty() && !end) {
 			
-			boolean noPacketsInQueue = packetQueue.isEmpty();
-			boolean noPacketsInNetwork = this.networkEmpty();
-			boolean endCalled = this.end;
+			String threadName = Thread.currentThread().getName();
 			
-			while (!(noPacketsInQueue && (!noPacketsInNetwork || !endCalled))) {
+			Packet packet = null;
+			
+			synchronized (this) {
 				
-				try {
-					
-					packetQueue.wait();
-				}
-				
-				catch (InterruptedException ex) {
-					
-					ex.printStackTrace();
-				}
+				packet = packetQueue.poll();
 			}
 			
-			packetQueue.notifyAll();
-		}
-		
-		while (!this.networkEmpty() && !packetQueue.isEmpty()) {
+			int packetDestination = packet.getDestination();
 			
-			// TODO: I think you will need to dequeue() at some point here...
+			packet.record(routerNum);
 			
-			int iterations = packetQueue.size();
-			
-			for (int k = 0; k < iterations; k++) {
+			for (int i = 0; i < routes.length; i++) {
 				
-				Packet packet = packetQueue.poll();
-				
-				int packetDestination = packet.getDestination();
-				
-				packet.record(routerNum);
+				int route = routes[i];
 				
 				if (this.routerNum != packetDestination) {
 					
