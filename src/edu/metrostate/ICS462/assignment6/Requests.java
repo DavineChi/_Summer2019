@@ -1,7 +1,6 @@
 package edu.metrostate.ICS462.assignment6;
 
 import java.util.Vector;
-import java.util.concurrent.ThreadLocalRandom;
 
 /****************************************************************************************************************
  * This class handles add and get requests for cylinders and maintains a collection of cylinders that have
@@ -15,9 +14,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * Due Date:	2019.07.09
  */
 public class Requests {
-	
-	private static final int RANGE_MINIMUM = 0;
-	private static final int RANGE_MAXIMUM = 5000;
 	
 	private Vector<Integer> cylinderList;
 	
@@ -80,37 +76,5 @@ public class Requests {
 		cylinderList.clear();
 		
 		return result;
-	}
-	
-	/************************************************************************************************************
-	 * Main method from where program execution begins. Used here for testing and debugging.
-	 * <p>
-	 * 
-	 * @param args
-	 *   parameter not used
-	 * 
-	 * @postcondition
-	 *   Program execution has transpired.
-	 */
-	public static void main(String[] args) {
-		
-		Requests requests = new Requests();
-		
-		int iterations = 20;
-		
-		for (int index = 0; index < iterations; index++) {
-			
-			int candidate = ThreadLocalRandom.current().nextInt(RANGE_MINIMUM, RANGE_MAXIMUM);
-			Integer integer = new Integer(candidate);
-			
-			requests.add(integer);
-		}
-		
-		Vector<Integer> result = requests.get(false);
-		
-		for (int k = 0; k < result.size(); k++) {
-			
-			System.out.println("Cylinder #: " + result.get(k));
-		}
 	}
 }
