@@ -1,7 +1,6 @@
 package edu.metrostate.ICS440.assignment3;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /****************************************************************************************************************
