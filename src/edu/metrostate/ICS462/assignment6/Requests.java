@@ -75,8 +75,6 @@ public class Requests {
 			}
 		}
 		
-		notifyAll();
-		
 		result = new Vector<Integer>(cylinderList);
 		
 		cylinderList.clear();
