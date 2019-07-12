@@ -1,6 +1,13 @@
 package edu.metrostate.ICS462.assignment6;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Producer implements Runnable {
+	
+	private static final int RANGE_MINIMUM = 0;
+	private static final int RANGE_MAXIMUM = 5000;
+	
+	private static boolean complete = false;
 	
 	private Requests requests;
 	
@@ -9,9 +16,34 @@ public class Producer implements Runnable {
 		this.requests = requests;
 	}
 	
+	public static boolean isComplete() {
+		
+		return complete;
+	}
+	
 	@Override
 	public void run() {
 		
-		// TODO: implementation
+		for (int i = 0; i < 25; i++) {
+			
+			int candidate = ThreadLocalRandom.current().nextInt(RANGE_MINIMUM, RANGE_MAXIMUM);
+			Integer integer = new Integer(candidate);
+			
+			requests.add(integer);
+			
+			System.out.println("Cylinder request produced: " + integer);
+			
+			try {
+				
+				Thread.sleep(Driver.DELAY_BETWEEN_REQUESTS);
+			}
+			
+			catch (InterruptedException ex) {
+				
+				ex.printStackTrace();
+			}
+		}
+		
+		complete = true;
 	}
 }

@@ -49,7 +49,7 @@ public class Requests {
 	 * <p>
 	 * 
 	 * @param waitIfEmpty
-	 *   if true and there are no requests, the caller waits - if false OR there are requests,
+	 *   if true and there are no requests, the caller waits - if false or there are requests,
 	 *   the caller does not wait
 	 * @return
 	 *   A list of requests that have been added but not retrieved yet.
