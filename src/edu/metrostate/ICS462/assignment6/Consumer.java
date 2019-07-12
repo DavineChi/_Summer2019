@@ -16,7 +16,7 @@ public class Consumer implements Runnable {
 		
 		Vector<Integer> results = null;
 		
-		while (!Producer.isComplete()) {
+		while (true) {
 			
 			results = requests.get(true);
 			
@@ -33,6 +33,13 @@ public class Consumer implements Runnable {
 			for (Integer integer : results) {
 				
 				System.out.println("Cylinder request consumed: " + integer);
+			}
+			
+			results = requests.get(true);
+			
+			if (Producer.isComplete()) {  //TODO: and there are more cylinder requests in results list...
+				
+				break;
 			}
 		}
 	}
