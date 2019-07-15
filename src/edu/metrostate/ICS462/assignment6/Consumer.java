@@ -34,13 +34,6 @@ public class Consumer implements Runnable {
 				
 				System.out.println("Cylinder request consumed: " + integer);
 			}
-			
-			results = requests.get(true);
-			
-			if (Producer.isComplete()) {  //TODO: and there are more cylinder requests in results list...
-				
-				break;
-			}
 		}
 	}
 }
