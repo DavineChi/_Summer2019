@@ -7,11 +7,18 @@ public class Producer implements Runnable {
 	private static final int RANGE_MINIMUM = 0;
 	private static final int RANGE_MAXIMUM = 5000;
 	
+	private static boolean complete = false;
+	
 	private Requests requests;
 	
 	public Producer(Requests requests) {
 		
 		this.requests = requests;
+	}
+	
+	public static boolean isComplete() {
+		
+		return complete;
 	}
 	
 	@Override
@@ -36,5 +43,7 @@ public class Producer implements Runnable {
 				ex.printStackTrace();
 			}
 		}
+		
+		complete = true;
 	}
 }
