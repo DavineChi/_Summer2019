@@ -2,6 +2,16 @@ package edu.metrostate.ICS462.assignment6;
 
 import java.util.Random;
 
+/****************************************************************************************************************
+ * Driver class for cylinder production and consumption requests.
+ * <p>
+ * 
+ * @author Shannon L. Fisher
+ * <p>
+ * Begin Date:	2019.07.10
+ * <p>
+ * Due Date:	2019.07.16
+ */
 public class Driver {
 	
 	private static final Random RANDOM = new Random();
