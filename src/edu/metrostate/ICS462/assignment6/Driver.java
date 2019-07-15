@@ -6,7 +6,7 @@ public class Driver {
 	
 	private static final Random RANDOM = new Random();
 	
-	private static final int MAX = 1;
+	private static final int MAX = 251;
 	
 	public static final int DELAY_BETWEEN_REQUESTS = RANDOM.nextInt(MAX) + 100;
 	public static final int SLEEP_TIME = RANDOM.nextInt(MAX) + 100;

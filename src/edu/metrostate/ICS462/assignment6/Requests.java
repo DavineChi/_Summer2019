@@ -77,16 +77,4 @@ public class Requests {
 		
 		return result;
 	}
-	
-//	/************************************************************************************************************
-//	 * Method to check if this Requests object is empty.
-//	 * <p>
-//	 * 
-//	 * @return
-//	 *   True if there are no cylinder requests, false otherwise.
-//	 */
-//	public static boolean isEmpty() {
-//		
-//		return cylinderList.isEmpty();
-//	}
 }
