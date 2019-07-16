@@ -1,4 +1,4 @@
-package edu.metrostate.ICS462.assignment6;
+package edu.metrostate.ICS462.assignment6.part3;
 
 import java.util.Vector;
 
