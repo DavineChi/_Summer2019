@@ -47,8 +47,6 @@ public class Router implements Runnable {
 		
 		synchronized (this) {
 			
-			String threadName = Thread.currentThread().getName();
-			
 			packetQueue.add(packet);
 			this.notifyAll();
 		}
@@ -68,7 +66,7 @@ public class Router implements Runnable {
 		boolean packetsInQueue = !packetQueue.isEmpty();
 		boolean packetsInNetwork = !this.networkEmpty();
 		
-		while (packetsInNetwork) {
+		while (!packetsInQueue && packetsInNetwork) {
 			
 			System.out.println("Inside end(), before wait: " + threadName);
 			System.out.println("  packetsInQueue=" + packetsInQueue);
@@ -85,6 +83,10 @@ public class Router implements Runnable {
 				ex.printStackTrace();
 			}
 		}
+		
+		System.out.println("Inside end(), after wait: " + threadName);
+		System.out.println("  packetsInQueue=" + packetsInQueue);
+		System.out.println("packetsInNetwork=" + packetsInNetwork);
 		
 		end = true;
 	}
@@ -112,32 +114,51 @@ public class Router implements Runnable {
 		
 		String threadName = Thread.currentThread().getName();
 		
-		synchronized (this) {
+//		synchronized (this) {
+//			
+//			while (!this.networkEmpty() && packetQueue.isEmpty()) {
+//				
+//				try {
+//					
+//					this.wait();
+//				}
+//				
+//				catch (InterruptedException ex) {
+//					
+//					ex.printStackTrace();
+//				}
+//			}
+//		}
+		
+		while (!this.networkEmpty()) {
 			
-			while (packetQueue.isEmpty()) {
+			synchronized (this) {
 				
-				try {
+				while (packetQueue.isEmpty()) {
 					
-					this.wait();
-				}
-				
-				catch (InterruptedException ex) {
+					try {
+						
+						this.wait();
+					}
 					
-					ex.printStackTrace();
+					catch (InterruptedException ex) {
+						
+						ex.printStackTrace();
+					}
 				}
 			}
-		}
-		
-		while (!packetQueue.isEmpty() && !end) {
 			
 			Packet packet = null;
+			int packetDestination;
 			
 			synchronized (this) {
 				
 				packet = packetQueue.poll();
+				
+				this.notifyAll();
 			}
 			
-			int packetDestination = packet.getDestination();
+			packetDestination = packet.getDestination();
 			
 			packet.record(routerNum);
 			
