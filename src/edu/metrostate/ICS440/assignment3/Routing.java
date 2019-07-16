@@ -122,7 +122,7 @@ public class Routing {
 		// ******************************************************************************************************
 		// Create some Packets, and insert them at the source Router.
 		//
-		for (int i = 0; i < 500; i++) {
+		for (int i = 0; i < 50; i++) {
 			
 			int source = random.nextInt(routingTable.length);
 			int destination = random.nextInt(routingTable.length);
@@ -155,7 +155,7 @@ public class Routing {
 		// ******************************************************************************************************
 		// Create some Packets, and insert them at the source Router. The network should start processing again.
 		//
-		for (int i = 0; i < 500; i++) {
+		for (int i = 0; i < 50; i++) {
 			
 			int source = random.nextInt(routingTable.length);
 			int destination = random.nextInt(routingTable.length);
