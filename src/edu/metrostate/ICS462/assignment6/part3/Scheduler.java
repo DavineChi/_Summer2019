@@ -77,7 +77,7 @@ public abstract class Scheduler extends Thread {
 			return 0;
 		}
 		try {
-			int time = Math.max(1, tracks * Analyzer.SWEEP_TIME / Analyzer.NUMBER_OF_CYCLINDERS);
+			int time = Math.max(1, tracks * Analyzer.SWEEP_TIME / Analyzer.NUMBER_OF_CYLINDERS);
 			Thread.sleep(time);
 			return time;
 		} catch (InterruptedException ie) {
@@ -92,6 +92,9 @@ public abstract class Scheduler extends Thread {
 	 * @param algorithm the name of the algorithm.
 	 */
 	public void printStatistics(String algorithm) {
-		// print statistics
+		// TODO:
+		System.out.println("Algorithm: " + algorithm);
+		System.out.println("Number of tracks moved: ");
+		System.out.println("Requests processed 'x' time spent 'y'");
 	}
 }

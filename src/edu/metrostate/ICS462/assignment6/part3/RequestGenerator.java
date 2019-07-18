@@ -26,7 +26,7 @@ public class RequestGenerator extends Thread {
 	 */
 	public void run() {
 		for (int index = 0; index < numberOfRequests; index++) {
-			requests.add(Integer.valueOf(((int) (Math.random() * 10000)) % Analyzer.NUMBER_OF_CYCLINDERS));
+			requests.add(Integer.valueOf(((int) (Math.random() * 10000)) % Analyzer.NUMBER_OF_CYLINDERS));
 			try {
 				Thread.sleep(Integer.valueOf(((int) (Math.random() * 10000)) % Analyzer.DELAY_BETWEEN_REQUESTS));
 			} catch (InterruptedException ie) {

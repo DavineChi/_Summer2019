@@ -1,5 +1,8 @@
 package edu.metrostate.ICS462.assignment6.part3;
 
+import java.util.Collections;
+import java.util.Vector;
+
 /**
  * Implements the Elevator algorithm.
  * 
@@ -25,14 +28,22 @@ public class Look extends Scheduler {
 	}
 
 	public void initialize() {
-		// TO DO
+		// TODO:
 	}
 
 	@Override
 	public void processNextRequest() {
 		// rough pseudo code
-
+		
 		// sort the requests in ascending order of cylinder numbers
+		
+		Vector<Integer> list = requests.get(true);
+		Collections.sort(list);
+		
+		
+		
+		
+		String stop = "";
 		// if direction is up
 		// process the smallest request greater than or
 		// equal to the current head position
