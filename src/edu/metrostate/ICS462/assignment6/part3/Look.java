@@ -1,7 +1,7 @@
 package edu.metrostate.ICS462.assignment6.part3;
 
 import java.util.Collections;
-import java.util.Vector;
+import java.util.NoSuchElementException;
 
 /**
  * Implements the Elevator algorithm.
@@ -11,6 +11,7 @@ import java.util.Vector;
  */
 public class Look extends Scheduler {
 	private Direction direction;
+	private int cursor;
 
 	private enum Direction {
 		UP, DOWN
@@ -28,32 +29,47 @@ public class Look extends Scheduler {
 	}
 
 	public void initialize() {
-		// TODO:
+		direction = Direction.UP;
+		cursor = 0;
 	}
 
 	@Override
 	public void processNextRequest() {
-		// rough pseudo code
-		
 		// sort the requests in ascending order of cylinder numbers
-		
-		Vector<Integer> list = requests.get(true);
-		Collections.sort(list);
-		
-		
-		
-		
-		String stop = "";
+		Collections.sort(tempRequests);
 		// if direction is up
-		// process the smallest request greater than or
-		// equal to the current head position
-		// update statistics
-		// if there is no such request change direction
-		// otherwise,
-		// process the largest request smaller than or
-		// equal to the current head position
-		// update statistics
-		// if there is no such request change direction
+		if (direction == Direction.UP) {
+			// process the smallest request greater than or
+			// equal to the current head position
+			Integer item = tempRequests.get(0);
+			if (item >= cursor) {
+				cursor = item;
+				if (tempRequests.remove(item)) {
+					// update statistics
+					int distance = cursor - tracksMoved;
+					int sleepyPiss = sleep(distance);
+					elapsedTime = elapsedTime + sleepyPiss;
+					tracksMoved = cursor;
+					processed++;
+				} else {
+					try {
+						throw new NoSuchElementException();
+					} catch (NoSuchElementException ex) {
+						ex.printStackTrace();
+					}
+				}
+			} else {
+				// if there is no such request change direction
+				direction = Direction.DOWN;
+			}
+		} else {
+			// otherwise,
+			// process the largest request smaller than or
+			// equal to the current head position
+			// update statistics
+			// if there is no such request change direction
+			direction = Direction.UP;
+		}
 	}
 
 	@Override

@@ -14,7 +14,6 @@ import java.util.Vector;
  * Due Date:	2019.07.09
  */
 public class Requests {
-	
 	private Vector<Integer> cylinderList;
 	
 	/************************************************************************************************************
@@ -25,7 +24,6 @@ public class Requests {
 	 *   A new Requests object has been created.
 	 */
 	public Requests() {
-		
 		this.cylinderList = new Vector<Integer>();
 	}
 	
@@ -37,9 +35,7 @@ public class Requests {
 	 *   the requeseted cylinder to be added to this Requests object
 	 */
 	public synchronized void add(Integer cylinder) {
-		
 		cylinderList.add(cylinder);
-		
 		// After adding a cylinder, notify all waiting threads.
 		notifyAll();
 	}
@@ -56,26 +52,16 @@ public class Requests {
 	 *   A list of requests that have been added but not retrieved yet.
 	 */
 	public synchronized Vector<Integer> get(boolean waitIfEmpty) {
-		
 		Vector<Integer> result = null;
-		
 		while (cylinderList.isEmpty() && waitIfEmpty) {
-			
 			try {
-				
 				wait();
-			}
-			
-			catch (InterruptedException ex) {
-				
+			} catch (InterruptedException ex) {
 				ex.printStackTrace();
 			}
 		}
-		
 		result = new Vector<Integer>(cylinderList);
-		
 		cylinderList.clear();
-		
 		return result;
 	}
 }

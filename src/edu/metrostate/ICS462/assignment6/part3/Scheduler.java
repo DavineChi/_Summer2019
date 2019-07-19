@@ -15,8 +15,9 @@ public abstract class Scheduler extends Thread {
 	protected int processed = 0;
 	protected Vector<Integer> newRequests;
 	protected int currentPosition = 0;
-
-//  add fields for maintaining statistics 
+	protected int tracksMoved = 0;
+	protected int elapsedTime = 0;
+	
 	/**
 	 * Stores the Requests object and number of requests.
 	 * 
@@ -94,7 +95,7 @@ public abstract class Scheduler extends Thread {
 	public void printStatistics(String algorithm) {
 		// TODO:
 		System.out.println("Algorithm: " + algorithm);
-		System.out.println("Number of tracks moved: ");
-		System.out.println("Requests processed 'x' time spent 'y'");
+		System.out.println("Number of tracks moved: " + tracksMoved);
+		System.out.println("Requests processed " + processed + " time spent " + elapsedTime);
 	}
 }
