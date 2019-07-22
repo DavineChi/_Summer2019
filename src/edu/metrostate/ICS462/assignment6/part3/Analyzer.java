@@ -1,5 +1,7 @@
 package edu.metrostate.ICS462.assignment6.part3;
 
+import java.util.Scanner;
+
 /**
  * The main class that invokes all algorithms.
  * 
@@ -40,11 +42,11 @@ public class Analyzer {
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
-		//System.out.print("Enter number of requests: ");
-		//Scanner scanner = new Scanner(System.in);
-		//int numberOfRequests = scanner.nextInt();
-		//scanner.close();
-		new Analyzer().process(200);
+		System.out.print("Enter number of requests: ");
+		Scanner scanner = new Scanner(System.in);
+		int numberOfRequests = scanner.nextInt();
+		scanner.close();
+		new Analyzer().process(numberOfRequests);
 	}
 
 }
