@@ -1,7 +1,6 @@
 package edu.metrostate.ICS462.assignment6.part3;
 
 import java.util.Collections;
-import java.util.NoSuchElementException;
 
 /**
  * Implements the Elevator algorithm.
@@ -10,9 +9,11 @@ import java.util.NoSuchElementException;
  *
  */
 public class Look extends Scheduler {
+	private int cursorPrevious;
+	private int cursorUp;
+	private int cursorDown;
 	private Direction direction;
-	private int cursor;
-
+	
 	private enum Direction {
 		UP, DOWN
 	};
@@ -29,8 +30,10 @@ public class Look extends Scheduler {
 	}
 
 	public void initialize() {
+		cursorPrevious = 0;
+		cursorUp = 0;
+		cursorDown = Analyzer.NUMBER_OF_CYLINDERS;
 		direction = Direction.UP;
-		cursor = 0;
 	}
 
 	@Override
@@ -42,31 +45,47 @@ public class Look extends Scheduler {
 			// process the smallest request greater than or
 			// equal to the current head position
 			Integer item = tempRequests.get(0);
-			if (item >= cursor) {
-				cursor = item;
+			if (item >= cursorUp) {
+				cursorUp = item;
 				if (tempRequests.remove(item)) {
 					// update statistics
-					int distance = cursor - tracksMoved;
-					int sleepyPiss = sleep(distance);
-					elapsedTime = elapsedTime + sleepyPiss;
-					tracksMoved = cursor;
+					int distanceMoved = cursorUp - tracksMoved;
+					int sleepTime = sleep(distanceMoved);
+					elapsedTime = elapsedTime + sleepTime;
+					tracksMoved = cursorUp;
 					processed++;
 				} else {
-					try {
-						throw new NoSuchElementException();
-					} catch (NoSuchElementException ex) {
-						ex.printStackTrace();
-					}
+					// If the item was not or could not be removed
+					System.out.println("Element could not be removed from list. Exiting now.");
+					System.exit(1);
 				}
 			} else {
 				// if there is no such request change direction
 				direction = Direction.DOWN;
 			}
+		}
+		
+		if (direction == Direction.DOWN) {
+			// otherwise, process the largest request smaller than
+			// or equal to the current head position
+			Integer item = tempRequests.get(tempRequests.size() - 1);
+			if (item <= cursorDown) {
+				cursorDown = item;
+				if (tempRequests.remove(item)) {
+					// update statistics
+					int distanceMoved = Math.abs(cursorDown - cursorPrevious);
+					tracksMoved = tracksMoved + distanceMoved;
+					int sleepTime = sleep(distanceMoved);
+					elapsedTime = elapsedTime + sleepTime;
+					cursorPrevious = cursorDown;
+					processed++;
+				} else {
+					// If the item was not or could not be removed
+					System.out.println("Element could not be removed from list. Exiting now.");
+					System.exit(1);
+				}
+			}
 		} else {
-			// otherwise,
-			// process the largest request smaller than or
-			// equal to the current head position
-			// update statistics
 			// if there is no such request change direction
 			direction = Direction.UP;
 		}

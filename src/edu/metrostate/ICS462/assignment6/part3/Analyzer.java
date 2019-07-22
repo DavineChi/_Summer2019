@@ -44,7 +44,7 @@ public class Analyzer {
 		//Scanner scanner = new Scanner(System.in);
 		//int numberOfRequests = scanner.nextInt();
 		//scanner.close();
-		new Analyzer().process(100);
+		new Analyzer().process(200);
 	}
 
 }
