@@ -66,8 +66,7 @@ public class Router implements Runnable {
 		boolean packetsInQueue = !packetQueue.isEmpty();
 		boolean packetsInNetwork = !this.networkEmpty();
 		
-		//while (!packetsInQueue && packetsInNetwork) {
-		while (!packetsInNetwork) {
+		while (packetsInQueue && packetsInNetwork) {
 			
 //			System.out.println("Inside end(), before wait: " + threadName);
 //			System.out.println("  packetsInQueue=" + packetsInQueue);
@@ -115,7 +114,7 @@ public class Router implements Runnable {
 		
 		String threadName = Thread.currentThread().getName();
 		
-		while (!this.networkEmpty()) {
+		while (!this.end) {
 			
 			synchronized (this) {
 				
@@ -166,7 +165,12 @@ public class Router implements Runnable {
 				StringBuilder sbDestValue = new StringBuilder();
 				StringBuilder sbDestRouter = new StringBuilder();
 				
-				if (hashValue.length() == 7) {
+				if (hashValue.length() == 6) {
+					
+					sbHashValue.append(hashValue + "    ");
+				}
+				
+				else if (hashValue.length() == 7) {
 					
 					sbHashValue.append(hashValue + "   ");
 				}
