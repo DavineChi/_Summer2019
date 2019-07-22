@@ -66,11 +66,12 @@ public class Router implements Runnable {
 		boolean packetsInQueue = !packetQueue.isEmpty();
 		boolean packetsInNetwork = !this.networkEmpty();
 		
-		while (!packetsInQueue && packetsInNetwork) {
+		//while (!packetsInQueue && packetsInNetwork) {
+		while (!packetsInNetwork) {
 			
-			System.out.println("Inside end(), before wait: " + threadName);
-			System.out.println("  packetsInQueue=" + packetsInQueue);
-			System.out.println("packetsInNetwork=" + packetsInNetwork);
+//			System.out.println("Inside end(), before wait: " + threadName);
+//			System.out.println("  packetsInQueue=" + packetsInQueue);
+//			System.out.println("packetsInNetwork=" + packetsInNetwork);
 			
 			try {
 				
@@ -84,9 +85,9 @@ public class Router implements Runnable {
 			}
 		}
 		
-		System.out.println("Inside end(), after wait: " + threadName);
-		System.out.println("  packetsInQueue=" + packetsInQueue);
-		System.out.println("packetsInNetwork=" + packetsInNetwork);
+//		System.out.println("Inside end(), after wait: " + threadName);
+//		System.out.println("  packetsInQueue=" + packetsInQueue);
+//		System.out.println("packetsInNetwork=" + packetsInNetwork);
 		
 		end = true;
 	}
@@ -113,22 +114,6 @@ public class Router implements Runnable {
 		// Need a "process", "return", "wait" loop structure with truth table checks.
 		
 		String threadName = Thread.currentThread().getName();
-		
-//		synchronized (this) {
-//			
-//			while (!this.networkEmpty() && packetQueue.isEmpty()) {
-//				
-//				try {
-//					
-//					this.wait();
-//				}
-//				
-//				catch (InterruptedException ex) {
-//					
-//					ex.printStackTrace();
-//				}
-//			}
-//		}
 		
 		while (!this.networkEmpty()) {
 			
@@ -166,10 +151,65 @@ public class Router implements Runnable {
 				
 				int route = routes[packetDestination];
 				
+				//System.out.println("Sending packet with destination " + packet.getDestination() + " to Router " + allRouters[route].routerNum + ".");
+				
 				allRouters[route].addWork(packet);
 			}
 			
 			else {
+				
+				String hashValue = String.valueOf(packet.hashCode());
+				String destValue = String.valueOf(packet.getDestination());
+				String destRouter = String.valueOf(routerNum);
+				
+				StringBuilder sbHashValue = new StringBuilder();
+				StringBuilder sbDestValue = new StringBuilder();
+				StringBuilder sbDestRouter = new StringBuilder();
+				
+				if (hashValue.length() == 7) {
+					
+					sbHashValue.append(hashValue + "   ");
+				}
+				
+				else if (hashValue.length() == 8) {
+					
+					sbHashValue.append(hashValue + "  ");
+				}
+				
+				else if (hashValue.length() == 9) {
+					
+					sbHashValue.append(hashValue + " ");
+				}
+				
+				else if (hashValue.length() == 10) {
+					
+					sbHashValue.append(hashValue);
+				}
+				
+				if (destValue.length() == 1) {
+					
+					sbDestValue.append(" " + destValue);
+				}
+				
+				else if (destValue.length() == 2) {
+					
+					sbDestValue.append(destValue);
+				}
+				
+				if (destRouter.length() == 1) {
+					
+					sbDestRouter.append(" " + destRouter);
+				}
+				
+				else if (destRouter.length() == 2) {
+					
+					sbDestRouter.append(destRouter);
+				}
+				
+				System.out.println("Packet " + sbHashValue.toString() +
+						" with destination " + sbDestValue.toString() +
+						" arrived at Router " + sbDestRouter.toString() +
+						": " + packet.path);
 				
 				Routing.decPacketCount();
 			}

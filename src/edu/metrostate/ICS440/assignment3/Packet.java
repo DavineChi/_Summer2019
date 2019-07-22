@@ -16,7 +16,7 @@ public class Packet {
 	private int destination;
 	
 	// The path this packet takes.
-	private LinkedList<Integer> path = new LinkedList<Integer>();
+	public LinkedList<Integer> path = new LinkedList<Integer>();  // TODO: change back to private when done
 	
 	/************************************************************************************************************
 	 * Constructor for a new Packet object.
