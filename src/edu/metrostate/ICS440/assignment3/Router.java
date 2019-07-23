@@ -15,6 +15,8 @@ public class Router implements Runnable {
 	private Router[] allRouters;
 	private int routerNum;
 	private boolean end = false;
+	//private boolean packetsInQueue;
+	private boolean packetsInNetwork;
 	
 	/************************************************************************************************************
 	 * Constructor for a new Router object.
@@ -48,6 +50,10 @@ public class Router implements Runnable {
 		synchronized (this) {
 			
 			packetQueue.add(packet);
+			
+			//packetsInQueue = true;
+			packetsInNetwork = true;
+			
 			this.notifyAll();
 		}
 	}
@@ -59,18 +65,7 @@ public class Router implements Runnable {
 	 */
 	public synchronized void end() {
 		
-		// TODO: this method is only called one time (may need to keep track of this)
-		
-		String threadName = Thread.currentThread().getName();
-		
-		boolean packetsInQueue = !packetQueue.isEmpty();
-		boolean packetsInNetwork = !this.networkEmpty();
-		
-		while (packetsInQueue && packetsInNetwork) {
-			
-//			System.out.println("Inside end(), before wait: " + threadName);
-//			System.out.println("  packetsInQueue=" + packetsInQueue);
-//			System.out.println("packetsInNetwork=" + packetsInNetwork);
+		while (packetsInNetwork) {
 			
 			try {
 				
@@ -79,14 +74,9 @@ public class Router implements Runnable {
 			
 			catch (InterruptedException ex) {
 				
-				Thread.currentThread().interrupt();
 				ex.printStackTrace();
 			}
 		}
-		
-//		System.out.println("Inside end(), after wait: " + threadName);
-//		System.out.println("  packetsInQueue=" + packetsInQueue);
-//		System.out.println("packetsInNetwork=" + packetsInNetwork);
 		
 		end = true;
 	}
@@ -96,9 +86,13 @@ public class Router implements Runnable {
 	 * <p>
 	 * 
 	 */
-	public synchronized boolean networkEmpty() {
+	public synchronized void networkEmpty() {
 		
-		return Routing.getPacketCount() == 0;
+		if (Routing.getPacketCount() == 0) {
+			
+			packetsInNetwork = false;
+			this.notifyAll();
+		}
 	}
 	
 	/************************************************************************************************************
@@ -109,12 +103,10 @@ public class Router implements Runnable {
 	@Override
 	public void run() {
 		
-		// Only lock accesses to the queue.
-		// Need a "process", "return", "wait" loop structure with truth table checks.
-		
-		String threadName = Thread.currentThread().getName();
-		
-		while (!this.end) {
+		while (!end) {
+			
+			Packet packet = null;
+			int packetDestination;
 			
 			synchronized (this) {
 				
@@ -132,9 +124,6 @@ public class Router implements Runnable {
 				}
 			}
 			
-			Packet packet = null;
-			int packetDestination;
-			
 			synchronized (this) {
 				
 				packet = packetQueue.poll();
@@ -146,11 +135,9 @@ public class Router implements Runnable {
 			
 			packet.record(routerNum);
 			
-			if (this.routerNum != packetDestination) {
+			if (routerNum != packetDestination) {
 				
 				int route = routes[packetDestination];
-				
-				//System.out.println("Sending packet with destination " + packet.getDestination() + " to Router " + allRouters[route].routerNum + ".");
 				
 				allRouters[route].addWork(packet);
 			}
