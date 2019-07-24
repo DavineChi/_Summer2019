@@ -51,7 +51,6 @@ public class Router implements Runnable {
 			
 			packetQueue.add(packet);
 			
-			//packetsInQueue = true;
 			packetsInNetwork = true;
 			
 			this.notifyAll();
@@ -88,11 +87,9 @@ public class Router implements Runnable {
 	 */
 	public synchronized void networkEmpty() {
 		
-		if (Routing.getPacketCount() == 0) {
-			
-			packetsInNetwork = false;
-			this.notifyAll();
-		}
+		packetsInNetwork = false;
+		this.notifyAll();
+		
 	}
 	
 	/************************************************************************************************************
@@ -122,9 +119,6 @@ public class Router implements Runnable {
 						ex.printStackTrace();
 					}
 				}
-			}
-			
-			synchronized (this) {
 				
 				packet = packetQueue.poll();
 				
@@ -144,67 +138,71 @@ public class Router implements Runnable {
 			
 			else {
 				
-				String hashValue = String.valueOf(packet.hashCode());
-				String destValue = String.valueOf(packet.getDestination());
-				String destRouter = String.valueOf(routerNum);
-				
-				StringBuilder sbHashValue = new StringBuilder();
-				StringBuilder sbDestValue = new StringBuilder();
-				StringBuilder sbDestRouter = new StringBuilder();
-				
-				if (hashValue.length() == 6) {
-					
-					sbHashValue.append(hashValue + "    ");
-				}
-				
-				else if (hashValue.length() == 7) {
-					
-					sbHashValue.append(hashValue + "   ");
-				}
-				
-				else if (hashValue.length() == 8) {
-					
-					sbHashValue.append(hashValue + "  ");
-				}
-				
-				else if (hashValue.length() == 9) {
-					
-					sbHashValue.append(hashValue + " ");
-				}
-				
-				else if (hashValue.length() == 10) {
-					
-					sbHashValue.append(hashValue);
-				}
-				
-				if (destValue.length() == 1) {
-					
-					sbDestValue.append(" " + destValue);
-				}
-				
-				else if (destValue.length() == 2) {
-					
-					sbDestValue.append(destValue);
-				}
-				
-				if (destRouter.length() == 1) {
-					
-					sbDestRouter.append(" " + destRouter);
-				}
-				
-				else if (destRouter.length() == 2) {
-					
-					sbDestRouter.append(destRouter);
-				}
-				
-				System.out.println("Packet " + sbHashValue.toString() +
-						" with destination " + sbDestValue.toString() +
-						" arrived at Router " + sbDestRouter.toString() +
-						": " + packet.path);
-				
+				printPacketDetails(packet);
 				Routing.decPacketCount();
 			}
 		}
+	}
+	
+	private void printPacketDetails(Packet packet) {
+		
+		String hashValue = String.valueOf(packet.hashCode());
+		String destValue = String.valueOf(packet.getDestination());
+		String destRouter = String.valueOf(routerNum);
+		
+		StringBuilder sbHashValue = new StringBuilder();
+		StringBuilder sbDestValue = new StringBuilder();
+		StringBuilder sbDestRouter = new StringBuilder();
+		
+		if (hashValue.length() == 6) {
+			
+			sbHashValue.append(hashValue + "    ");
+		}
+		
+		else if (hashValue.length() == 7) {
+			
+			sbHashValue.append(hashValue + "   ");
+		}
+		
+		else if (hashValue.length() == 8) {
+			
+			sbHashValue.append(hashValue + "  ");
+		}
+		
+		else if (hashValue.length() == 9) {
+			
+			sbHashValue.append(hashValue + " ");
+		}
+		
+		else if (hashValue.length() == 10) {
+			
+			sbHashValue.append(hashValue);
+		}
+		
+		if (destValue.length() == 1) {
+			
+			sbDestValue.append(" " + destValue);
+		}
+		
+		else if (destValue.length() == 2) {
+			
+			sbDestValue.append(destValue);
+		}
+		
+		if (destRouter.length() == 1) {
+			
+			sbDestRouter.append(" " + destRouter);
+		}
+		
+		else if (destRouter.length() == 2) {
+			
+			sbDestRouter.append(destRouter);
+		}
+		
+		System.out.println("Packet " + sbHashValue.toString() +
+				" with destination " + sbDestValue.toString() +
+				" arrived at Router " + sbDestRouter.toString() +
+				": " + packet.path);
 	}
 	
 	@Override
