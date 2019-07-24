@@ -78,6 +78,8 @@ public class Router implements Runnable {
 		}
 		
 		end = true;
+		
+		this.notifyAll();
 	}
 	
 	/************************************************************************************************************
@@ -118,6 +120,11 @@ public class Router implements Runnable {
 						
 						ex.printStackTrace();
 					}
+					
+					if (end) {
+						
+						break;
+					}
 				}
 				
 				packet = packetQueue.poll();
@@ -125,7 +132,12 @@ public class Router implements Runnable {
 				this.notifyAll();
 			}
 			
-			packetDestination = packet.getDestination();
+			if (packetQueue.isEmpty() && end) {
+				
+				break;
+			}
+			
+			packetDestination = packet.getDestination();  // TODO: Getting NPE here...
 			
 			packet.record(routerNum);
 			
@@ -138,12 +150,13 @@ public class Router implements Runnable {
 			
 			else {
 				
-				printPacketDetails(packet);
+				//printPacketDetails(packet);
 				Routing.decPacketCount();
 			}
 		}
 	}
 	
+	// TODO: For debugging - to be removed before submittal
 	private void printPacketDetails(Packet packet) {
 		
 		String hashValue = String.valueOf(packet.hashCode());
