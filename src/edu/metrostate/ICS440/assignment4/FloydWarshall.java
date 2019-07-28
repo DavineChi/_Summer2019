@@ -3,7 +3,7 @@ package edu.metrostate.ICS440.assignment4;
 import java.util.Random;
 
 public class FloydWarshall {
-	private static final int I = Integer.MAX_VALUE; // Infinity
+	private static final int INFINITY = Integer.MAX_VALUE; // Infinity
 	private static final int dim = 5000;
 	private static double fill = 0.3;
 	private static int maxDistance = 100;
@@ -19,7 +19,7 @@ public class FloydWarshall {
 			for (int j = 0; j < dim; j++)
 			{
 				if (i != j)
-					adjacencyMatrix[i][j] = I;
+					adjacencyMatrix[i][j] = INFINITY;
 			}
 		}
 		for (int i = 0; i < dim * dim * fill; i++)
@@ -45,7 +45,7 @@ public class FloydWarshall {
 		for (int k = 0; k < dim; k++) {
 			for (int i = 0; i < dim; i++) {
 				for (int j = 0; j < dim; j++) {
-					if (d[i][k] == I || d[k][j] == I) {
+					if (d[i][k] == INFINITY || d[k][j] == INFINITY) {
 						continue;
 					} else if (d[i][j] > d[i][k] + d[k][j]) {
 						d[i][j] = d[i][k] + d[k][j];
@@ -61,7 +61,7 @@ public class FloydWarshall {
 	private static void print(int matrix[][]) {
 		for (int i = 0; i < dim; i++) {
 			for (int j = 0; j < dim; j++) {
-				if (matrix[i][j] == I) {
+				if (matrix[i][j] == INFINITY) {
 					System.out.print("I" + " ");
 				} else {
 					System.out.print(matrix[i][j] + " ");
@@ -74,7 +74,7 @@ public class FloydWarshall {
 	 * Compare two matrices, matrix1[dim][dim] and matrix2[dim][dim] and
 	 * print whether they are equivalent.
 	 */
-	private static void compare (int matrix1[][], int matrix2[][]) {
+	private static void compare(int matrix1[][], int matrix2[][]) {
 		for (int i = 0; i < dim; i++) {
 			for (int j = 0; j < dim; j++) {
 				if (matrix1[i][j] != matrix2[i][j])
