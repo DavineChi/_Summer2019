@@ -1,0 +1,13 @@
+Disk Scheduling Algorithms
+
+LOOK
+Cylinder requests are serviced in one of two directions (up or down). After the final largest (or smallest) request is serviced, the disk arm immediately reverses direction and moves in the opposite direction, and begins servicing requests again. The disk arm doesn't need to travel all the way to the end of the disk if it doesn't need to.
+
+C-LOOK (Circular LOOK)
+Like LOOK, except when the disk arm reaches the other end, it immediately returns without servicing any requests on the return trip. This method essentially treats the cylinders as a circular list that wraps around from the final cylinder to the first one (depending on the direction of the disk arm's movement).
+
+SSTF (shortest-seek-time-first)
+The cylinder request with the smallest/least seek time from the current head position is selected. In other words, it chooses the pending request closest to the current head position. Note that this algorithm may cause starvation of some requests since requests may arrive at any time.
+
+FCFS (first-come first-served)
+Cylinder requests are serviced in the order they arrive (FIFO queue).
