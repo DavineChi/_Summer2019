@@ -6,8 +6,8 @@ LOOK
 Cylinder requests are serviced in one of two directions (up or down).
 After the final largest (or smallest) request is serviced, the disk arm
 immediately reverses direction and moves in the opposite direction, and
-begins servicing requests again. The disk arm doesn't need to travel all
-the way to the end of the disk if it doesn't need to.
+begins servicing requests again. The disk arm doesn't travel all the way
+to the end of the disk if it doesn't need to.
 
 ------------------------------------------------------------------------
 C-LOOK (Circular LOOK)
@@ -19,7 +19,7 @@ wraps around from the final cylinder to the first one (depending on the
 direction of the disk arm's movement).
 
 ------------------------------------------------------------------------
-SSTF (shortest-seek-time-first)
+SSTF (Shortest-Seek-Time-First)
 
 The cylinder request with the smallest/least seek time from the current
 head position is selected. In other words, it chooses the pending
@@ -28,6 +28,6 @@ may cause starvation of some requests since requests may arrive at any
 time.
 
 ------------------------------------------------------------------------
-FCFS (first-come first-served)
+FCFS (First-Come First-Served)
 
 Cylinder requests are serviced in the order they arrive (FIFO queue).
