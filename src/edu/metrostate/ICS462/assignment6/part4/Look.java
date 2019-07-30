@@ -41,7 +41,6 @@ public class Look extends Scheduler {
 				public int compare(Integer integer1, Integer integer2) {
 					return integer1.compareTo(integer2);
 				}
-
 			});
 			Integer lastRequest = tempRequests.get(tempRequests.size() - 1);
 			if (lastRequest.compareTo(currentPosition) >= 0) {
@@ -68,7 +67,6 @@ public class Look extends Scheduler {
 				public int compare(Integer integer1, Integer integer2) {
 					return integer2.compareTo(integer1);
 				}
-
 			});
 			Integer lastRequest = tempRequests.get(tempRequests.size() - 1);
 			if (lastRequest.compareTo(currentPosition) <= 0) {

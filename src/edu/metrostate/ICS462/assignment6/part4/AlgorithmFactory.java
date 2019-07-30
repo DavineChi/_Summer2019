@@ -31,8 +31,8 @@ public class AlgorithmFactory {
 	/**
 	 * Returns one of the differet scheduler implementations
 	 * 
-	 * @param index            0 for Elevator, 1 for C-SCAN, 2 for FCFS, 3 for SSTF
-	 * @param requests         the object in which cyilnder requests are stored
+	 * @param index            0 for Look, 1 for C-Look, 2 for SSTF, 3 for FCFS
+	 * @param requests         the object in which cylinder requests are stored
 	 * @param numberOfRequests number of cylinder requests
 	 * @return a Scheduler algorithm as determined by index
 	 */
@@ -40,6 +40,12 @@ public class AlgorithmFactory {
 		switch (index) {
 		case 0:
 			return new Look(requests, numberOfRequests);
+		case 1:
+			return new CircularLook(requests, numberOfRequests);
+		case 2:
+			return new ShortestSeekTimeFirst(requests, numberOfRequests);
+		case 3:
+			return new FirstComeFirstServed(requests, numberOfRequests);
 		}
 		return null;
 	}
