@@ -1,6 +1,7 @@
 package edu.metrostate.ICS462.assignment6.part4;
 
-import java.util.Collections;
+import java.util.Comparator;
+import java.util.ListIterator;
 
 /**
  * Implements the Elevator algorithm.
@@ -9,11 +10,8 @@ import java.util.Collections;
  *
  */
 public class Look extends Scheduler {
-	private int cursorPrevious;
-	private int cursorUp;
-	private int cursorDown;
 	private Direction direction;
-	
+
 	private enum Direction {
 		UP, DOWN
 	};
@@ -30,64 +28,67 @@ public class Look extends Scheduler {
 	}
 
 	public void initialize() {
-		cursorPrevious = 0;
-		cursorUp = 0;
-		cursorDown = Analyzer.NUMBER_OF_CYLINDERS;
+		currentPosition = 0;
 		direction = Direction.UP;
 	}
 
 	@Override
 	public void processNextRequest() {
-		// sort the requests in ascending order of cylinder numbers
-		Collections.sort(tempRequests);
-		// if direction is up
+
 		if (direction == Direction.UP) {
-			// process the smallest request greater than or
-			// equal to the current head position
-			Integer item = tempRequests.get(0);
-			if (item >= cursorUp) {
-				cursorUp = item;
-				if (tempRequests.remove(item)) {
-					// update statistics
-					int distanceMoved = cursorUp - tracksMoved;
-					int sleepTime = sleep(distanceMoved);
-					elapsedTime = elapsedTime + sleepTime;
-					tracksMoved = cursorUp;
-					processed++;
-				} else {
-					// If the item was not or could not be removed
-					System.out.println("Element could not be removed from list. Exiting now.");
-					System.exit(1);
+			tempRequests.sort(new Comparator<Integer>() {
+				@Override
+				public int compare(Integer integer1, Integer integer2) {
+					return integer1.compareTo(integer2);
+				}
+
+			});
+			Integer lastRequest = tempRequests.get(tempRequests.size() - 1);
+			if (lastRequest.compareTo(currentPosition) >= 0) {
+				ListIterator<Integer> iterator = tempRequests.listIterator();
+				boolean finished = false;
+				while (!finished) {
+					Integer nextRequest = iterator.next();
+					if (nextRequest.compareTo(currentPosition) >= 0) {
+						iterator.remove();
+						processed++;
+						int distance = nextRequest - currentPosition;
+						tracksMoved = tracksMoved + distance;
+						elapsedTime = elapsedTime + sleep(Math.abs(distance));
+						currentPosition = nextRequest;
+						finished = true;
+					}
 				}
 			} else {
-				// if there is no such request change direction
 				direction = Direction.DOWN;
 			}
-		}
-		
-		if (direction == Direction.DOWN) {
-			// otherwise, process the largest request smaller than
-			// or equal to the current head position
-			Integer item = tempRequests.get(tempRequests.size() - 1);
-			if (item <= cursorDown) {
-				cursorDown = item;
-				if (tempRequests.remove(item)) {
-					// update statistics
-					int distanceMoved = Math.abs(cursorDown - cursorPrevious);
-					tracksMoved = tracksMoved + distanceMoved;
-					int sleepTime = sleep(distanceMoved);
-					elapsedTime = elapsedTime + sleepTime;
-					cursorPrevious = cursorDown;
-					processed++;
-				} else {
-					// If the item was not or could not be removed
-					System.out.println("Element could not be removed from list. Exiting now.");
-					System.exit(1);
-				}
-			}
 		} else {
-			// if there is no such request change direction
-			direction = Direction.UP;
+			tempRequests.sort(new Comparator<Integer>() {
+				@Override
+				public int compare(Integer integer1, Integer integer2) {
+					return integer2.compareTo(integer1);
+				}
+
+			});
+			Integer lastRequest = tempRequests.get(tempRequests.size() - 1);
+			if (lastRequest.compareTo(currentPosition) <= 0) {
+				ListIterator<Integer> iterator = tempRequests.listIterator();
+				boolean finished = false;
+				while (!finished) {
+					Integer nextRequest = iterator.next();
+					if (nextRequest.compareTo(currentPosition) <= 0) {
+						iterator.remove();
+						processed++;
+						int distance = currentPosition - nextRequest;
+						tracksMoved = tracksMoved + distance;
+						elapsedTime = elapsedTime + sleep(Math.abs(distance));
+						currentPosition = nextRequest;
+						finished = true;
+					}
+				}
+			} else {
+				direction = Direction.UP;
+			}
 		}
 	}
 

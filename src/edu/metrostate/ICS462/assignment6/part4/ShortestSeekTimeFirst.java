@@ -19,7 +19,6 @@ public class ShortestSeekTimeFirst extends Scheduler {
 
 	@Override
 	public String getAlgorithmName() {
-		
-		return null;
+		return "Shortest-Seek-Time-First";
 	}
 }

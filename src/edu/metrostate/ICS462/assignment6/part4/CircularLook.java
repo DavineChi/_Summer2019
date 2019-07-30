@@ -19,7 +19,6 @@ public class CircularLook extends Scheduler {
 
 	@Override
 	public String getAlgorithmName() {
-		
-		return null;
+		return "Circular Look";
 	}
 }

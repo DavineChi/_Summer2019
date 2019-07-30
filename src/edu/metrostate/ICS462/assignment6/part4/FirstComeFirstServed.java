@@ -19,7 +19,6 @@ public class FirstComeFirstServed extends Scheduler {
 
 	@Override
 	public String getAlgorithmName() {
-		
-		return null;
+		return "First-Come First-Served";
 	}
 }
