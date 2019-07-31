@@ -62,6 +62,7 @@ public abstract class Scheduler extends Thread {
 			tempRequests.addAll(newRequests);
 			processNextRequest();
 		}
+		System.out.println("-------------------------------------------------");
 		printStatistics(getAlgorithmName());
 	}
 

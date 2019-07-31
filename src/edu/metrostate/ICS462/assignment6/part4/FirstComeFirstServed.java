@@ -1,5 +1,7 @@
 package edu.metrostate.ICS462.assignment6.part4;
 
+import java.util.ListIterator;
+
 /**
  * Implements the First-Come First-Served algorithm.
  * 
@@ -26,7 +28,14 @@ public class FirstComeFirstServed extends Scheduler {
 
 	@Override
 	public void processNextRequest() {
-		// TODO: implementation
+		ListIterator<Integer> iterator = tempRequests.listIterator();
+		Integer nextRequest = iterator.next();
+		iterator.remove();
+		processed++;
+		int distance = Math.abs(nextRequest - currentPosition);
+		tracksMoved = tracksMoved + distance;
+		elapsedTime = elapsedTime + sleep(Math.abs(distance));
+		currentPosition = nextRequest;
 	}
 
 	@Override

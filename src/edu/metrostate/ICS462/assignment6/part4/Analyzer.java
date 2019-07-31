@@ -22,7 +22,7 @@ public class Analyzer {
 	 * @param numberOfRequests number of requests to be processed.
 	 */
 	private void process(int numberOfRequests) {
-		for (int index = 0; index < 2; index++) {
+		for (int index = 2; index < 3; index++) {
 			RequestGenerator generator = new RequestGenerator(requests, numberOfRequests);
 			Scheduler scheduler = AlgorithmFactory.instance().getScheduler(index, requests, numberOfRequests);
 			generator.start();
@@ -46,7 +46,7 @@ public class Analyzer {
 //		Scanner scanner = new Scanner(System.in);
 //		int numberOfRequests = scanner.nextInt();
 //		scanner.close();
-		new Analyzer().process(6000); // TODO: switch this back when done (numberOfRequests)
+		new Analyzer().process(5); // TODO: switch this back when done (numberOfRequests)
 	}
 
 }
