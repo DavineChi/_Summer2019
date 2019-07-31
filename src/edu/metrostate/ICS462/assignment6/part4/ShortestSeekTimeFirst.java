@@ -26,7 +26,7 @@ public class ShortestSeekTimeFirst extends Scheduler {
 
 	@Override
 	public void processNextRequest() {
-		// TODO: implementation
+		// TODO: ShortestSeekTimeFirst implementation
 	}
 
 	@Override

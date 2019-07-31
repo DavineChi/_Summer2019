@@ -93,7 +93,6 @@ public abstract class Scheduler extends Thread {
 	 * @param algorithm the name of the algorithm.
 	 */
 	public void printStatistics(String algorithm) {
-		// TODO:
 		System.out.println("Algorithm: " + algorithm);
 		System.out.println("Number of tracks moved: " + tracksMoved);
 		System.out.println("Requests processed " + processed + " time spent " + elapsedTime);
