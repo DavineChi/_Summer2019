@@ -34,7 +34,7 @@ public class FirstComeFirstServed extends Scheduler {
 		processed++;
 		int distance = Math.abs(nextRequest - currentPosition);
 		tracksMoved = tracksMoved + distance;
-		elapsedTime = elapsedTime + sleep(Math.abs(distance));
+		elapsedTime = elapsedTime + sleep(distance);
 		currentPosition = nextRequest;
 	}
 
