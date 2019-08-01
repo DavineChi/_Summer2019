@@ -29,7 +29,6 @@ public class CircularLook extends Scheduler {
 
 	@Override
 	public void processNextRequest() {
-		
 		tempRequests.sort(new Comparator<Integer>() {
 			@Override
 			public int compare(Integer integer1, Integer integer2) {

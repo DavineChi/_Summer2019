@@ -1,5 +1,7 @@
 package edu.metrostate.ICS462.assignment6.part4;
 
+import java.util.ListIterator;
+
 /**
  * Implements the Shortest-Seek-Time-First algorithm.
  * 
@@ -7,7 +9,7 @@ package edu.metrostate.ICS462.assignment6.part4;
  *
  */
 public class ShortestSeekTimeFirst extends Scheduler {
-
+	
 	/**
 	 * Stores the Requests object and number of requests to be processed using the
 	 * superclass's constructor.
@@ -26,7 +28,23 @@ public class ShortestSeekTimeFirst extends Scheduler {
 
 	@Override
 	public void processNextRequest() {
-		// TODO: ShortestSeekTimeFirst implementation
+		Integer smallest = Integer.MAX_VALUE;
+		ListIterator<Integer> iterator = tempRequests.listIterator();
+		Integer nextRequest = null;
+		while (iterator.hasNext()) {
+			Integer next = iterator.next();
+			int difference = Math.abs(next - currentPosition);
+			if (difference <= smallest) {
+				smallest = difference;
+				nextRequest = next;
+			}
+		}
+		tempRequests.remove(nextRequest);
+		processed++;
+		int distance = Math.abs(nextRequest - currentPosition);
+		tracksMoved = tracksMoved + distance;
+		elapsedTime = elapsedTime + sleep(distance);
+		currentPosition = nextRequest;
 	}
 
 	@Override
