@@ -9,7 +9,7 @@ import java.util.Scanner;
  *
  */
 public class Analyzer {
-	public static final int DELAY_BETWEEN_REQUESTS = 1;
+	public static final int DELAY_BETWEEN_REQUESTS = 10;
 	public static final int NUMBER_OF_CYLINDERS = 1024;
 	public static final int SWEEP_TIME = 30;
 	private Requests requests = new Requests();
@@ -42,11 +42,11 @@ public class Analyzer {
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
-//		System.out.print("Enter number of requests: ");
-//		Scanner scanner = new Scanner(System.in);
-//		int numberOfRequests = scanner.nextInt();
-//		scanner.close();
-		new Analyzer().process(500); // TODO: switch this back when done (numberOfRequests)
+		System.out.print("Enter number of requests: ");
+		Scanner scanner = new Scanner(System.in);
+		int numberOfRequests = scanner.nextInt();
+		scanner.close();
+		new Analyzer().process(numberOfRequests);
 	}
 
 }
