@@ -48,5 +48,4 @@ public class Analyzer {
 		scanner.close();
 		new Analyzer().process(numberOfRequests);
 	}
-
 }
