@@ -1,6 +1,14 @@
 package edu.metrostate.ICS440.assignment4;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /****************************************************************************************************************
  * Main class for program entry.
@@ -13,7 +21,25 @@ import java.util.Random;
  * <p>
  * Due Date:	2019.08.08
  */
-public class FloydWarshall {
+public class FloydWarshall implements Callable {
+	
+	private static List<Future<ConcurrentLinkedQueue>> futuresList = new ArrayList<Future<ConcurrentLinkedQueue>>();
+	
+	public static final AtomicInteger nextId = new AtomicInteger(1);
+	
+	/************************************************************************************************************
+	 * The current thread ID, as assigned by this class.
+	 */
+	public static final ThreadLocal<Integer> threadId = new ThreadLocal<Integer>() {
+		
+		@Override
+		protected Integer initialValue() {
+			
+			return nextId.getAndIncrement();
+		}
+	};
+	
+	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
 	
 	private static final int INFINITY = Integer.MAX_VALUE; // Infinity
 	private static final int DIMENSION = 500;  // TODO: original value = 5000
@@ -131,6 +157,12 @@ public class FloydWarshall {
 		System.out.println("Comparison succeeded.");
 	}
 	
+	@Override
+	public Object call() throws Exception {
+		
+		return null;
+	}
+	
 	/************************************************************************************************************
 	 * Main method from where program execution begins.
 	 * <p>
@@ -154,8 +186,8 @@ public class FloydWarshall {
 		
 		end = System.nanoTime();
 		
-		System.out.println("time consumed: " + (double)(end - start) / 1000000000);
-		
+		System.out.println("Time consumed: " + (double)(end - start) / 1000000000);
+		print(adjacencyMatrix);
 		compare(d, d);
 	}
 }
