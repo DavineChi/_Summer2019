@@ -8,13 +8,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /****************************************************************************************************************
  * Main class for program entry.
  * <p>
  * 
- * [Application Description]
+ * This program executes the Floyd-Warshall algorithm on a 5000 by 5000 adjacency matrix.
+ * The assignment goal is to design, develop, and implement a parallel solution using the
+ * partitioning, communication, agglomeration, and mapping (PCAM) design paradigm.
  * 
  * <p>
  * Begin Date:	2019.07.25
@@ -24,20 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class FloydWarshall implements Callable {
 	
 	private static List<Future<ConcurrentLinkedQueue>> futuresList = new ArrayList<Future<ConcurrentLinkedQueue>>();
-	
-	public static final AtomicInteger nextId = new AtomicInteger(1);
-	
-	/************************************************************************************************************
-	 * The current thread ID, as assigned by this class.
-	 */
-	public static final ThreadLocal<Integer> threadId = new ThreadLocal<Integer>() {
-		
-		@Override
-		protected Integer initialValue() {
-			
-			return nextId.getAndIncrement();
-		}
-	};
 	
 	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
 	
@@ -187,7 +174,7 @@ public class FloydWarshall implements Callable {
 		end = System.nanoTime();
 		
 		System.out.println("Time consumed: " + (double)(end - start) / 1000000000);
-		print(adjacencyMatrix);
+		print(adjacencyMatrix); // TODO: remove
 		compare(d, d);
 	}
 }
