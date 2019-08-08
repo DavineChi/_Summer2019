@@ -1,0 +1,6 @@
+Ultimately, choose domain decomposition using a 2D grid, because we're
+interested in partitioning the data (the 2D adjacency matrix in this case).
+
+Figure out another method using functional decomposition (this won't
+actually be used, but required for the assignment). Find a way to partition
+the computation.
