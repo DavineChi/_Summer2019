@@ -29,7 +29,7 @@ public class FloydWarshall implements Callable {
 	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
 	
 	private static final int INFINITY = Integer.MAX_VALUE; // Infinity
-	private static final int DIMENSION = 5000;  // TODO: original value = 5000
+	private static final int DIMENSION = 5000;
 	
 	private static double fill = 0.3;
 	private static int maxDistance = 100;
