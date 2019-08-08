@@ -29,12 +29,12 @@ public class FloydWarshall implements Callable {
 	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
 	
 	private static final int INFINITY = Integer.MAX_VALUE; // Infinity
-	private static final int DIMENSION = 500;  // TODO: original value = 5000
+	private static final int DIMENSION = 5000;  // TODO: original value = 5000
 	
 	private static double fill = 0.3;
 	private static int maxDistance = 100;
 	private static int adjacencyMatrix[][] = new int[DIMENSION][DIMENSION];
-	private static int d[][] = new int[DIMENSION][DIMENSION];
+	private static int distance[][] = new int[DIMENSION][DIMENSION];
 	
 	// **********************************************************************************************************
 	// Helper method to generate a randomized matrix to use for the algorithm.
@@ -69,11 +69,11 @@ public class FloydWarshall implements Callable {
 			
 			for (int j = 0; j < DIMENSION; j++) {
 				
-				d[i][j] = adjacencyMatrix[i][j];
+				distance[i][j] = adjacencyMatrix[i][j];
 				
 				if (i == j) {
 					
-					d[i][j] = 0;
+					distance[i][j] = 0;
 				}
 			}
 		}
@@ -84,14 +84,14 @@ public class FloydWarshall implements Callable {
 				
 				for (int j = 0; j < DIMENSION; j++) {
 					
-					if (d[i][k] == INFINITY || d[k][j] == INFINITY) {
+					if (distance[i][k] == INFINITY || distance[k][j] == INFINITY) {
 						
 						continue;
 					}
 					
-					else if (d[i][j] > d[i][k] + d[k][j]) {
+					else if (distance[i][j] > distance[i][k] + distance[k][j]) {
 						
-						d[i][j] = d[i][k] + d[k][j];
+						distance[i][j] = distance[i][k] + distance[k][j];
 					}
 				}
 			}
@@ -174,7 +174,7 @@ public class FloydWarshall implements Callable {
 		end = System.nanoTime();
 		
 		System.out.println("Time consumed: " + (double)(end - start) / 1000000000);
-		print(adjacencyMatrix); // TODO: remove
-		compare(d, d);
+		//print(adjacencyMatrix); // TODO: remove
+		compare(distance, distance);
 	}
 }
