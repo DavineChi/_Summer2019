@@ -22,14 +22,13 @@ import java.util.concurrent.Future;
  * <p>
  * Due Date:	2019.08.08
  */
-public class FloydWarshall implements Callable {
+public class FloydWarshall implements Callable<ConcurrentLinkedQueue<Integer>> {
 	
-	private static List<Future<ConcurrentLinkedQueue>> futuresList = new ArrayList<Future<ConcurrentLinkedQueue>>();
-	
+	private static List<Future<ConcurrentLinkedQueue<Integer>>> futuresList = new ArrayList<Future<ConcurrentLinkedQueue<Integer>>>();
 	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
 	
 	private static final int INFINITY = Integer.MAX_VALUE; // Infinity
-	private static final int DIMENSION = 5000;
+	private static final int DIMENSION = 5; // TODO: reset to original value of 5000 when complete
 	
 	private static double fill = 0.3;
 	private static int maxDistance = 100;
@@ -145,8 +144,9 @@ public class FloydWarshall implements Callable {
 	}
 	
 	@Override
-	public Object call() throws Exception {
+	public ConcurrentLinkedQueue<Integer> call() throws Exception {
 		
+		// TODO: implementation
 		return null;
 	}
 	
@@ -174,7 +174,7 @@ public class FloydWarshall implements Callable {
 		end = System.nanoTime();
 		
 		System.out.println("Time consumed: " + (double)(end - start) / 1000000000);
-		//print(adjacencyMatrix); // TODO: remove
+		//print(adjacencyMatrix); // TODO: remove when complete
 		compare(distance, distance);
 	}
 }

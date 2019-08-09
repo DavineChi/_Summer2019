@@ -4,3 +4,16 @@ interested in partitioning the data (the 2D adjacency matrix in this case).
 Figure out another method using functional decomposition (this won't
 actually be used, but required for the assignment). Find a way to partition
 the computation.
+
+Actually, it might even be the opposite of the above outline. For reference,
+the Wikipedia entry on Parellelizing the Floyd-Warshall algorithm, found at
+https://en.wikipedia.org/wiki/Parallel_all-pairs_shortest_path_algorithm
+seems to indicate that it is the computation that should be partitioned in
+the distance matrix. Each square p(i,j) will perform its own piece of the
+computation.
+
+Now, after further thought, I believe it will be a combination of the two.
+
+Both the computation to be performed AND the data upon which the computation
+is to be performed must be partitioned in some fashion.
+
