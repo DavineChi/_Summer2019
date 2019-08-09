@@ -28,7 +28,7 @@ public class FloydWarshall implements Callable<ConcurrentLinkedQueue<Integer>> {
 	private static ExecutorService executor = Executors.newFixedThreadPool(Constants.THREAD_POOL_SIZE);
 	
 	private static final int INFINITY = Integer.MAX_VALUE; // Infinity
-	private static final int DIMENSION = 5; // TODO: reset to original value of 5000 when complete
+	private static final int DIMENSION = 100; // TODO: reset to original value of 5000 when complete
 	
 	private static double fill = 0.3;
 	private static int maxDistance = 100;
@@ -124,7 +124,7 @@ public class FloydWarshall implements Callable<ConcurrentLinkedQueue<Integer>> {
 	}
 	
 	// **********************************************************************************************************
-	// Helper method to compare two matrices, matrix1[dim][dim] and matrix2[dim][dim]
+	// Helper method to compare two matrices matrix1[DIMENSION][DIMENSION] and matrix2[DIMENSION][DIMENSION]
 	// and print whether they are equivalent.
 	// 
 	private static void compare(int matrix1[][], int matrix2[][]) {
